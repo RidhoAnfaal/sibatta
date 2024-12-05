@@ -1,3 +1,17 @@
+<?php
+// Start the session
+session_start();
+
+// Check if the user is logged in, if not redirect to login page
+if (!isset($_SESSION['username'])) {
+    header('Location: login.php');
+    exit();
+}
+
+$username = $_SESSION['username']; // Get the username from session
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -90,7 +104,7 @@
                     <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <ion-icon name="person-circle-outline"></ion-icon>
-                    <span id="username">Username</span>
+                    <span id="username"><?php echo htmlspecialchars($username); ?></span> <!-- Menampilkan nama pengguna -->
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end mt-2">
                         <li><a class="dropdown-item" href="login.php"><i class="bi bi-box-arrow-right"></i>Log out</a></li>

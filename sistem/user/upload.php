@@ -1,42 +1,54 @@
 <?php
-session_start();  // Start session
+include 'koneksi.php'; // Include the database connection
+session_start();
 
-if (!isset($_SESSION['user_id'])) {
-    $message = "User is not logged in.";
+// Check if the user is logged in
+if (!isset($_SESSION['username'])) {
+    header('Location: login.php'); // Redirect to login if not logged in
+    exit();
+}
+
+// Retrieve the logged-in user's username
+$username = $_SESSION['username'];
+
+// Get the user ID associated with the username
+$sql = "SELECT user_id FROM [sibatta].[user] WHERE username = ?";
+$params = array($username);
+$stmt = sqlsrv_query($conn, $sql, $params);
+$user = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+
+if ($user) {
+    $userId = $user['user_id'];
 } else {
-    // Define the directory to save uploaded files
-    $uploadDir = 'uploads/';
+    // Handle the case if the user is not found in the database
+    $userId = 0;
+}
 
-    // Create uploads directory if it doesn't exist
-    if (!file_exists($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
-    }
+$uploadDir = 'uploads/';
+if (!file_exists($uploadDir)) {
+    mkdir($uploadDir, 0777, true);
+}
 
-    $message = '';
-    if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['files'])) {
-        // Get the user ID from the session
-        $userId = $_SESSION['user_id'];
+$message = '';
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['files'])) {
+    // Retrieve the title from the form
+    $title = isset($_POST['title']) ? $_POST['title'] : '';
+    $uploadedAt = date('Y-m-d'); // Current date
 
-        // Loop through uploaded files
+    if ($userId > 0 && !empty($title)) {
         foreach ($_FILES['files']['tmp_name'] as $key => $tmpName) {
             $fileName = $_FILES['files']['name'][$key];
-            $fileSize = $_FILES['files']['size'][$key];
             $fileTmpName = $_FILES['files']['tmp_name'][$key];
             $fileError = $_FILES['files']['error'][$key];
 
             if ($fileError === UPLOAD_ERR_OK) {
-                // Move the uploaded file to the upload directory
-                $targetFile = $uploadDir . basename($fileName);
+                // Create a unique file name to avoid overwriting
+                $targetFile = $uploadDir . time() . '_' . basename($fileName);
                 if (move_uploaded_file($fileTmpName, $targetFile)) {
-                    // Insert the record into the database
-                    $title = "Uploaded Document"; // Modify as needed
-                    $uploadedAt = date('Y-m-d'); // Current date
-                    $validatedBy = null; // Set to null or another value if needed
-
-                    $sql = "INSERT INTO [sibatta].[document] (user_id, title, uploaded_at, validated_by) 
-                            VALUES (?, ?, ?, ?)";
-                    $params = array($userId, $title, $uploadedAt, $validatedBy);
-
+                    // Insert file data into the database
+                    $sql = "INSERT INTO [sibatta].[document] (user_id, title, uploaded_at) 
+                            VALUES (?, ?, ?)";
+                    $params = [$userId, $title, $uploadedAt];
                     $stmt = sqlsrv_query($conn, $sql, $params);
 
                     if ($stmt) {
@@ -45,18 +57,26 @@ if (!isset($_SESSION['user_id'])) {
                         $message = 'Database error: ' . print_r(sqlsrv_errors(), true);
                     }
                 } else {
-                    $message = 'Error uploading file.';
+                    $message = 'Error moving uploaded file.';
                 }
             } else {
                 $message = 'There was an error with the file upload.';
             }
         }
+    } else {
+        $message = 'Please provide a valid Title.';
     }
-
-    // Retrieve list of uploaded files
-    $files = array_diff(scandir($uploadDir), array('.', '..')); // List files in the uploads directory
 }
 
+// Retrieve list of uploaded documents from the database
+$sql = "SELECT document_id, title, uploaded_at, validated_by FROM [sibatta].[document]";
+$stmt = sqlsrv_query($conn, $sql);
+$documents = [];
+if ($stmt) {
+    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+        $documents[] = $row;
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -70,61 +90,58 @@ if (!isset($_SESSION['user_id'])) {
 </head>
 
 <body>
-<div class="container mt-4">
-    <h1>Upload File</h1>
-    <?php if ($message): ?>
-        <div class="alert alert-info"><?php echo $message; ?></div>
-    <?php endif; ?>
-    <!-- Form Upload -->
-    <form method="POST" enctype="multipart/form-data">
-        <div class="mb-3">
-            <label for="fileInput" class="form-label">Pilih File</label>
-            <input type="file" class="form-control" id="fileInput" name="files[]" multiple>
-        </div>
-        <button type="submit" class="btn btn-primary">Upload</button>
-    </form>
+    <div class="container mt-4">
+        <h1>Upload File</h1>
+        <?php if ($message): ?>
+            <div class="alert alert-info"><?php echo $message; ?></div>
+        <?php endif; ?>
 
-    <!-- Table to display uploaded files -->
-    <div class="table-container mt-4">
-        <h3>Uploaded Files</h3>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Name</th>
-                    <th>File Name</th>
-                    <th>File Size</th>
-                    <th>Date</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (!empty($files)): ?>
-                    <?php foreach ($files as $index => $file): ?>
-                        <tr>
-                            <td><?php echo $index + 1; ?></td>
-                            <td><?php echo $file; ?></td>
-                            <td><?php echo number_format(filesize($uploadDir . $file) / 1024, 2) . ' KB'; ?></td>
-                            <td><?php echo date('d-m-Y H:i:s', filemtime($uploadDir . $file)); ?></td>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <a href="<?php echo $uploadDir . $file; ?>" download class="btn btn-sm btn-success me-2">Download</a>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
+        <!-- Form Upload -->
+        <form method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" class="form-control" id="title" name="title" required>
+            </div>
+            <div class="mb-3">
+                <label for="fileInput" class="form-label">Select Files</label>
+                <input type="file" class="form-control" id="fileInput" name="files[]" multiple>
+            </div>
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+
+        <!-- Uploaded Files -->
+        <div class="table-container mt-4">
+            <h3>Uploaded Documents</h3>
+            <table class="table table-striped">
+                <thead>
                     <tr>
-                        <td colspan="6" class="text-center">No files uploaded yet.</td>
+                        <th>Document ID</th>
+                        <th>Title</th>
+                        <th>Uploaded At</th>
+                        <th>Validated By</th>
                     </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    <?php if (!empty($documents)): ?>
+                        <?php foreach ($documents as $doc): ?>
+                            <tr>
+                                <td><?php echo $doc['document_id']; ?></td>
+                                <td><?php echo $doc['title']; ?></td>
+                                <td><?php echo $doc['uploaded_at']->format('Y-m-d'); ?></td>
+                                <td><?php echo $doc['validated_by'] ?: 'Not validated'; ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="4" class="text-center">No documents uploaded yet.</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
 
-<!-- Optional JavaScript -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
