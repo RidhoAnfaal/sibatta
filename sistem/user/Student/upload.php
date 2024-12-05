@@ -1,82 +1,82 @@
 <?php
-// include 'koneksi.php'; // Include the database connection
-// session_start();
+include 'koneksi.php'; // Include the database connection
+session_start();
 
-// // Check if the user is logged in
-// if (!isset($_SESSION['username'])) {
-//     header('Location: login.php'); // Redirect to login if not logged in
-//     exit();
-// }
+// Check if the user is logged in
+if (!isset($_SESSION['username'])) {
+    header('Location: login.php'); // Redirect to login if not logged in
+    exit();
+}
 
-// // Retrieve the logged-in user's username
-// $username = $_SESSION['username'];
+// Retrieve the logged-in user's username
+$username = $_SESSION['username'];
 
-// // Get the user ID associated with the username
-// $sql = "SELECT user_id FROM [sibatta].[user] WHERE username = ?";
-// $params = array($username);
-// $stmt = sqlsrv_query($conn, $sql, $params);
-// $user = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+// Get the user ID associated with the username
+$sql = "SELECT user_id FROM [sibatta].[user] WHERE username = ?";
+$params = array($username);
+$stmt = sqlsrv_query($conn, $sql, $params);
+$user = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
 
-// if ($user) {
-//     $userId = $user['user_id'];
-// } else {
-//     // Handle the case if the user is not found in the database
-//     $userId = 0;
-// }
+if ($user) {
+    $userId = $user['user_id'];
+} else {
+    // Handle the case if the user is not found in the database
+    $userId = 0;
+}
 
-// $uploadDir = 'uploads/';
-// if (!file_exists($uploadDir)) {
-//     mkdir($uploadDir, 0777, true);
-// }
+$uploadDir = 'uploads/';
+if (!file_exists($uploadDir)) {
+    mkdir($uploadDir, 0777, true);
+}
 
-// $message = '';
-// if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['files'])) {
-//     // Retrieve the title from the form
-//     $title = isset($_POST['title']) ? $_POST['title'] : '';
-//     $uploadedAt = date('Y-m-d'); // Current date
+$message = '';
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['files'])) {
+    // Retrieve the title from the form
+    $title = isset($_POST['title']) ? $_POST['title'] : '';
+    $uploadedAt = date('Y-m-d'); // Current date
 
-//     if ($userId > 0 && !empty($title)) {
-//         foreach ($_FILES['files']['tmp_name'] as $key => $tmpName) {
-//             $fileName = $_FILES['files']['name'][$key];
-//             $fileTmpName = $_FILES['files']['tmp_name'][$key];
-//             $fileError = $_FILES['files']['error'][$key];
+    if ($userId > 0 && !empty($title)) {
+        foreach ($_FILES['files']['tmp_name'] as $key => $tmpName) {
+            $fileName = $_FILES['files']['name'][$key];
+            $fileTmpName = $_FILES['files']['tmp_name'][$key];
+            $fileError = $_FILES['files']['error'][$key];
 
-//             if ($fileError === UPLOAD_ERR_OK) {
-//                 // Create a unique file name to avoid overwriting
-//                 $targetFile = $uploadDir . time() . '_' . basename($fileName);
-//                 if (move_uploaded_file($fileTmpName, $targetFile)) {
-//                     // Insert file data into the database
-//                     $sql = "INSERT INTO [sibatta].[document] (user_id, title, uploaded_at) 
-//                             VALUES (?, ?, ?)";
-//                     $params = [$userId, $title, $uploadedAt];
-//                     $stmt = sqlsrv_query($conn, $sql, $params);
+            if ($fileError === UPLOAD_ERR_OK) {
+                // Create a unique file name to avoid overwriting
+                $targetFile = $uploadDir . time() . '_' . basename($fileName);
+                if (move_uploaded_file($fileTmpName, $targetFile)) {
+                    // Insert file data into the database
+                    $sql = "INSERT INTO [sibatta].[document] (user_id, title, uploaded_at) 
+                            VALUES (?, ?, ?)";
+                    $params = [$userId, $title, $uploadedAt];
+                    $stmt = sqlsrv_query($conn, $sql, $params);
 
-//                     if ($stmt) {
-//                         $message = 'File uploaded and saved to the database successfully!';
-//                     } else {
-//                         $message = 'Database error: ' . print_r(sqlsrv_errors(), true);
-//                     }
-//                 } else {
-//                     $message = 'Error moving uploaded file.';
-//                 }
-//             } else {
-//                 $message = 'There was an error with the file upload.';
-//             }
-//         }
-//     } else {
-//         $message = 'Please provide a valid Title.';
-//     }
-// }
+                    if ($stmt) {
+                        $message = 'File uploaded and saved to the database successfully!';
+                    } else {
+                        $message = 'Database error: ' . print_r(sqlsrv_errors(), true);
+                    }
+                } else {
+                    $message = 'Error moving uploaded file.';
+                }
+            } else {
+                $message = 'There was an error with the file upload.';
+            }
+        }
+    } else {
+        $message = 'Please provide a valid Title.';
+    }
+}
 
-// // Retrieve list of uploaded documents from the database
-// $sql = "SELECT document_id, title, uploaded_at, validated_by FROM [sibatta].[document]";
-// $stmt = sqlsrv_query($conn, $sql);
-// $documents = [];
-// if ($stmt) {
-//     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-//         $documents[] = $row;
-//     }
-// }
+// Retrieve list of uploaded documents from the database
+$sql = "SELECT document_id, title, uploaded_at, validated_by FROM [sibatta].[document]";
+$stmt = sqlsrv_query($conn, $sql);
+$documents = [];
+if ($stmt) {
+    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+        $documents[] = $row;
+    }
+}
 ?>
 
 
@@ -85,9 +85,8 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Upload</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
@@ -95,9 +94,8 @@
 </head>
 
 <body>
-
-    <!-- Horizontal Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+ <!-- Horizontal Navbar -->
+ <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
            
             <button class="btn btn" id="sidebarToggle">
@@ -139,7 +137,7 @@
                     <li class="nav-item dropdown">
                     <a class="nav-link text-light" href="#" role="button" data-bs-toggle="modal" aria-expanded="false">
                     <ion-icon name="person-circle-outline"></ion-icon>
-                    <span id="username">Username</span>
+                    <span id="username"><?php echo htmlspecialchars($username); ?></span>
                     </a>
                 </li>
             
@@ -152,7 +150,7 @@
     <!-- Sidebar -->
     <div id="sidebar">
         <div class="text-center p-3">
-            <img src="css/images/logo_Sibatta.png" alt="Logo" width="50" height="40" class="img-fluid">
+            <img src="css/images/Logo_Sibatta.png" alt="Logo" width="50" height="40" class="img-fluid">
             <h5 class="mt-2 text-dark">SIBATTA</h5>
         </div>
         <ul class="nav flex-column">
@@ -163,15 +161,21 @@
             </li>
             <li class="nav-item mb-3">
                 <a class="nav-link text-dark d-flex align-items-center" href="upload.php">
-                    <ion-icon name="cloud-upload-outline" class="me-2"></ion-icon> <span>Upload</span>
+                    <ion-icon name="time-outline" class="me-2"></ion-icon> <span>Upload TA</span>
                 </a>
             </li>
         </ul>
-    </div>
+        <div class="modal-footer">
+        <button class="logout-btn btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">
+        <ion-icon name="log-out-outline" style="font-size: 20px;"></ion-icon>
+        <span>Log Out</span>
+    </a>
+</div>
+
+    </div>  
 
     <!-- Overlay -->
     <div id="overlay"></div>
-
     <!-- Main Content -->
     <div class="container mt-4">
         <h1>Upload File</h1>
