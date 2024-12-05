@@ -1,0 +1,54 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  body {
+    /* background-image: url('images/Graha.jpg'); */
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('images/Graha.jpg');
+    background-size: cover; /* Menutup seluruh layar */
+    background-position: center;
+    background-repeat: no-repeat;
+   
+  }
+  
+  .logo {
+    width: 150px;
+    height: auto; 
+    display: block;
+    margin: 0 auto; 
+  }
+  .container {
+    width: 300px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #f3f3f3;
+    border-radius: 5px;
+    background-color: #f3f3f3;
+  }
+  
+  
+  .form-signin {
+    max-width: 330px;
+    padding: 1rem;
+  }
+  
+  .form-signin .form-floating:focus-within {
+    z-index: 2;
+  }
+  
+  .form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  
+  .form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+  img {
+    border-radius: 8px;
+  }
+  
