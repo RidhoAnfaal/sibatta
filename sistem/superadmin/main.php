@@ -125,7 +125,7 @@
             </li>
             <li class="nav-item mb-3">
                 <a class="nav-link text-dark d-flex align-items-center" href="add_user.php">
-                    <ion-icon name="cloud-upload-outline" class="me-2"></ion-icon> <span>ADD</span>
+                    <ion-icon name="cloud-upload-outline" class="me-2"></ion-icon> <span>add student</span>
                 </a>
             </li>
             <li class="nav-item mb-3">

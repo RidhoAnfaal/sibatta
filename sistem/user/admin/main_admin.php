@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-    <link rel="stylesheet" href="css/main_student.css">
+    <link rel="stylesheet" href="css/main_admin.css">
     <title>Home</title>
     <style>
         /* Style for hidden sidebar */
@@ -141,7 +141,7 @@
                     <li class="nav-item dropdown">
                     <a class="nav-link text-light" href="#" role="button" data-bs-toggle="modal" aria-expanded="false">
                     <ion-icon name="person-circle-outline"></ion-icon>
-                    <span id="username"><?php echo htmlspecialchars($username); ?></span>
+                    <span id="username">Username</span>
                     </a>
                 </li>
             
@@ -159,13 +159,18 @@
         </div>
         <ul class="nav flex-column">
             <li class="nav-item mb-3">
-                <a class="nav-link text-dark d-flex align-items-center" href="main_user.php">
+                <a class="nav-link text-dark d-flex align-items-center" href="main.php">
                     <ion-icon name="home-outline" class="me-2"></ion-icon> <span>Beranda</span>
                 </a>
             </li>
             <li class="nav-item mb-3">
-                <a class="nav-link text-dark d-flex align-items-center" href="upload.php">
-                    <ion-icon name="time-outline" class="me-2"></ion-icon> <span>Upload TA</span>
+                <a class="nav-link text-dark d-flex align-items-center" href="Tugas_akhir.php">
+                    <ion-icon name="time-outline" class="me-2"></ion-icon> <span>Tugas Akhir</span>
+                </a>
+            </li>
+            <li class="nav-item mb-3">
+                <a class="nav-link text-dark d-flex align-items-center" href="Approve.php">
+                <ion-icon name="library-outline" class="me-2"></ion-icon> <span>Approve</span>
                 </a>
             </li>
         </ul>

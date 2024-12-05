@@ -1,53 +1,53 @@
 <?php
-// session_start();
-// // if (!isset($_SESSION['username'])) {
-// //   header('Location: login.php');
-// //   exit();
-// // }
+session_start();
+if (!isset($_SESSION['username'])) {
+  header('Location: index.php');
+  exit();
+}
 
-// // Database connection
-// $host = "localhost";
-// $username = "root";
-// $password = "";
-// $dbname = "sibatta";
+// Database connection
+$host = "localhost";
+$username = "root";
+$password = "";
+$dbname = "sibatta";
 
-// $conn = new mysqli($host, $username, $password, $dbname);
-// if ($conn->connect_error) {
-//   die("Connection failed: " . $conn->connect_error);
-// }
+$conn = new mysqli($host, $username, $password, $dbname);
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
 
-// if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-//   // Get form data
-//   $user = $_POST['username'];
-//   $phone = $_POST['no_telepon'];
-//   $email = $_POST['email'];
-//   $password = $_POST['password'];
-//   $confirm_password = $_POST['confirm_password'];
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  // Get form data
+  $user = $_POST['username'];
+  $phone = $_POST['no_telepon'];
+  $email = $_POST['email'];
+  $password = $_POST['password'];
+  $confirm_password = $_POST['confirm_password'];
 
-//   // Basic validation for password match
-//   if ($password !== $confirm_password) {
-//     echo "Passwords do not match!";
-//     exit();
-//   }
+  // Basic validation for password match
+  if ($password !== $confirm_password) {
+    echo "Passwords do not match!";
+    exit();
+  }
 
-//   // Hash the password before saving to the database
-//   $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+  // Hash the password before saving to the database
+  $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-//   // Insert user into the database
-//   $sql = "INSERT INTO users (username, no_telepon, email, password) VALUES (?, ?, ?, ?)";
-//   $stmt = $conn->prepare($sql);
-//   $stmt->bind_param("ssss", $user, $phone, $email, $hashed_password);
+  // Insert user into the database
+  $sql = "INSERT INTO users (username, no_telepon, email, password) VALUES (?, ?, ?, ?)";
+  $stmt = $conn->prepare($sql);
+  $stmt->bind_param("ssss", $user, $phone, $email, $hashed_password);
 
-//   if ($stmt->execute()) {
-//     echo "User added successfully!";
-//   } else {
-//     echo "Error: " . $stmt->error;
-//   }
+  if ($stmt->execute()) {
+    echo "User added successfully!";
+  } else {
+    echo "Error: " . $stmt->error;
+  }
 
-//   // Close connection
-//   $stmt->close();
-//   $conn->close();
-// }
+  // Close connection
+  $stmt->close();
+  $conn->close();
+}
 ?>
 
 <!doctype html>
@@ -176,11 +176,6 @@
       <li class="nav-item mb-3">
         <a class="nav-link text-dark d-flex align-items-center" href="add_user.php">
           <ion-icon name="cloud-upload-outline" class="me-2"></ion-icon> <span>ADD</span>
-        </a>
-      </li>
-      <li class="nav-item mb-3">
-        <a class="nav-link text-dark d-flex align-items-center" href="add_admin.php">
-          <ion-icon name="cloud-upload-outline" class="me-2"></ion-icon> <span>Add Admin</span>
         </a>
       </li>
     </ul>

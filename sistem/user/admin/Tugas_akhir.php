@@ -1,105 +1,56 @@
+<?php
+// Define the directory to save uploaded files
+$uploadDir = 'uploads/';
+
+// Create uploads directory if it doesn't exist
+if (!file_exists($uploadDir)) {
+    mkdir($uploadDir, 0777, true);
+}
+
+$message = '';
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['files'])) {
+    // Loop through uploaded files
+    foreach ($_FILES['files']['tmp_name'] as $key => $tmpName) {
+        $fileName = $_FILES['files']['name'][$key];
+        $fileSize = $_FILES['files']['size'][$key];
+        $fileTmpName = $_FILES['files']['tmp_name'][$key];
+        $fileError = $_FILES['files']['error'][$key];
+        
+        if ($fileError === UPLOAD_ERR_OK) {
+            // Move the uploaded file to the upload directory
+            $targetFile = $uploadDir . basename($fileName);
+            if (move_uploaded_file($fileTmpName, $targetFile)) {
+                $message = 'File uploaded successfully!';
+            } else {
+                $message = 'Error uploading file.';
+            }
+        } else {
+            $message = 'There was an error with the file upload.';
+        }
+    }
+}
+
+// Retrieve list of uploaded files
+$files = array_diff(scandir($uploadDir), array('.', '..')); // List files in the uploads directory
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-    <link rel="stylesheet" href="css/main_student.css">
-    <title>Home</title>
-    <style>
-        /* Style for hidden sidebar */
-        #sidebar {
-            position: fixed;
-            left: -250px;
-            top: 56px;
-            /* Adjust to match the height of the horizontal navbar */
-            height: calc(100vh - 56px);
-            width: 250px;
-            background-color: #f8f9fa;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-            transition: left 0.3s ease-in-out;
-            z-index: 1050;
-            /* Ensure it is above other content */
-        }
-
-        #sidebar.active {
-            left: 0;
-        }
-
-        #overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1040;
-            /* Just below the sidebar */
-            display: none;
-        }
-
-        #overlay.active {
-            display: block;
-        }
-
-        /* Ensure the sidebar toggle button is clickable */
-        #sidebarToggle {
-            z-index: 1060;
-        }
-    </style>
+    <link rel="stylesheet" href="css/TA.css">
 </head>
 
 <body>
-<style>
-        /* Style for hidden sidebar */
-        #sidebar {
-            position: fixed;
-            left: -250px;
-            top: 56px;
-            /* Adjust to match the height of the horizontal navbar */
-            height: calc(100vh - 56px);
-            width: 250px;
-            background-color: #f8f9fa;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-            transition: left 0.3s ease-in-out;
-            z-index: 1050;
-            /* Ensure it is above other content */
-        }
-
-        #sidebar.active {
-            left: 0;
-        }
-
-        #overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1040;
-            /* Just below the sidebar */
-            display: none;
-        }
-
-        #overlay.active {
-            display: block;
-        }
-
-        /* Ensure the sidebar toggle button is clickable */
-        #sidebarToggle {
-            z-index: 1060;
-        }
-       
-    </style>
-</head>
-
-<body>
-    <!-- Horizontal Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+   <!-- Horizontal Navbar -->
+   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
            
             <button class="btn btn" id="sidebarToggle">
@@ -141,7 +92,7 @@
                     <li class="nav-item dropdown">
                     <a class="nav-link text-light" href="#" role="button" data-bs-toggle="modal" aria-expanded="false">
                     <ion-icon name="person-circle-outline"></ion-icon>
-                    <span id="username"><?php echo htmlspecialchars($username); ?></span>
+                    <span id="username">Username</span>
                     </a>
                 </li>
             
@@ -159,13 +110,18 @@
         </div>
         <ul class="nav flex-column">
             <li class="nav-item mb-3">
-                <a class="nav-link text-dark d-flex align-items-center" href="main_user.php">
+                <a class="nav-link text-dark d-flex align-items-center" href="main_admin.php">
                     <ion-icon name="home-outline" class="me-2"></ion-icon> <span>Beranda</span>
                 </a>
             </li>
             <li class="nav-item mb-3">
-                <a class="nav-link text-dark d-flex align-items-center" href="upload.php">
-                    <ion-icon name="time-outline" class="me-2"></ion-icon> <span>Upload TA</span>
+                <a class="nav-link text-dark d-flex align-items-center" href="Tugas_akhir.php">
+                    <ion-icon name="time-outline" class="me-2"></ion-icon> <span>Tugas Akhir</span>
+                </a>
+            </li>
+            <li class="nav-item mb-3">
+                <a class="nav-link text-dark d-flex align-items-center" href="Approve.php">
+                <ion-icon name="library-outline" class="me-2"></ion-icon> <span>Approve</span>
                 </a>
             </li>
         </ul>
@@ -176,18 +132,67 @@
     </a>
 </div>
 
-    </div>  
-
+    </div> 
+   
     <!-- Overlay -->
     <div id="overlay"></div>
 
     <!-- Main Content -->
     <div class="container mt-4">
-        <h1>Welcome to SIBATTA</h1>
-        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Molestiae facere obcaecati asperiores quod animi vero maxime quidem nobis enim suscipit. Alias illum dolores debitis reiciendis ea numquam eum. Deleniti, aut.
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos consectetur numquam magni sapiente, velit fugiat dolore alias nemo. Veritatis esse labore non nam praesentium beatae unde quod, quam modi expedita.
-        </p>
-    </div>
+        <h1>Upload File</h1>
+        <?php if ($message): ?>
+            <div class="alert alert-info"><?php echo $message; ?></div>
+        <?php endif; ?>
+        <!-- Form Upload -->
+        <form method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="fileInput" class="form-label">Pilih File</label>
+                <input type="file" class="form-control" id="fileInput" name="files[]" multiple>
+            </div>
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+
+        <!-- Table -->
+        <!-- Table -->
+<div class="table-container mt-4">
+    <h3>Uploaded Files</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Name</th>
+                <th>File Name</th>
+                <th>File Size</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (!empty($files)): ?>
+                <?php foreach ($files as $index => $file): ?>
+                    <tr>
+                        <td><?php echo $index + 1; ?></td>
+                        <td><?php echo $file; ?></td>
+                        <td><?php echo number_format(filesize($uploadDir . $file) / 1024, 2) . ' KB'; ?></td>
+                        <td><?php echo date('d-m-Y H:i:s', filemtime($uploadDir . $file)); ?></td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <a href="<?php echo $uploadDir . $file; ?>" download class="btn btn-sm btn-success me-2">Download</a>
+                                <input type="checkbox" name="file_check[]" value="<?php echo $file; ?>">
+                            </div>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="6" class="text-center">No files uploaded yet.</td>
+                </tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</div>
+
+</div>
     <!-- Email Pop Up And Notification -->
     <div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
     <div class="modal-dialog">
