@@ -40,9 +40,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         // Redirect based on role
         if ($user['role'] === 'student') {
-            header("Location: student\main_user.php");
-        } else if ($user['role'] === 'admin') {
-            header("Location: adminDashboard.php");
+            header("Location: student\mainStudent.php");
+        } else if ($user['role'] === 'library_admin') {
+            header("Location: adminPerpus\mainPerpus.php");
+        }else if ($user['role'] === 'academic_admin') {
+            header("Location: adminAkademik\mainAkademik.php");
         }
         exit;
     } else {

@@ -24,7 +24,7 @@ $message = isset($message) ? $message : ""; // Use the $message variable set in 
             font-family: Arial, sans-serif;
         }
         body {
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('loginImg/loginBg.png');
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('loginBg.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -57,7 +57,7 @@ $message = isset($message) ? $message : ""; // Use the $message variable set in 
             <!-- Login Form -->
             <form class="needs-validation" novalidate method="POST" action="cekLogin.php">
                 <div class="header text-center mb-4">
-                    <img src="loginImg/Logo_Sibatta.png" alt="Logo" class="logo" />
+                    <img src="Logo_Sibatta.png" alt="Logo" class="logo" />
                 </div>
 
                 <h1 class="h3 mb-3 fw-normal text-center" style="color: black;">SIBATTA</h1>

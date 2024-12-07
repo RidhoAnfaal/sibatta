@@ -1,0 +1,201 @@
+<?php
+// Start session
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Check if the user is logged in
+if (!isset($_SESSION['username'])) {
+    // Redirect to login page if not logged in
+    header("Location: /pbl/index.php");
+    exit;
+}
+
+// Get the logged-in user's username
+$username = $_SESSION['username'];
+
+// Include database connection (using SQL Server connection)
+require_once('/pbl/koneksi.php');
+
+// Query to fetch user and student details
+$query = "
+    SELECT u.username, u.email, u.role, s.student_id, s.prodi, s.fullName 
+    FROM dbo.sibatta_user u
+    INNER JOIN dbo.sibatta_student s ON u.user_id = s.user_id
+    WHERE u.username = ?
+";
+
+// Prepare the query with parameters
+$params = array($username);
+$stmt = sqlsrv_query($conn, $query, $params);
+
+// Check if the query was successful
+if ($stmt === false) {
+    die(print_r(sqlsrv_errors(), true)); // Display SQL Server errors
+}
+
+// Fetch user data
+$user = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+
+if ($user === null) {
+    // If no user found, redirect to login
+    header("Location: /pbl/index.php");
+    exit;
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <title>User Information</title>
+    <style>
+        /* Style for hidden sidebar */
+        #sidebar {
+            position: fixed;
+            left: -250px;
+            top: 56px;
+            height: calc(100vh - 56px);
+            width: 250px;
+            background-color: #f8f9fa;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            transition: left 0.3s ease-in-out;
+            z-index: 1050;
+        }
+
+        #sidebar.active {
+            left: 0;
+        }
+
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            display: none;
+        }
+
+        #overlay.active {
+            display: block;
+        }
+
+        #sidebarToggle {
+            z-index: 1060;
+        }
+    </style>
+</head>
+<body>
+    <!-- Horizontal Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <button class="btn btn-outline-light me-2" id="sidebarToggle">
+                <ion-icon name="menu-outline"></ion-icon>
+            </button>
+            <span class="navbar-brand">SIBATTA</span>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <ion-icon name="person-circle-outline"></ion-icon>
+                            <span id="username"><?php echo htmlspecialchars($username); ?></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end mt-2">
+                            <li>
+                                <a class="dropdown-item" href="/pbl/logout.php">
+                                    <i class="bi bi-box-arrow-right"></i> Log out
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div id="sidebar">
+        <div class="text-center p-3">
+            <img src="css/images/Logo_Sibatta.png" alt="Logo" width="50" height="40" class="img-fluid">
+            <h5 class="mt-2 text-dark">SIBATTA</h5>
+        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item mb-3">
+                <a class="nav-link text-dark d-flex align-items-center" href="mainStudent.php">
+                    <ion-icon name="home-outline" class="me-2"></ion-icon> <span>Home</span>
+                </a>
+            </li>
+            <li class="nav-item mb-3">
+                <a class="nav-link text-dark d-flex align-items-center" href="userInfo.php">
+                    <ion-icon name="person-circle-outline" class="me-2"></ion-icon> <span>User Information</span>
+                </a>
+            </li>
+            <!-- Other menu items -->
+        </ul>
+    </div>
+
+    <!-- Overlay -->
+    <div id="overlay"></div>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <h1>Student Information</h1>
+        <table class="table table-bordered">
+            <tr>
+                <th>Username</th>
+                <td><?php echo htmlspecialchars($user['username']); ?></td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td><?php echo htmlspecialchars($user['email']); ?></td>
+            </tr>
+            <tr>
+                <th>Role</th>
+                <td><?php echo htmlspecialchars($user['role']); ?></td>
+            </tr>
+            <tr>
+                <th>NIM</th>
+                <td><?php echo htmlspecialchars($user['student_id']); ?></td>
+            </tr>
+            <tr>
+                <th>Study Program</th>
+                <td><?php echo htmlspecialchars($user['prodi']); ?></td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td><?php echo htmlspecialchars($user['fullName']); ?></td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+    </script>
+</body>
+</html>
