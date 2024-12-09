@@ -1,57 +1,86 @@
 <?php
-// Define the directory to save uploaded files
-$uploadDir = 'uploads/';
+require('fpdf/fpdf.php');
 
-// Create uploads directory if it doesn't exist
-if (!file_exists($uploadDir)) {
-    mkdir($uploadDir, 0777, true);
+$uploadDir = 'uploads';
+
+$files = array_diff(scandir($uploadDir), array('..', '.')); // Mengambil semua file, kecuali '.' dan '..'
+
+// Membuat folder jika belum ada
+if (!is_dir($uploadDir)) {
+    mkdir($uploadDir, 0755, true);
 }
 
-$message = '';
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['files'])) {
-    foreach ($_FILES['files']['tmp_name'] as $key => $tmpName) {
-        $fileName = $_FILES['files']['name'][$key];
-        $fileSize = $_FILES['files']['size'][$key];
-        $fileTmpName = $_FILES['files']['tmp_name'][$key];
-        $fileError = $_FILES['files']['error'][$key];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Data formulir
+    $username = !empty($_POST['username']) ? htmlspecialchars($_POST['username']) : 'Fahreiza Taura Muhammadani';
+    $email = !empty($_POST['email']) && filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) ? $_POST['email'] : 'fahreizataura@gmail.com';
+    $message = !empty($_POST['message']) ? htmlspecialchars($_POST['message']) : 'Anda Telah Bebas Tanggungan';
+    $fileName = 'SURAT_BEBAS_TANGGUNGAN_' . time() . '.pdf';
 
-        // File validation
-        $allowedFileTypes = ['image/jpeg', 'image/png', 'application/pdf']; // Add allowed file types
-        $fileType = mime_content_type($fileTmpName); // Get MIME type of the file
-        $maxFileSize = 5 * 1024 * 1024; // 5MB max file size
+    // Membuat PDF
+    $pdf = new FPDF();
+    $pdf->AddPage();
+    $pdf->SetFont('Arial', 'B', 16);
 
-        if ($fileError === UPLOAD_ERR_OK) {
-            if (!in_array($fileType, $allowedFileTypes)) {
-                $message = 'Invalid file type!';
-                continue;
-            }
+    // Header PDF
+    $pdf->SetFont('Arial', 'B', 10);
+    $pdf->Cell(0, 5, 'KEMENTERIAN PENDIDIKAN, KEBUDAYAAN', 0, 1, 'C');
+    $pdf->Cell(0, 5, 'RISET, DAN TEKNOLOGI', 0, 1, 'C');
+    $pdf->Cell(0, 5, 'POLITEKNIK NEGERI MALANG', 0, 1, 'C');
+    $pdf->Cell(0, 5, 'JURUSAN TEKNOLOGI INFORMASI', 0, 1, 'C');
+    $pdf->Cell(0, 5, 'PROGRAM STUDI SISTEM INFORMASI BISNIS', 0, 1, 'C');
+    $pdf->SetFont('Arial', '', 7);
+    $pdf->Cell(0, 5, 'Jalan Soekarno-Hatta Malang 65145 Telp. (0341) 404424', 0, 1, 'C');
+    $pdf->Ln(2);
+    $pdf->Line(0, $pdf->GetY(), 210, $pdf->GetY()); // Specify the end points for the line
+    $pdf->Line(0, $pdf->GetY(), 230, $pdf->GetY()); // Specify the end points for the line
+    
+    $pdf->SetFont('Arial', 'B', 14);
+    $pdf->Cell(0, 10, 'BEBAS TANGGUNGAN', 0, 1, 'C');
+    $pdf->Ln(5);
 
-            if ($fileSize > $maxFileSize) {
-                $message = 'File size exceeds the maximum limit!';
-                continue;
-            }
+    // Isi PDF
+    $pdf->SetFont('Arial', 'B', 12);
+    $pdf->MultiCell(0, 10, "Nama  : $username\nNIM    :\nProgram Studi : D4 - Sistem Informasi Bisnis\n\n");
+    
+    $pdf->Cell(190, 10, 'SUB.BAGIAN',1,'C');
+    $pdf->Ln(0);
+    $pdf->Cell(190, 10, 'JURUSAN', 1,'C');
+    $pdf->SetFont('Arial', '', 10);
+    $pdf->Ln(0);
+    $pdf->Cell(100, 10, 'Tugas Akhir', 1,'C');
+    $pdf->Cell(100, 10, 'Tanggal', 1, 1);
+    
+    $pdf->Cell(60, 10, 'Sumbangan', 1);
+    $pdf->Cell(0, 10, 'Tugas Akhir Buku', 1, 1);
 
-            // Sanitize the file name
-            $fileName = preg_replace("/[^a-zA-Z0-9\-_\.]/", "_", $fileName); // Remove any special characters
+    $pdf->Ln(10);
 
-            // Move the uploaded file to the target directory
-            $targetFile = $uploadDir . basename($fileName);
-            if (move_uploaded_file($fileTmpName, $targetFile)) {
-                $message = 'File uploaded successfully!';
-            } else {
-                $message = 'Error uploading file.';
-            }
-        } else {
-            $message = 'There was an error with the file upload.';
-        }
+    $pdf->Cell(0, 10, 'ADMINISTRASI PROGRAM STUDI', 0, 1);
+    $pdf->Cell(60, 10, 'Distribusi Buku Skripsi', 1);
+    $pdf->Cell(0, 10, 'Tanggal', 1, 1);
+
+    $pdf->Cell(60, 10, 'Distribusi Laporan Akhir', 1);
+    $pdf->Cell(0, 10, 'Kompenasi', 1, 1);
+
+    $pdf->Ln(10);
+    $pdf->SetFont('Arial', 'I', 10);
+    $pdf->MultiCell(0, 10, "Mengetahui,\nKetua Jurusan\nDr. Eng. Rosa Andrie Asmara, S.T., M.T.\nNIP: 1980010102005011001");
+
+    // Menyimpan PDF ke folder uploads
+    $pdfFilePath = $uploadDir . '/' . $fileName;
+    $pdf->Output('F', $pdfFilePath);
+
+    // Mengirimkan email dengan lampiran PDF jika file berhasil dibuat
+    if (file_exists($pdfFilePath)) {
+       
+    } else {
+        echo 'Gagal membuat file PDF.';
     }
 }
-
-
-// Retrieve list of uploaded files
-$files = array_diff(scandir($uploadDir), array('.', '..')); // List files in the uploads directory
-
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -157,10 +186,10 @@ $files = array_diff(scandir($uploadDir), array('.', '..')); // List files in the
 
     <!-- Main Content -->
     <div class="container mt-4">
-        <h1>APPROVE</h1>
+        <!-- <h1>APPROVE</h1>
         <?php if ($message): ?>
             <div class="alert alert-info"><?php echo $message; ?></div>
-        <?php endif; ?>
+        <?php endif; ?> -->
 
         <!-- Table -->
         <div class="table-container mt-4">
@@ -185,21 +214,13 @@ $files = array_diff(scandir($uploadDir), array('.', '..')); // List files in the
                                 <td></td>
                                 <td></td>
                                 <td><?php echo $file; ?></td>
-                                <td><?php echo number_format(filesize($uploadDir . $file) / 1024, 2) . ' KB'; ?></td>
-                                <td><?php echo date('d-m-Y H:i:s', filemtime($uploadDir . $file)); ?></td>
+                                <!-- <td><?php echo number_format(filesize($uploadDir . $file) / 1024, 2) . ' KB'; ?></td>
+                                <td><?php echo date('d-m-Y H:i:s', filemtime($uploadDir . $file)); ?></td> -->
                                 <td>
                                     <div class="d-flex align-items-center">
-                                        <form method="POST" action="approve.php">
-                                            <input type="hidden" name="username" value="USERNAME_HERE"> <!-- replace with actual username -->
-                                            <input type="hidden" name="email" value="EMAIL_HERE"> <!-- replace with actual email -->
-                                            <button type="submit" class="btn btn-sm btn-success me-2">APPROVE</button>
-                                        </form>
-
-                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#sendEmailModal"
-                                        data-username="User<?php echo $index + 1; ?>" data-file="<?php echo $file; ?>">
-                                        Kirim Email
-                                    </button>
-
+                                    <form action="approve.php" method="POST">
+                            <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                        </form>
                                     </div>
                                 </td>
                             </tr>
