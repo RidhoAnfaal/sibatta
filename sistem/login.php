@@ -31,9 +31,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($user = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
             // Set session variables
             $_SESSION['username'] = $user['username'];
+            $_SESSION['role'] = $user['role'];  // Store the role in the session
 
-            // Redirect to main.php
-            header('Location: ./user/Student/main_student.php ');
+            // Redirect based on user role
+            if ($user['role'] == 'super_admin') {
+                header('Location: ./superadmin/main.php'); // Redirect to super admin dashboard
+            } elseif ($user['role'] == 'admin') {
+                header('Location: ./user/admin/main_admin.php'); // Redirect to admin dashboard
+            } elseif ($user['role'] == 'student') {
+                header('Location: ./user/Student/main_student.php'); // Redirect to student dashboard
+            }
             exit();
         } else {
             // Invalid username or password
