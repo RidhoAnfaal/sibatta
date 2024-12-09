@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['username'] = $user['username'];
 
             // Redirect to main.php
-            header('Location: main_student.php');
+            header('Location: ./user/Student/main_student.php ');
             exit();
         } else {
             // Invalid username or password
