@@ -1,3 +1,16 @@
+<?php
+// Start the session
+session_start();
+
+// Check if the user is logged in, if not redirect to login page
+if (!isset($_SESSION['username'])) {
+    header('Location: login.php');
+    exit();
+}
+
+$username = $_SESSION['username']; // Get the username from session
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -96,7 +109,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link text-light" href="#" role="button" data-bs-toggle="modal" aria-expanded="false">
                             <ion-icon name="person-circle-outline"></ion-icon>
-                            <span id="username">Username</span>
+                            <span id="username"><?php echo htmlspecialchars($username); ?></span>
                         </a>
                     </li>
 
