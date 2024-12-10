@@ -14,15 +14,15 @@ $username = $_SESSION['username'];
 // Get the user ID associated with the username
 $sql = "SELECT user_id FROM [sibatta].[user] WHERE username = ?";
 $params = array($username);
-//$stmt = sqlsrv_query($conn, $sql, $params);
-//$user = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+$stmt = sqlsrv_query($conn, $sql, $params);
+$user = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
 
-//if ($user) {
-    //$userId = $user['user_id'];
-//} else {
+if ($user) {
+    $userId = $user['user_id'];
+} else {
     // Handle the case if the user is not found in the database
-    //$userId = 0;
-//}
+    $userId = 0;
+}
 
 $uploadDir = 'uploads/';
 if (!file_exists($uploadDir)) {
@@ -68,15 +68,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['files'])) {
     }
 }
 
-// Retrieve list of uploaded documents from the database
-//$sql = "SELECT document_id, title, uploaded_at, validated_by FROM [sibatta].[document]";
-//$stmt = sqlsrv_query($conn, $sql);
-//$documents = [];
-//if ($stmt) {
-    //while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-        //$documents[] = $row;
-    //}
-//}
+// Handle the search functionality
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+
+// Modify the query to filter by search term if provided
+$query = "SELECT document_id, title, uploaded_at, validated_by FROM [sibatta].[document]";
+$params = [];
+
+if (!empty($search)) {
+    $query .= " WHERE title LIKE ? OR CAST(document_id AS NVARCHAR) LIKE ? OR user_id IN (SELECT user_id FROM [sibatta].[user] WHERE username LIKE ?)";
+    $params = ["%$search%", "%$search%", "%$search%"];
+}
+
+$stmt = sqlsrv_query($conn, $query, $params);
+$documents = [];
+if ($stmt) {
+    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+        $documents[] = $row;
+    }
+}
 ?>
 
 
@@ -102,10 +112,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['files'])) {
 
     <!-- Main Content -->
     <div class="container mt-4">
+        
         <h1>Upload File</h1>
         <?php if ($message): ?>
             <div class="alert alert-info"><?php echo $message; ?></div>
         <?php endif; ?>
+
+        <form method="GET" class="mb-3">
+            <div class="input-group">
+                <input type="text" class="form-control" name="search" placeholder="Search by username, title, or document ID" value="<?php echo htmlspecialchars($search); ?>">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </div>
+        </form>
 
         <!-- Form Upload -->
         <form method="POST" enctype="multipart/form-data">
@@ -128,8 +146,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['files'])) {
                     <tr>
                         <th>Document ID</th>
                         <th>Title</th>
-                        <th>Uploaded At</th>
-                        <th>Validated By</th>
+                        <th>Uploaded</th>
+                        <th>Validated</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -168,7 +186,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['files'])) {
         function confirmLogout(event) {
             event.preventDefault(); // Prevent langsung keluar
             if (confirm("Apakah Anda yakin ingin log out?")) {
-                window.location.href = "login.php";
+                window.location.href = "../index.php";
             }
         }
         document.getElementById("composeBtn").addEventListener("click", function() {

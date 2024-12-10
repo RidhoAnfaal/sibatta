@@ -190,7 +190,7 @@
                 <!-- Body -->
                 <div class="modal-body text-center">
                     <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Batal</button>
-                    <a href="index.php" class="btn btn-danger">Log Out</a>
+                    <a href="../index.php" class="btn btn-danger">Log Out</a>
                 </div>
 
             </div>

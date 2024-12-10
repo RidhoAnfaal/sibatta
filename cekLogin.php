@@ -12,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $password = $_POST['password'];
 
     // Query to check the user in the database
-    $query = "SELECT * FROM sibatta_user WHERE username = ? AND password = ?";
+    $query = "SELECT * FROM [sibatta].[user] WHERE username = ? AND password = ?";
     
     // Prepare the statement
     $params = array($username, $password);
@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         // Redirect based on role
         if ($user['role'] === 'student') {
-            header("Location: student/main_student.php");
+            header("Location: Student/Dasboard.php");
         } else if ($user['role'] === 'library_admin') {
             header("Location: adminPerpus/mainPerpus.php");
         } else if ($user['role'] === 'academic_admin') {

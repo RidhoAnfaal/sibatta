@@ -185,30 +185,13 @@
                 <!-- Body -->
                 <div class="modal-body text-center">
                     <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Batal</button>
-                    <a href="index.php" class="btn btn-danger">Log Out</a>
+                    <a href="../index.php" class="btn btn-danger">Log Out</a>
                 </div>
 
             </div>
         </div>
     </div>
 
-    <!-- Modal Logout -->
-<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <!-- Header -->
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title mx-auto" id="logoutModalLabel">Apakah Anda yakin ingin keluar dari akun Anda?</h5>
-            </div>
-            <!-- Body -->
-            <div class="modal-body text-center">
-            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Batal</button>
-            <a href="index.php" class="btn btn-danger">Log Out</a>
-            </div>
-            
-        </div>
-    </div>
-</div>
 
     <!-- JavaScript -->
     <script>

@@ -1,34 +1,44 @@
 <?php
 require('koneksi.php');
 
-// Check if the 'validate' button was clicked
+// Cek apakah tombol 'validate' diklik
 if (isset($_POST['validate'])) {
     $document_id = $_POST['document_id'];
+    $validated_by = 'Admin'; // Ganti dengan nama pengguna jika diperlukan
 
-    // Update the 'validated_by' field for the selected document
-    $validated_by = 'Admin'; // You can replace 'Admin' with the logged-in user's username or ID
+    // Update query
     $query = "UPDATE [sibatta].[sibatta].[document] SET [validated_by] = ? WHERE [document_id] = ?";
-    $params = array($validated_by, $document_id);
-
-    // Execute the update query
+    $params = [$validated_by, $document_id];
     $result = sqlsrv_query($conn, $query, $params);
 
     if ($result) {
         echo "<script>alert('Document validated successfully!');</script>";
-        // Reload the page to reflect the changes
         header("Location: Tugas_akhir.php");
+        exit;
     } else {
         echo "<script>alert('Failed to validate document.');</script>";
     }
 }
 
-// Fetch documents to display in the table
-$query = "SELECT TOP (1000) [document_id], [user_id], [title], [uploaded_at], [validated_by], [username] FROM [sibatta].[sibatta].[document]";
-$viewdata = sqlsrv_query($conn, $query);
+// Cek apakah ada parameter pencarian
+$search = isset($_GET['search']) ? $_GET['search'] : '';
+$query = "SELECT [document_id], [user_id], [title], [uploaded_at], [validated_by], [username], [file_path] 
+          FROM [sibatta].[sibatta].[document]";
+
+// Tambahkan filter pencarian jika ada
+if (!empty($search)) {
+    $query .= " WHERE [username] LIKE ? OR [title] LIKE ? OR CAST([document_id] AS NVARCHAR) LIKE ?";
+    $params = ["%$search%", "%$search%", "%$search%"];
+    $viewdata = sqlsrv_query($conn, $query, $params);
+} else {
+    $viewdata = sqlsrv_query($conn, $query);
+}
+
+// Debugging query SQL
+if ($viewdata === false) {
+    die(print_r(sqlsrv_errors(), true));
+}
 ?>
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -44,58 +54,78 @@ $viewdata = sqlsrv_query($conn, $query);
 </head>
 
 <body>
-     <!-- Header -->
-   <?php include 'navbar.php'; ?>
+    <!-- Header -->
+    <?php include 'navbar.php'; ?>
 
-<div class="d-flex">
-     <?php include 'Sidebar.php'; ?>
-
- <!-- Main Content -->
- <div class="container mt-4">
- 
-    <!-- Overlay -->
-    <div id="overlay"></div>
+    <?php include 'Sidebar.php'; ?>
 
     <!-- Main Content -->
     <div class="container mt-4">
-        <h3>Documents List</h3>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Document ID</th>
-                    <th>User ID</th>
-                    <th>Title</th>
-                    <th>Uploaded At</th>
-                    <th>Validated By</th>
-                    <th>Username</th>
-                </tr>
-                <tbody>
-    <?php
-    // Fetch and display each row of data
-    $no = 1;
-    while ($tampil = sqlsrv_fetch_array($viewdata, SQLSRV_FETCH_ASSOC)) {
-        echo "<tr>";
-        echo "<td>{$no}</td>";
-        echo "<td>{$tampil['document_id']}</td>";
-        echo "<td>{$tampil['user_id']}</td>";
-        echo "<td>{$tampil['title']}</td>";
-        echo "<td>" . date_format($tampil['uploaded_at'], 'Y-m-d H:i:s') . "</td>";
-        echo "<td>{$tampil['validated_by']}</td>";
-        echo "<td>{$tampil['username']}</td>";
-        // Add a button for validation
-        echo "<td><form method='POST' action='Tugas_akhir.php'>
-                  <input type='hidden' name='document_id' value='{$tampil['document_id']}'>
-                  <button type='submit' name='validate' class='btn btn-success'>Validate</button>
-              </form></td>";
-        echo "</tr>";
-        $no++;
-    }
-    ?>
-</tbody>
+        <form method="GET" class="mb-3">
+            <div class="input-group">
+                <input type="text" class="form-control" name="search" placeholder="Search by username, title, or document ID" 
+                       value="<?php echo htmlspecialchars($search); ?>">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </div>
+        </form>
 
-        </table>
-    </div>
+        <!-- Overlay -->
+        <div id="overlay"></div>
+
+        <div class="container mt-4">
+            <h3>Documents List</h3>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Username</th>
+                        <th>Document ID</th>
+                        <th>NIM</th>
+                        <th>Title</th>
+                        <th>Uploaded</th>
+                        <th>Validated</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    // Fetch and display each row of data
+                    $no = 1;
+                    while ($tampil = sqlsrv_fetch_array($viewdata, SQLSRV_FETCH_ASSOC)) {
+                        echo "<tr>";
+                        echo "<td>{$no}</td>";
+                        echo "<td>{$tampil['username']}</td>";
+                        echo "<td>{$tampil['document_id']}</td>";
+                        echo "<td>{$tampil['user_id']}</td>";
+                        echo "<td>{$tampil['title']}</td>";
+                        echo "<td>" . date_format($tampil['uploaded_at'], 'Y-m-d') . "</td>";
+                        echo "<td>{$tampil['validated_by']}</td>";
+
+                        // Validation button
+                        echo "<td>
+                                  <form method='POST' action='Tugas_akhir.php'>
+                                      <input type='hidden' name='document_id' value='{$tampil['document_id']}'>
+                                      <button type='submit' name='validate' class='btn btn-success'>Validate</button>
+                                  </form>
+                              </td>";
+
+                        // Direct download button
+                        if (!empty($tampil['file_path'])) {
+                            // Assuming the file path is accessible publicly, modify as needed
+                            echo "<td>
+                                     <form method='POST' action='Tugas_akhir.php'>
+                                      <input type='hidden' name='document_id' value='{$tampil['document_id']}'>
+                                      <button type='submit' name='validate' class='btn btn-success'>Validate</button>
+                                  </form>
+                                  </td>";
+                        }
+                        echo "</tr>";
+                        $no++;
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- Optional JavaScript -->
@@ -105,39 +135,16 @@ $viewdata = sqlsrv_query($conn, $query);
         const overlay = document.getElementById('overlay');
         const sidebarToggle = document.getElementById('sidebarToggle');
 
-        // Handle sidebar toggle
         sidebarToggle.addEventListener('click', () => {
             sidebar.classList.toggle('active');
             overlay.classList.toggle('active');
         });
 
-        // Close sidebar when overlay is clicked
         overlay.addEventListener('click', () => {
             sidebar.classList.remove('active');
             overlay.classList.remove('active');
-        });
-
-        function confirmLogout(event) {
-            event.preventDefault(); // Prevent langsung keluar
-            if (confirm("Apakah Anda yakin ingin log out?")) {
-                window.location.href = "login.php";
-            }
-        }
-        document.getElementById("composeBtn").addEventListener("click", function() {
-            // Hide default content and show the compose form
-            document.getElementById("defaultContent").style.display = "none";
-            document.getElementById("composeForm").style.display = "block";
-        });
-
-        // Reset modal content when it is closed
-        const emailModal = document.getElementById('emailModal');
-        emailModal.addEventListener('hidden.bs.modal', function() {
-            // Reset content to show default content
-            document.getElementById("defaultContent").style.display = "block";
-            document.getElementById("composeForm").style.display = "none";
         });
     </script>
 </body>
 
 </html>
-
