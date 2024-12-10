@@ -174,7 +174,7 @@
 
     <script>
         document.getElementById("composeBtn").addEventListener("click", function() {
-                // Hide default content and show the compose form
+                // Hide default content and show the compose forms
                 document.getElementById("defaultContent").style.display = "none";
                 document.getElementById("composeForm").style.display = "block";
             });
