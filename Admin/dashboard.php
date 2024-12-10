@@ -40,47 +40,44 @@ $username = $_SESSION['username']; // Get the username from session
         </p>
     </div>
 
-    <!-- Optional JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-       
-        // Handle sidebar toggle
-        sidebarToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
-        });
+        <script>
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            const sidebarToggle = document.getElementById('sidebarToggle');
 
-        // Close sidebar when overlay is clicked
-        overlay.addEventListener('click', () => {
-            sidebar.classList.remove('active');
-            overlay.classList.remove('active');
-        });
+            // Handle sidebar toggle
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+            });
 
-        function confirmLogout(event) {
-    event.preventDefault(); // Prevent langsung keluar
-    if (confirm("Apakah Anda yakin ingin log out?")) {
-        window.location.href = "login.php";
-    }
-}
-document.getElementById("composeBtn").addEventListener("click", function() {
-        // Hide default content and show the compose form
-        document.getElementById("defaultContent").style.display = "none";
-        document.getElementById("composeForm").style.display = "block";
-    });
+            // Close sidebar when overlay is clicked
+            overlay.addEventListener('click', () => {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            });
 
-    // Reset modal content when it is closed
-    const emailModal = document.getElementById('emailModal');
-    emailModal.addEventListener('hidden.bs.modal', function () {
-        // Reset content to show default content
-        document.getElementById("defaultContent").style.display = "block";
-        document.getElementById("composeForm").style.display = "none";
-    });
+            function confirmLogout(event) {
+                event.preventDefault(); // Prevent langsung keluar
+                if (confirm("Apakah Anda yakin ingin log out?")) {
+                    window.location.href = "login.php";
+                }
+            }
+            document.getElementById("composeBtn").addEventListener("click", function() {
+                // Hide default content and show the compose form
+                document.getElementById("defaultContent").style.display = "none";
+                document.getElementById("composeForm").style.display = "block";
+            });
 
-    
-    </script>
+            // Reset modal content when it is closed
+            const emailModal = document.getElementById('emailModal');
+            emailModal.addEventListener('hidden.bs.modal', function() {
+                // Reset content to show default content
+                document.getElementById("defaultContent").style.display = "block";
+                document.getElementById("composeForm").style.display = "none";
+            });
+        </script>
 </body>
 
 </html>

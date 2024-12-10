@@ -26,55 +26,120 @@
             display: block;
             opacity: 1;
         }
+        
+    #sidebar {
+        position: fixed;
+        left: -250px;
+        top: 56px;
+    /* Adjust to match the height of the horizontal navbar */
+    height: calc(100vh - 56px);
+    width: 250px;
+    background-color: #f8f9fa;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: left 0.3s ease-in-out;
+    z-index: 1050;
+    /* Ensure it is above other content */
+    }
 
-        /* Sidebar */
-        #sidebar {
-            position: fixed;
-            left: -250px;
-            top: 0;
-            height: 100vh;
-            width: 250px;
-            background-color: #f8f9fa;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-            transition: left 0.3s ease-in-out;
-            z-index: 1070;
-        }
+    #sidebar.active {
+        left: 0;
+    }
 
-        #sidebar.active {
-            left: 0;
-        }
+    #overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1040;
+        /* Just below the sidebar */
+        display: none;
+    }
 
-        /* Sidebar items */
-        .nav-link ion-icon {
-            margin-right: 10px;
-        }
+    #overlay.active {
+        display: block;
+    }
 
-        /* Logout button styling */
-        .logout-btn {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: white;
-            background-color: #1e2235;
-            padding: 10px 20px;
-            font-size: 16px;
-            text-decoration: none;
-            border-radius: 8px;
-            transition: background-color 0.3s ease;
-        }
+    /* Ensure the sidebar toggle button is clickable */
+    #sidebarToggle {
+        z-index: 1060;
+    }
+    .logout-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: white;
+        background-color: #1e2235; /* Warna merah */
+        padding: 10px 20px;
+        font-size: 16px;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: background-color 0.3s ease;
+    }
 
-        .logout-btn:hover {
-            background-color: #555;
-        }
+    .logout-btn:hover {
+        background-color: #555; /* Efek hover */
+    }
 
-        /* Navbar */
-        .navbar {
-            z-index: 1050;
-        }
+    .modal-footer {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        width: calc(100% - 40px);
+    }
 
-        .navbar .person-icon {
-            font-size: 2rem;
-        }
+    /* Modal Styling */
+    #logoutModal .modal-content {
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    #logoutModal .modal-header {
+        border-bottom: none; /* Menghilangkan garis bawah header */
+        padding: 15px 20px;
+        text-align: center;
+    }
+
+    #logoutModal .modal-title {
+        font-size: 20px;
+        font-weight: 600;
+        margin: 0 auto; /* Memastikan judul berada di tengah */
+    }
+
+    #logoutModal .modal-body {
+        padding: 20px;
+        font-size: 16px;
+        line-height: 1.5;
+        color: #333;
+    }
+
+    #logoutModal .modal-footer {
+        border-top: none; /* Menghilangkan garis atas footer */
+        padding: 15px 20px;
+    }
+
+    #logoutModal .btn {
+        width: 100px; /* Membuat tombol memiliki lebar konsisten */
+    }
+
+    #logoutModal .btn-secondary {
+        background-color: #6c757d;
+        border: none;
+    }
+
+    #logoutModal .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+
+    #logoutModal .btn-danger {
+        background-color: #dc3545;
+        border: none;
+    }
+
+    #logoutModal .btn-danger:hover {
+        background-color: #c82333;
+    }
     </style>
 </head>
 
@@ -112,6 +177,24 @@
             </button>
         </div>
     </div>
+
+    <!-- Log Out -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- Header -->
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title mx-auto" id="logoutModalLabel">Apakah Anda yakin ingin keluar dari akun Anda?</h5>
+            </div>
+            <!-- Body -->
+            <div class="modal-body text-center">
+            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Batal</button>
+            <a href="index.php" class="btn btn-danger">Log Out</a>
+            </div>
+            
+        </div>
+    </div>
+</div>
 
     <!-- JavaScript -->
     <script>
