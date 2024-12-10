@@ -87,93 +87,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 
 <body>
-    <!-- Horizontal Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
+<?php include 'navbar.php'; ?>
 
-            <button class="btn btn" id="sidebarToggle">
-                <img src="css/images/Logo_Sibatta.png" alt="Toggle Sidebar" style="width: 30px; height: 40px; object-fit:cover;">
-            </button>
-            <span class="navbar-brand">SIBATTA</span>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" onclick="location.reload()">
-                            <ion-icon name="refresh-outline"></ion-icon>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#messageModal" data-bs-target="#sendMessageModal">
-                            <ion-icon name="chatbubbles-outline"></ion-icon>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="#" data-bs-toggle="modal" data-bs-target="#notificationModal">
-                            <ion-icon name="notifications-outline"></ion-icon>
-                        </a>
-                    </li>
-                    <div class="collapse navbar-collapse" id="navbarNav">
-                        <ul class="navbar-nav ms-auto">
-                            <!-- Add Compose Email Button -->
-                            <li class="nav-item">
-                                <a class="nav-link text-light" href="#" data-bs-toggle="modal" data-bs-target="#emailModal">
-                                    <ion-icon name="mail-outline"></ion-icon>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link text-light" href="#" role="button" data-bs-toggle="modal" aria-expanded="false">
-                            <ion-icon name="person-circle-outline"></ion-icon>
-                            <span id="username">Username</span>
-                        </a>
-                    </li>
-
-                </ul>
-            </div>
-
-        </div>
-    </nav>
-
-    <!-- Sidebar -->
-    <div id="sidebar">
-        <div class="text-center p-3">
-            <img src="css/images/Logo_Sibatta.png" alt="Logo" width="50" height="40" class="img-fluid">
-            <h5 class="mt-2 text-dark">SIBATTA</h5>
-        </div>
-        <ul class="nav flex-column">
-            <li class="nav-item mb-3">
-                <a class="nav-link text-dark d-flex align-items-center" href="main_admin.php">
-                    <ion-icon name="home-outline" class="me-2"></ion-icon> <span>Beranda</span>
-                </a>
-            </li>
-            <li class="nav-item mb-3">
-                <a class="nav-link text-dark d-flex align-items-center" href="Tugas_akhir.php">
-                    <ion-icon name="time-outline" class="me-2"></ion-icon> <span>Tugas Akhir</span>
-                </a>
-            </li>
-            <li class="nav-item mb-3">
-                <a class="nav-link text-dark d-flex align-items-center" href="Approve.php">
-                    <ion-icon name="library-outline" class="me-2"></ion-icon> <span>Approve</span>
-                </a>
-            </li>
-        </ul>
-        <div class="modal-footer">
-            <button class="logout-btn btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">
-                <ion-icon name="log-out-outline" style="font-size: 20px;"></ion-icon>
-                <span>Log Out</span>
-                </a>
-        </div>
-
-    </div>
-
-    <!-- Overlay -->
-    <div id="overlay"></div>
+<div class="d-flex">
+     <?php include 'Sidebar.php'; ?>
 
     <!-- Main Content -->
     <div class="container mt-4">
