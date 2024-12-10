@@ -313,7 +313,7 @@ $username = $_SESSION['username']; // Get the username from session
         function confirmLogout(event) {
             event.preventDefault(); // Prevent langsung keluar
             if (confirm("Apakah Anda yakin ingin log out?")) {
-                window.location.href = "login.php";
+                window.location.href = "index.php";
             }
         }
         document.getElementById("composeBtn").addEventListener("click", function() {
