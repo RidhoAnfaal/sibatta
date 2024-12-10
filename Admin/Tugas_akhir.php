@@ -1,4 +1,6 @@
 <?php
+
+
 require('koneksi.php');
 
 // Cek apakah tombol 'validate' diklik
@@ -85,6 +87,7 @@ if ($viewdata === false) {
                         <th>Uploaded</th>
                         <th>Validated</th>
                         <th>Action</th>
+                        <th>Download</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -110,15 +113,14 @@ if ($viewdata === false) {
                               </td>";
 
                         // Direct download button
-                        if (!empty($tampil['file_path'])) {
-                            // Assuming the file path is accessible publicly, modify as needed
-                            echo "<td>
-                                     <form method='POST' action='Tugas_akhir.php'>
-                                      <input type='hidden' name='document_id' value='{$tampil['document_id']}'>
-                                      <button type='submit' name='validate' class='btn btn-success'>Validate</button>
-                                  </form>
-                                  </td>";
+                        if (file_exists('../Student/uploads/' . $tampil['file_path'])) {
+                            echo "<td><a href='../Student/uploads/{$tampil['file_path']}' class='btn btn-primary' download>Download</a></td>";
+                        } else {
+                            echo "<td>File not found</td>";
                         }
+                        
+                        
+
                         echo "</tr>";
                         $no++;
                     }

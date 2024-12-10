@@ -44,11 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['files'])) {
             if ($fileError === UPLOAD_ERR_OK) {
                 // Create a unique file name to avoid overwriting
                 $targetFile = $uploadDir . time() . '_' . basename($fileName);
+
                 if (move_uploaded_file($fileTmpName, $targetFile)) {
-                    // Insert file data into the database
-                    $sql = "INSERT INTO [sibatta].[document] (user_id, title, uploaded_at) 
-                            VALUES (?, ?, ?)";
-                    $params = [$userId, $title, $uploadedAt];
+                    // Insert file data into the database including the file path
+                    $sql = "INSERT INTO [sibatta].[document] (user_id, title, uploaded_at, file_path) 
+                            VALUES (?, ?, ?, ?)";
+                    $params = [$userId, $title, $uploadedAt, $targetFile];
                     $stmt = sqlsrv_query($conn, $sql, $params);
 
                     if ($stmt) {
@@ -72,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['files'])) {
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 
 // Modify the query to filter by search term if provided
-$query = "SELECT document_id, title, uploaded_at, validated_by FROM [sibatta].[document]";
+$query = "SELECT document_id, title, uploaded_at, validated_by, file_path FROM [sibatta].[document]";
 $params = [];
 
 if (!empty($search)) {
@@ -89,13 +90,11 @@ if ($stmt) {
 }
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
@@ -110,63 +109,66 @@ if ($stmt) {
     <div class="d-flex">
         <?php include 'Sidebar.php'; ?>
 
-    <!-- Main Content -->
-    <div class="container mt-4">
-        
-        <h1>Upload File</h1>
-        <?php if ($message): ?>
-            <div class="alert alert-info"><?php echo $message; ?></div>
-        <?php endif; ?>
+        <!-- Main Content -->
+        <div class="container mt-4">
+            
+            <h1>Upload File</h1>
+            <?php if ($message): ?>
+                <div class="alert alert-info"><?php echo $message; ?></div>
+            <?php endif; ?>
 
-        <form method="GET" class="mb-3">
-            <div class="input-group">
-                <input type="text" class="form-control" name="search" placeholder="Search by username, title, or document ID" value="<?php echo htmlspecialchars($search); ?>">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </div>
-        </form>
+            <form method="GET" class="mb-3">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="search" placeholder="Search by username, title, or document ID" value="<?php echo htmlspecialchars($search); ?>">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </div>
+            </form>
 
-        <!-- Form Upload -->
-        <form method="POST" enctype="multipart/form-data">
-            <div class="mb-3">
-                <label for="title" class="form-label">Title</label>
-                <input type="text" class="form-control" id="title" name="title" required>
-            </div>
-            <div class="mb-3">
-                <label for="fileInput" class="form-label">Select Files</label>
-                <input type="file" class="form-control" id="fileInput" name="files[]" multiple>
-            </div>
-            <button type="submit" class="btn btn-primary">Upload</button>
-        </form>
+            <!-- Form Upload -->
+            <form method="POST" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" class="form-control" id="title" name="title" required>
+                </div>
+                <div class="mb-3">
+                    <label for="fileInput" class="form-label">Select Files</label>
+                    <input type="file" class="form-control" id="fileInput" name="files[]" multiple>
+                </div>
+                <button type="submit" class="btn btn-primary">Upload</button>
+            </form>
 
-        <!-- Uploaded Files -->
-        <div class="table-container mt-4">
-            <h3>Uploaded Documents</h3>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Document ID</th>
-                        <th>Title</th>
-                        <th>Uploaded</th>
-                        <th>Validated</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (!empty($documents)): ?>
-                        <?php foreach ($documents as $doc): ?>
-                            <tr>
-                                <td><?php echo $doc['document_id']; ?></td>
-                                <td><?php echo $doc['title']; ?></td>
-                                <td><?php echo $doc['uploaded_at']->format('Y-m-d'); ?></td>
-                                <td><?php echo $doc['validated_by'] ?: 'Not validated'; ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
+            <!-- Uploaded Files -->
+            <div class="table-container mt-4">
+                <h3>Uploaded Documents</h3>
+                <table class="table table-striped">
+                    <thead>
                         <tr>
-                            <td colspan="4" class="text-center">No documents uploaded yet.</td>
+                            <th>Document ID</th>
+                            <th>Title</th>
+                            <th>Uploaded</th>
+                            <th>Validated</th>
+                            <th>File Path</th>
                         </tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($documents)): ?>
+                            <?php foreach ($documents as $doc): ?>
+                                <tr>
+                                    <td><?php echo $doc['document_id']; ?></td>
+                                    <td><?php echo $doc['title']; ?></td>
+                                    <td><?php echo $doc['uploaded_at']->format('Y-m-d'); ?></td>
+                                    <td><?php echo $doc['validated_by'] ?: 'Not validated'; ?></td>
+                                    <td><a href="<?php echo htmlspecialchars($doc['file_path']); ?>" target="_blank">View File</a></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="5" class="text-center">No documents uploaded yet.</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
