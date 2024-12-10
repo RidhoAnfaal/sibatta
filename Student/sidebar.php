@@ -9,7 +9,7 @@
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <style>
-       #overlay {
+        #overlay {
             position: fixed;
             top: 0; 
             left: 0;
@@ -37,7 +37,6 @@
             transition: left 0.3s ease-in-out;
             z-index: 1060; 
         }
-
         #sidebar.active {
             left: 0;
         }
@@ -145,9 +144,6 @@
 </head>
 
 <body>
-    <!-- Overlay -->
-    <div id="overlay"></div>
-
     <!-- Sidebar -->
     <div id="sidebar">
         <div class="text-center p-3">
@@ -157,27 +153,26 @@
         <ul class="nav flex-column">
             <li class="nav-item mb-3">
                 <a class="nav-link text-dark d-flex align-items-center" href="Dashboard.php">
-                    <ion-icon name="home-outline"></ion-icon> <span>Beranda</span>
+                    <ion-icon name="home-outline" class="me-2"></ion-icon> <span>Beranda</span>
                 </a>
             </li>
             <li class="nav-item mb-3">
-                <a class="nav-link text-dark d-flex align-items-center" href="Tugas_akhir.php">
-                    <ion-icon name="time-outline"></ion-icon> <span>Tugas Akhir</span>
-                </a>
-            </li>
-            <li class="nav-item mb-3">
-                <a class="nav-link text-dark d-flex align-items-center" href="Approve.php">
-                    <ion-icon name="library-outline"></ion-icon> <span>Approve</span>
+                <a class="nav-link text-dark d-flex align-items-center" href="upload.php">
+                    <ion-icon name="cloud-upload-outline" class="me-2"></ion-icon> <span>Upload TA</span>
                 </a>
             </li>
         </ul>
-        <div class="logout-container">
-            <button class="logout-btn btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">
-                <ion-icon name="log-out-outline"></ion-icon>
-                <span>Log Out</span>
-            </button>
-        </div>
-    </div>
+        <div class="modal-footer">
+        <button class="logout-btn btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">
+        <ion-icon name="log-out-outline" style="font-size: 20px;"></ion-icon>
+        <span>Log Out</span>
+    </a>
+</div>
+
+    </div>  
+
+    <!-- Overlay -->
+    <div id="overlay"></div>
 
     <!-- Log Out -->
     <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
@@ -196,6 +191,24 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Logout -->
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- Header -->
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title mx-auto" id="logoutModalLabel">Apakah Anda yakin ingin keluar dari akun Anda?</h5>
+            </div>
+            <!-- Body -->
+            <div class="modal-body text-center">
+            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Batal</button>
+            <a href="index.php" class="btn btn-danger">Log Out</a>
+            </div>
+            
+        </div>
+    </div>
+</div>
 
     <!-- JavaScript -->
     <script>

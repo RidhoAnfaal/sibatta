@@ -20,14 +20,54 @@ $username = $_SESSION['username']; // Get the username from session
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/main_student.css">
     <title>Home</title>
+    <style>
+        /* Style for hidden sidebar */
+        #sidebar {
+            position: fixed;
+            left: -250px;
+            top: 56px;
+            /* Adjust to match the height of the horizontal navbar */
+            height: calc(100vh - 56px);
+            width: 250px;
+            background-color: #f8f9fa;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            transition: left 0.3s ease-in-out;
+            z-index: 1050;
+            /* Ensure it is above other content */
+        }
+
+        #sidebar.active {
+            left: 0;
+        }
+
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1040;
+            /* Just below the sidebar */
+            display: none;
+        }
+
+        #overlay.active {
+            display: block;
+        }
+
+        /* Ensure the sidebar toggle button is clickable */
+        #sidebarToggle {
+            z-index: 1060;
+        }
+    </style>
 </head>
 
 <body>
-
-<!-- Header -->
-    <?php include 'navbar.php'; ?>
+    <!-- Header -->
+        <?php include 'navbar.php'; ?>
 
     <div class="d-flex">
         <?php include 'Sidebar.php'; ?>
@@ -40,18 +80,13 @@ $username = $_SESSION['username']; // Get the username from session
         </p>
     </div>
 
-    <!-- footeer -->
-    <div class="fixed-bottom text-center mb-2">
-        &copy; Copyright Rey 2024
-    </div>
-
     <!-- Optional JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
         const sidebarToggle = document.getElementById('sidebarToggle');
-
+       
         // Handle sidebar toggle
         sidebarToggle.addEventListener('click', () => {
             sidebar.classList.toggle('active');
@@ -65,24 +100,26 @@ $username = $_SESSION['username']; // Get the username from session
         });
 
         function confirmLogout(event) {
-            event.preventDefault(); // Prevent langsung keluar
-            if (confirm("Apakah Anda yakin ingin log out?")) {
-                window.location.href = "index.php";
-            }
-        }
-        document.getElementById("composeBtn").addEventListener("click", function() {
-            // Hide default content and show the compose form
-            document.getElementById("defaultContent").style.display = "none";
-            document.getElementById("composeForm").style.display = "block";
-        });
+    event.preventDefault(); // Prevent langsung keluar
+    if (confirm("Apakah Anda yakin ingin log out?")) {
+        window.location.href = "login.php";
+    }
+}
+document.getElementById("composeBtn").addEventListener("click", function() {
+        // Hide default content and show the compose form
+        document.getElementById("defaultContent").style.display = "none";
+        document.getElementById("composeForm").style.display = "block";
+    });
 
-        // Reset modal content when it is closed
-        const emailModal = document.getElementById('emailModal');
-        emailModal.addEventListener('hidden.bs.modal', function() {
-            // Reset content to show default content
-            document.getElementById("defaultContent").style.display = "block";
-            document.getElementById("composeForm").style.display = "none";
-        });
+    // Reset modal content when it is closed
+    const emailModal = document.getElementById('emailModal');
+    emailModal.addEventListener('hidden.bs.modal', function () {
+        // Reset content to show default content
+        document.getElementById("defaultContent").style.display = "block";
+        document.getElementById("composeForm").style.display = "none";
+    });
+
+    
     </script>
 </body>
 

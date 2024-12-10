@@ -9,7 +9,7 @@
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <style>
-       #overlay {
+        #overlay {
             position: fixed;
             top: 0; 
             left: 0;
@@ -37,7 +37,6 @@
             transition: left 0.3s ease-in-out;
             z-index: 1060; 
         }
-
         #sidebar.active {
             left: 0;
         }
@@ -161,13 +160,18 @@
                 </a>
             </li>
             <li class="nav-item mb-3">
-                <a class="nav-link text-dark d-flex align-items-center" href="Tugas_akhir.php">
-                    <ion-icon name="time-outline"></ion-icon> <span>Tugas Akhir</span>
+                <a class="nav-link text-dark d-flex align-items-center" href="history.php">
+                    <ion-icon name="time-outline"></ion-icon> <span>Riwayat</span>
                 </a>
             </li>
             <li class="nav-item mb-3">
-                <a class="nav-link text-dark d-flex align-items-center" href="Approve.php">
-                    <ion-icon name="library-outline"></ion-icon> <span>Approve</span>
+                <a class="nav-link text-dark d-flex align-items-center" href="add_admin.php">
+                <ion-icon name="cloud-upload-outline" class="me-2"></ion-icon> <span>Tambah Admin</span>
+                </a>
+            </li>
+            <li class="nav-item mb-3">
+                <a class="nav-link text-dark d-flex align-items-center" href="add_user.php">
+                <ion-icon name="cloud-upload-outline" class="me-2"></ion-icon> <span>Tambah User</span>
                 </a>
             </li>
         </ul>
@@ -176,8 +180,8 @@
                 <ion-icon name="log-out-outline"></ion-icon>
                 <span>Log Out</span>
             </button>
-        </div>
     </div>
+        </div>
 
     <!-- Log Out -->
     <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
