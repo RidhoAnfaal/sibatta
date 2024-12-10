@@ -1,14 +1,18 @@
 <?php
-// Start the session
-session_start();
-
-// Check if the user is logged in, if not redirect to login page
-if (!isset($_SESSION['username'])) {
-    header('Location: login.php');
-    exit();
+// Start session
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
 
-$username = $_SESSION['username']; // Get the username from session
+// Check if the user is logged in
+if (!isset($_SESSION['username'])) {
+    // Redirect to login page if not logged in
+    header("Location: /sibatta/index.php");
+    exit;
+}
+
+// Get the logged-in user's username
+$username = $_SESSION['username'];
 ?>
 
 <!DOCTYPE html>
@@ -72,50 +76,18 @@ $username = $_SESSION['username']; // Get the username from session
            
             <button class="btn btn" id="sidebarToggle">
                 <img src="css/images/Logo_Sibatta.png" alt="Toggle Sidebar" style="width: 30px; height: 40px; object-fit:cover;">
+                <span class= "navbar-brand" >SIBATTA</span>
             </button>
-            <span class= "navbar-brand">SIBATTA</span>
             
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-        
-            <div class="collapse navbar-collapse" id="navbarNav">
+            <div >
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#" onclick="location.reload()">
-                            <ion-icon name="refresh-outline"></ion-icon>
+                        <a class="nav-link text-light" href="#" role="button" data-bs-toggle="modal" aria-expanded="false">
+                            <ion-icon name="person-circle-outline"></ion-icon>
+                            <span id="username"><?php echo htmlspecialchars($username); ?></span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="massage.php" data-bs-toggle="modal" data-bs-target="#messageModal" data-bs-target="#sendMessageModal">
-                            <ion-icon name="chatbubbles-outline"></ion-icon>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-light" href="#" data-bs-toggle="modal" data-bs-target="#notificationModal">
-                            <ion-icon name="notifications-outline"></ion-icon>
-                        </a>
-                    </li>
-                    <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <!-- Add Compose Email Button -->
-                <li class="nav-item">
-                    <a class="nav-link text-light" href="#" data-bs-toggle="modal" data-bs-target="#emailModal">
-                        <ion-icon name="mail-outline"></ion-icon>
-                    </a>
-                </li>
-            </ul>
-        </div>
-                    <li class="nav-item dropdown">
-                    <a class="nav-link text-light" href="#" role="button" data-bs-toggle="modal" aria-expanded="false">
-                    <ion-icon name="person-circle-outline"></ion-icon>
-                    <span id="username"><?php echo htmlspecialchars($username); ?></span>
-                    </a>
-                </li>
-            
-                </ul>
             </div>
-            
         </div>
     </nav>
 
@@ -127,13 +99,28 @@ $username = $_SESSION['username']; // Get the username from session
         </div>
         <ul class="nav flex-column">
             <li class="nav-item mb-3">
-                <a class="nav-link text-dark d-flex align-items-center" href="main_user.php">
-                    <ion-icon name="home-outline" class="me-2"></ion-icon> <span>Beranda</span>
+                <a class="nav-link text-dark d-flex align-items-center" href="mainStudent.php">
+                    <ion-icon name="home-outline" class="me-2"></ion-icon> <span>Home</span>
+                </a>
+            </li>
+            <li class="nav-item mb-3">
+                <a class="nav-link text-dark d-flex align-items-center" href="userInfo.php">
+                    <ion-icon name="person-circle-outline" class="me-2"></ion-icon> <span>User Information</span>
+                </a>
+            </li>
+            <li class="nav-item mb-3">
+                <a class="nav-link text-dark d-flex align-items-center" href="uploadTA.php">
+                    <ion-icon name="cloud-upload-outline" class="me-2"></ion-icon> <span>Upload your final project</span>
                 </a>
             </li>
             <li class="nav-item mb-3">
                 <a class="nav-link text-dark d-flex align-items-center" href="upload.php">
-                    <ion-icon name="time-outline" class="me-2"></ion-icon> <span>Upload TA</span>
+                    <ion-icon name="cloud-upload-outline" class="me-2"></ion-icon> <span>Dependents free</span>
+                </a>
+            </li>
+            <li class="nav-item mb-3">
+                <a class="nav-link text-dark d-flex align-items-center" href="upload.php">
+                    <ion-icon name="cloud-upload-outline" class="me-2"></ion-icon> <span>Mail</span>
                 </a>
             </li>
         </ul>
@@ -156,102 +143,7 @@ $username = $_SESSION['username']; // Get the username from session
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos consectetur numquam magni sapiente, velit fugiat dolore alias nemo. Veritatis esse labore non nam praesentium beatae unde quod, quam modi expedita.
         </p>
     </div>
-    <!-- Email Pop Up And Notification -->
-    <div class="modal fade" id="emailModal" tabindex="-1" aria-labelledby="emailModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="emailModalLabel">Emails</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Default Content (Before Compose) -->
-                <div id="defaultContent">
-                    <ul class="list-group">
-                        <li class="list-group-item">You have a new message from Admin</li>
-                        
-                    </ul>
-                    <button class="btn btn-primary mt-3" id="composeBtn">Compose New Email</button>
-                </div>
-
-                <!-- Compose Form (Initially Hidden) -->
-                <div id="composeForm" style="display: none;">
-                    <form method="POST" action="send_email.php" id="emailForm">
-                        <!-- Email Address -->
-                        <div class="mb-3">
-                            <label for="toEmail" class="form-label">Recipient Email</label>
-                            <input type="email" class="form-control" id="toEmail" name="toEmail" required>
-                            <div class="invalid-feedback">Please enter a valid email address.</div>
-                        </div>
-
-                        <!-- Subject -->
-                        <div class="mb-3">
-                            <label for="subject" class="form-label">Subject</label>
-                            <input type="text" class="form-control" id="subject" name="subject" required>
-                            <div class="invalid-feedback">Please enter a subject.</div>
-                        </div>
-
-                        <!-- Message -->
-                        <div class="mb-3">
-                            <label for="message" class="form-label">Message</label>
-                            <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
-                            <div class="invalid-feedback">Please enter your message.</div>
-                        </div>
-
-                        <!-- Submit Button -->
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Send</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-    <div class="modal fade" id="notificationModal" tabindex="-1" aria-labelledby="notificationModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="notificationModalLabel">Notifications</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <ul class="list-group">
-                        <li class="list-group-item">New file uploaded</li>
-
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
     
-
-    <!-- Modal Pop-Up -->
-    <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="messageModalLabel">Report</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-         
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="message" class="form-label">Pesan</label>
-                        <textarea class="form-control" id="message" name="message" rows="1" required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="chatFileInput" class="form-label">Lampiran</label>
-                        <input type="file" id="chatFileInput" name="chat_file" class="form-control">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-   <!-- Modal Logout -->
 <!-- Modal Logout -->
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -263,7 +155,7 @@ $username = $_SESSION['username']; // Get the username from session
             <!-- Body -->
             <div class="modal-body text-center">
             <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Batal</button>
-            <a href="index.php" class="btn btn-danger">Log Out</a>
+            <a href="/sibatta/logout.php" class="btn btn-danger">Log Out</a>
             </div>
             
         </div>
