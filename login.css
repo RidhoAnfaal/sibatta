@@ -5,7 +5,7 @@ html, body {
 }
 body {
   /* background-image: url('images/Graha.jpg'); */
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../css/images/Graha.jpg');
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('superadmin/css/images/Graha.jpg');
   background-size: cover; /* Menutup seluruh layar */
   background-position: center;
   background-repeat: no-repeat;

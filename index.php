@@ -1,55 +1,55 @@
 <?php
-// Start the session
-session_start();
+// // Start the session
+// session_start();
 
-// Include the database connection
-require './user/Student/koneksi.php';
+// // Include the database connection
+// require './user/Student/koneksi.php';
 
-// Placeholder for message if login fails
-$message = "";
+// // Placeholder for message if login fails
+// $message = "";
 
-// Check if the form is submitted
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Collect form data
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+// // Check if the form is submitted
+// if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+//     // Collect form data
+//     $username = $_POST['username'];
+//     $password = $_POST['password'];
 
-    // Validate input
-    if (!empty($username) && !empty($password)) {
-        // Query to check if the user exists and password matches
-        $sql = "SELECT * FROM [sibatta].[user] WHERE username = ? AND password = ?";
-        $params = array($username, $password);
+//     // Validate input
+//     if (!empty($username) && !empty($password)) {
+//         // Query to check if the user exists and password matches
+//         $sql = "SELECT * FROM [sibatta].[user] WHERE username = ? AND password = ?";
+//         $params = array($username, $password);
 
-        $stmt = sqlsrv_query($conn, $sql, $params);
+//         $stmt = sqlsrv_query($conn, $sql, $params);
 
-        // Check if the query executed successfully
-        if ($stmt === false) {
-            die(print_r(sqlsrv_errors(), true));
-        }
+//         // Check if the query executed successfully
+//         if ($stmt === false) {
+//             die(print_r(sqlsrv_errors(), true));
+//         }
 
-        // Fetch the user data
-        if ($user = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-            // Set session variables
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['role'] = $user['role'];  // Store the role in the session
+//         // Fetch the user data
+//         if ($user = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+//             // Set session variables
+//             $_SESSION['username'] = $user['username'];
+//             $_SESSION['role'] = $user['role'];  // Store the role in the session
 
-            // Redirect based on user role
-            if ($user['role'] == 'super_admin') {
-                header('Location: ./superadmin/main.php'); // Redirect to super admin dashboard
-            } elseif ($user['role'] == 'admin') {
-                header('Location: ./user/admin/main_admin.php'); // Redirect to admin dashboard
-            } elseif ($user['role'] == 'student') {
-                header('Location: ./user/Student/main_student.php'); // Redirect to student dashboard
-            }
-            exit();
-        } else {
-            // Invalid username or password
-            $message = "Invalid username or password!";
-        }
-    } else {
-        $message = "Please fill in all fields!";
-    }
-}
+//             // Redirect based on user role
+//             if ($user['role'] == 'super_admin') {
+//                 header('Location: ./superadmin/main.php'); // Redirect to super admin dashboard
+//             } elseif ($user['role'] == 'admin') {
+//                 header('Location: ./user/admin/main_admin.php'); // Redirect to admin dashboard
+//             } elseif ($user['role'] == 'student') {
+//                 header('Location: ./user/Student/main_student.php'); // Redirect to student dashboard
+//             }
+//             exit();
+//         } else {
+//             // Invalid username or password
+//             $message = "Invalid username or password!";
+//         }
+//     } else {
+//         $message = "Please fill in all fields!";
+//     }
+// }
 ?>
 
 <!doctype html>
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>PBL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="./superadmin//css//login.css">
+    <link rel="stylesheet" href="login.css">
 </head>
 
 <body class="d-flex align-items-center py-4 bg-body-tertiary">
@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <!-- Login Form -->
             <form class="needs-validation" novalidate method="POST" action="">
                 <div class="header text-center mb-4">
-                    <img src="logo_Polinema.png" alt="Logo" class="logo" />
+                    <img src="superadmin/css/images/Logo_Sibatta.png" alt="Logo" class="logo" />
                 </div>
 
                 <h1 class="h3 mb-3 fw-normal text-center" style="color: black;">SIBATTA</h1>
