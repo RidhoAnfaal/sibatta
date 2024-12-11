@@ -1,5 +1,4 @@
 <?php
-File: Database.php
 class Koneksi
 {
     private $serverName;
@@ -8,11 +7,11 @@ class Koneksi
 
     public function __construct()
     {
-        $this->serverName = "MSI"; // Server name and instance
+        $this->serverName = "MSI"; 
         $this->connectionOptions = [
             "Database" => "sibatta",
-            "UID" => "", // Database username
-            "PWD" => "", // Database password
+            "UID" => "", 
+            "PWD" => "", 
         ];
     }
 

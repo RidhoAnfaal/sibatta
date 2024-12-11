@@ -47,18 +47,28 @@
 
         #sidebar .nav-link {
             font-weight: 500;
-            transition: transform 0.3s ease, color 0.3s ease;
+            padding: 10px 15px;
+            /* Jarak dalam elemen */
+            margin: 5px 10px;
+            /* Jarak luar elemen */
+            display: flex;
+            /* Untuk menyelaraskan konten dalam elemen */
+            align-items: center;
+            background-color: transparent;
+            /* Warna default */
+            border-radius: 25px;
+            /* Membuat sudut melengkung */
+            transition: all 0.3s ease-in-out;
         }
 
         #sidebar .nav-link:hover {
-            transform: translateX(5px);
-            color: #000 ;
+            color: white;
         }
 
         #sidebar .nav-link.active {
             background-color: #333;
+            /* Warna latar untuk nav-link aktif */
             color: white !important;
-            border-radius: 500px;
         }
 
         .logout-btn {
@@ -160,7 +170,12 @@
             </li>
             <li class="nav-item mb-3">
                 <a class="nav-link text-dark <?php echo $current_page == 'Tugas_akhir.php' ? 'active' : ''; ?>" href="Tugas_akhir.php">
-                <ion-icon name="time-outline"></ion-icon> <span>Tugas Akhir</span>
+                    <ion-icon name="time-outline"></ion-icon> <span>Tugas Akhir</span>
+                </a>
+            </li>
+            <li class="nav-item mb-3">
+                <a class="nav-link text-dark <?php echo $current_page == 'userInfoadmin.php' ? 'active' : ''; ?> text-dark d-flex align-items-center" href="userInfoadmin.php">
+                <ion-icon name="person-circle-outline" class="me-2"></ion-icon> <span>User Info</span>
                 </a>
             </li>
         </ul>
@@ -207,11 +222,11 @@
         });
 
         function confirmLogout(event) {
-                event.preventDefault(); // Prevent langsung keluar
-                if (confirm("Apakah Anda yakin ingin log out?")) {
-                    window.location.href = "../logout.php";
-                }
+            event.preventDefault(); // Prevent langsung keluar
+            if (confirm("Apakah Anda yakin ingin log out?")) {
+                window.location.href = "../logout.php";
             }
+        }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

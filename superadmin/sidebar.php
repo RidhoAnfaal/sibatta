@@ -47,18 +47,28 @@
 
         #sidebar .nav-link {
             font-weight: 500;
-            transition: transform 0.3s ease, color 0.3s ease;
+            padding: 10px 15px;
+            /* Jarak dalam elemen */
+            margin: 5px 10px;
+            /* Jarak luar elemen */
+            display: flex;
+            /* Untuk menyelaraskan konten dalam elemen */
+            align-items: center;
+            background-color: transparent;
+            /* Warna default */
+            border-radius: 25px;
+            /* Membuat sudut melengkung */
+            transition: all 0.3s ease-in-out;
         }
 
         #sidebar .nav-link:hover {
-            transform: translateX(5px);
-            color: #000 ;
+            color: white;
         }
 
         #sidebar .nav-link.active {
             background-color: #333;
+            /* Warna latar untuk nav-link aktif */
             color: white !important;
-            border-radius: 500px;
         }
 
         .logout-btn {
@@ -158,18 +168,18 @@
                     <ion-icon name="home-outline" class="me-2"></ion-icon> <span>Beranda</span>
                 </a>
             </li>
-            <li class="nav-item mb-3">
-                <a class="nav-link text-dark <?php echo $current_page == 'history.php' ? 'active' : ''; ?>" href="history.php">
+            <!-- <li class="nav-item mb-3">
+                <a class="nav-link text-dark <?php //echo $current_page == 'history.php' ? 'active' : ''; ?>" href="history.php">
                     <ion-icon name="time-outline" class="me-2"></ion-icon> <span>History</span>
                 </a>
             </li>
             <li class="nav-item mb-3">
-                <a class="nav-link text-dark <?php echo $current_page == 'add_admin.php' ? 'active' : ''; ?>" href="add_admin.php">
+                <a class="nav-link text-dark <?php //echo $current_page == 'add_admin.php' ? 'active' : ''; ?>" href="add_admin.php">
                     <ion-icon name="cloud-upload-outline" class="me-2"></ion-icon> <span>Tambah Admin</span>
                 </a>
-            </li>
+            </li> -->
             <li class="nav-item mb-3">
-                <a class="nav-link text-dark <?php echo $current_page == 'add_user.php' ? 'active' : ''; ?>" href="add_user.php">
+                <a class="nav-link text-dark <?php echo $current_page == 'StudentManagement.php' ? 'active' : ''; ?>" href="StudentManagement.php">
                     <ion-icon name="cloud-upload-outline" class="me-2"></ion-icon> <span>Tambah User</span>
                 </a>
             </li>

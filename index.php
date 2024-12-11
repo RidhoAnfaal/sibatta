@@ -3,14 +3,14 @@ session_start();
 require 'koneksi.php';
 require 'cek.php';
 
-Placeholder for message if login fails
+// message if login fails
 $message = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    Initialize Database and User classes
+    // Init
     $db = new Koneksi();
     $userModel = new cek($db);
 
@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <body class="d-flex align-items-center py-4 bg-body-tertiary">
     <main class="form-signin w-100 m-auto">
         <div class="container">
-            <!-- Login Form -->
+            <!-- form login -->
             <form class="needs-validation" novalidate method="POST" action="">
                 <div class="header text-center mb-4">
                     <img src="superadmin/css/images/Logo_Sibatta.png" alt="Logo" class="logo" />
@@ -69,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     <div class="alert alert-danger text-center"><?php echo $message; ?></div>
                 <?php endif; ?>
 
-                <!-- Username Input -->
+                <!-- input -->
                 <div class="form-floating mb-3">
                     <input name="username" type="text" class="form-control" id="floatingInput" placeholder="Enter Username" required>
                     <label for="floatingInput">Username</label>
@@ -78,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     </div>
                 </div>
 
-                <!-- Password Input -->
+                <!-- input pw -->
                 <div class="form-floating mb-3">
                     <input name="password" type="password" class="form-control" id="floatingPassword" placeholder="Password" required>
                     <label for="floatingPassword">Password</label>
@@ -88,23 +88,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     </div>
                 </div>
 
-                <!-- Submit Button -->
+                <!-- submit btn -->
                 <button class="btn btn-primary w-100 py-2" type="submit">Login</button>
             </form>
         </div>
     </main>
 
-    <!-- Optional JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
     <script>
         // Client-side validation
         (function() {
             'use strict';
-
             // Ambil semua formulir dengan class 'needs-validation'
             var forms = document.querySelectorAll('.needs-validation');
-
             // Loop semua form dan tambahkan event listener
             Array.prototype.slice.call(forms).forEach(function(form) {
                 form.addEventListener('submit', function(event) {
@@ -118,17 +114,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 }, false);
             });
         })();
-
         // Toggle visibility password
         const passwordInput = document.getElementById('floatingPassword');
         const togglePassword = document.getElementById('togglePassword');
-
         // Tambahkan event listener untuk toggle password
         togglePassword.addEventListener('click', () => {
             // Ubah tipe input antara 'password' dan 'text'
             const type = passwordInput.type === 'password' ? 'text' : 'password';
             passwordInput.type = type;
-
             // Ubah ikon (atau teks) berdasarkan tipe input
             togglePassword.textContent = type === 'password' ? '👁️‍🗨️' : '👁️‍🗨️';
         });

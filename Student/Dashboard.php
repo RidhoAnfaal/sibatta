@@ -1,9 +1,15 @@
 <?php
 session_start();
-include 'koneksi.php';
-include '../Admin/koneksi.php';
 
-if (!isset($_SESSION['username'])) {
+// Include the User class
+include_once 'User.php';
+include 'koneksi.php';
+
+// Create User object
+$user = new User($host, $database, $username, $password, $_SESSION);
+
+// Check if the user is logged in, if not redirect to login page
+if (!$user->checkLogin()) {
     header('Location: index.php');
     exit();
 }
