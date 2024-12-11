@@ -1,64 +1,61 @@
 <?php
-// // Start session
-// if (session_status() === PHP_SESSION_NONE) {
-//     session_start();
-// }
+// Start the session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-// // Check if the user is logged in
-// if (!isset($_SESSION['username'])) {
-//     // Redirect to login page if not logged in
-//     header("Location: index.php"); // Corrected path for redirect
-//     exit;
-// }
+// Include the database connection file
+include '../admin/koneksi.php'; // Adjust path as necessary
 
-// // Get logged-in user's username
-// $username = $_SESSION['username'];
+// Check if session username is set
+if (!isset($_SESSION['username'])) {
+    die("Session 'username' is not set.");
+}
 
-// // Include the database connection file
-// include 'koneksi.php'; // Corrected path
+// Debug database connection
+if ($conn === false) {
+    die("Database connection failed: " . print_r(sqlsrv_errors(), true));
+}
 
-// // Fetch user information from the database
-// $sql = "SELECT 
-//             u.username,
-//             u.email,
-//             s.student_id,
-//             s.prodi,
-//             s.fullName
-//         FROM sibatta_user u
-//         JOIN sibatta_student s ON u.user_id = s.user_id
-//         WHERE u.username = ?";
-// $params = array($username);
-// $stmt = sqlsrv_query($conn, $sql, $params);
+// Get the logged-in username
+$username = $_SESSION['username'];  
+$queryUser = "SELECT TOP (1) [user_id], [username], [email], [role] 
+              FROM [sibatta].[sibatta].[user]
+              WHERE username = ?";
+$params = [$username];
+$stmtUser = sqlsrv_query($conn, $queryUser, $params);
+if ($stmtUser === false) {
+    die("User query failed: " . print_r(sqlsrv_errors(), true));
+}
 
-// // Check for errors
-// if ($stmt === false) {
-//     die(print_r(sqlsrv_errors(), true));
-// }
+$userData = sqlsrv_fetch_array($stmtUser, SQLSRV_FETCH_ASSOC);
+if (!$userData) {
+    die("No user data found for username: " . htmlspecialchars($username));
+}
 
-// // Fetch the user's data
-// $userData = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+// Query to get student data
+$queryStudent = "SELECT TOP (1) [student_id], [prodi], [fullName] 
+                 FROM [sibatta].[sibatta].[student]
+                 WHERE user_id = ?";
+$paramsStudent = [$userData['user_id']];
+$stmtStudent = sqlsrv_query($conn, $queryStudent, $paramsStudent);
+if ($stmtStudent === false) {
+    die("Student query failed: " . print_r(sqlsrv_errors(), true));
+}
 
-// // Close the statement
-// sqlsrv_free_stmt($stmt);
-
-// if (!$userData) {
-//     echo "No data found for the user.";
-//     exit;
-// }
+$student = sqlsrv_fetch_array($stmtStudent, SQLSRV_FETCH_ASSOC);
+if (!$student) {
+    die("No student data found for user_id: " . htmlspecialchars($userData['user_id']));
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-    <link rel="stylesheet" href="css/main_student.css">
     <title>User Information</title>
+    <link rel="stylesheet" href="css/main_student.css">
 </head>
-
 <body>
     <!-- Header -->
     <?php include 'navbar.php'; ?>
@@ -68,17 +65,36 @@
 
         <!-- Main Content -->
         <div class="container mt-4">
-            <h1>User Information</h1>
             <div class="card">
+                <h1>Welcome, <?php echo htmlspecialchars($student['fullName']); ?></h1>
                 <div class="card-body">
-                    <p class="card-text"><strong>Username :</strong> <?php echo htmlspecialchars($userData['username']); ?></p>
-                    <p class="card-text"><strong>Email :</strong> <?php echo htmlspecialchars($userData['email']); ?></p>
-                    <p class="card-text"><strong>Student ID :</strong> <?php echo htmlspecialchars($userData['student_id']); ?></p>
-                    <p class="card-text"><strong>Full Name :</strong> <?php echo htmlspecialchars($userData['fullName']); ?></p>
-                    <p class="card-text"><strong>Study Program :</strong> <?php echo htmlspecialchars($userData['prodi']); ?></p>
+                    <!-- Table to display user and student information -->
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <td><strong>Username</strong></td>
+                                <td><?php echo htmlspecialchars($userData['username']); ?></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Email</strong></td>
+                                <td><?php echo htmlspecialchars($userData['email']); ?></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Student ID</strong></td>
+                                <td><?php echo htmlspecialchars($student['student_id']); ?></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Study Program</strong></td>
+                                <td><?php echo htmlspecialchars($student['prodi']); ?></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Role</strong></td>
+                                <td><?php echo htmlspecialchars($userData['role']); ?></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
 </body>
-
 </html>
