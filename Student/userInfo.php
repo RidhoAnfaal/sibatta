@@ -7,7 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
 // Check if the user is logged in
 if (!isset($_SESSION['username'])) {
     // Redirect to login page if not logged in
-    header("Location: ../index.php"); // Corrected path for redirect
+    header("Location: index.php"); // Corrected path for redirect
     exit;
 }
 
@@ -15,7 +15,7 @@ if (!isset($_SESSION['username'])) {
 $username = $_SESSION['username'];
 
 // Include the database connection file
-include '../koneksi.php'; // Corrected path
+include 'koneksi.php'; // Corrected path
 
 // Fetch user information from the database
 $sql = "SELECT 

@@ -1,11 +1,5 @@
 <?php
-<<<<<<< HEAD
-require('/sibatta/koneksi.php');
-=======
-
-
 require('koneksi.php');
->>>>>>> bf247e75bf67110728b17ddbec24ba616f299720
 
 // Cek apakah tombol 'validate' diklik
 if (isset($_POST['validate'])) {
@@ -62,7 +56,6 @@ if ($viewdata === false) {
 <body>
     <!-- Header -->
     <?php include 'navbar.php'; ?>
-
     <?php include 'Sidebar.php'; ?>
 
     <!-- Main Content -->
@@ -74,9 +67,6 @@ if ($viewdata === false) {
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </div>
         </form>
-
-        <!-- Overlay -->
-        <div id="overlay"></div>
 
         <div class="container mt-4">
             <h3>Documents List</h3>
@@ -116,14 +106,13 @@ if ($viewdata === false) {
                                   </form>
                               </td>";
 
-                        // Direct download button
-                        if (file_exists('../Student/uploads/' . $tampil['file_path'])) {
-                            echo "<td><a href='../Student/uploads/{$tampil['file_path']}' class='btn btn-primary' download>Download</a></td>";
+                        // File download button only
+                        $file_path = '../Student/uploads/' . basename($tampil['file_path']);
+                        if (file_exists($file_path)) {
+                            echo "<td><a href='$file_path' class='btn btn-primary' download>Download</a></td>";
                         } else {
                             echo "<td>File not found</td>";
                         }
-                        
-                        
 
                         echo "</tr>";
                         $no++;

@@ -1,19 +1,35 @@
 <?php
+// File: Database.php
+class Koneksi
+{
+    private $serverName;
+    private $connectionOptions;
+    private $conn;
 
-// Database connection variables
-$host     = "MSI";  // Server name and instance
-$database = "sibatta";                      // Your database name
-$username = "";                               // Database username if applicable
-$password = "";                               // Database password if applicable
+    public function __construct()
+    {
+        $this->serverName = "LAPTOP-DL9EJTU3\\MSSQLSERVER01"; // Server name and instance
+        $this->connectionOptions = [
+            "Database" => "sibatta",
+            "UID" => "", // Database username
+            "PWD" => "", // Database password
+        ];
+    }
 
-// Connection options
-$connInfo = array("Database" => $database, "UID" => $username, "PWD" => $password);
-$conn     = sqlsrv_connect($host, $connInfo);
+    public function connect()
+    {
+        $this->conn = sqlsrv_connect($this->serverName, $this->connectionOptions);
+        if ($this->conn === false) {
+            die("Connection failed: " . print_r(sqlsrv_errors(), true));
+        }
+        return $this->conn;
+    }
 
-// Check if connection was successful
-if (!$conn) {
-    echo "Koneksi Gagal";
-    die("Connection failed: " . print_r(sqlsrv_errors(), true));
-
+    public function close()
+    {
+        if ($this->conn) {
+            sqlsrv_close($this->conn);
+        }
+    }
 }
 ?>

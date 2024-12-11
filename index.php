@@ -1,53 +1,44 @@
 <?php
-// Start the session
 session_start();
-
-// Include the database connection
 require 'koneksi.php';
+require 'cek.php';
 
 // Placeholder for message if login fails
 $message = "";
 
-// Check if the form is submitted
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Collect form data
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // Validate input
-    if (!empty($username) && !empty($password)) {
-        // Query to check if the user exists and password matches
-        $sql = "SELECT * FROM [sibatta].[user] WHERE username = ? AND password = ?";
-        $params = array($username, $password);
+    // Initialize Database and User classes
+    $db = new Koneksi();
+    $userModel = new cek($db);
 
-        $stmt = sqlsrv_query($conn, $sql, $params);
+    $user = $userModel->login($username, $password);
 
-        // Check if the query executed successfully
-        if ($stmt === false) {
-            die(print_r(sqlsrv_errors(), true));
+    if ($user) {
+        $_SESSION['user_id'] = $user['user_id'];
+        $_SESSION['role'] = $user['role'];
+        $_SESSION['username'] = $user['username'];
+
+        // Redirect based on role
+        switch ($user['role']) {
+            case 'super_admin':
+                header("Location: superadmin/Dashboard.php");
+                break;
+            case 'admin':
+                header("Location: admin/Dashboard.php");
+                break;
+            case 'student':
+                header("Location: Student/Dashboard.php");
+                break;
+            default:
+                $message = "Invalid role.";
+                break;
         }
-
-        // Fetch the user data
-        if ($user = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-            // Set session variables
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['role'] = $user['role'];  // Store the role in the session
-
-            // Redirect based on user role
-            if ($user['role'] == 'super_admin') {
-                header('Location: superadmin/Dashboard.php'); // Redirect to super admin dashboard
-            } elseif ($user['role'] == 'admin') {
-                header('Location: admin/Dashboard.php'); // Redirect to admin dashboard
-            } elseif ($user['role'] == 'student') {
-                header('Location: Student/Dashboard.php'); // Redirect to student dashboard
-            }
-            exit();
-        } else {
-            // Invalid username or password
-            $message = "Invalid username or password!";
-        }
+        exit;
     } else {
-        $message = "Please fill in all fields!";
+        $message = "Invalid username or password.";
     }
 }
 ?>
@@ -118,10 +109,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             event.stopPropagation()
                         }
                         form.classList.add('was-validated')
-                    }, false)
-                })
-        })()
-    </script>
-</body>
-
-</html>
+                  

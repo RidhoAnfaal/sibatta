@@ -4,7 +4,7 @@ session_start();
 
 // Check if the user is logged in
 if (!isset($_SESSION['username'])) {
-    header('Location: login.php'); // Redirect to login if not logged in
+    header('Location: index.php'); // Redirect to login if not logged in
     exit();
 }
 
@@ -40,11 +40,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['files'])) {
             $fileName = $_FILES['files']['name'][$key];
             $fileTmpName = $_FILES['files']['tmp_name'][$key];
             $fileError = $_FILES['files']['error'][$key];
+            $fileSize = $_FILES['files']['size'][$key];
+            $fileType = $_FILES['files']['type'][$key];
 
+            // Check if there were any errors with the upload
             if ($fileError === UPLOAD_ERR_OK) {
-                // Create a unique file name to avoid overwriting
+                
+                // Validate the file size (e.g., limit to 5MB)
+                if ($fileSize > 5 * 1024 * 1024) {
+                    $message = 'File size exceeds the limit of 5MB.';
+                    continue;
+                }
+
+                // Validate the file type (e.g., allow only PDF and image files)
+                $allowedTypes = ['image/jpeg', 'image/png', 'application/pdf']; // You can adjust this
+                if (!in_array($fileType, $allowedTypes)) {
+                    $message = 'Invalid file type. Only JPEG, PNG, and PDF files are allowed.';
+                    continue;
+                }
+
+                // Generate a unique filename to avoid overwrite
                 $targetFile = $uploadDir . time() . '_' . basename($fileName);
 
+                // Move the uploaded file to the target directory
                 if (move_uploaded_file($fileTmpName, $targetFile)) {
                     // Insert file data into the database including the file path
                     $sql = "INSERT INTO [sibatta].[document] (user_id, title, uploaded_at, file_path) 
@@ -158,7 +176,7 @@ if ($stmt) {
                                     <td><?php echo $doc['title']; ?></td>
                                     <td><?php echo $doc['uploaded_at']->format('Y-m-d'); ?></td>
                                     <td><?php echo $doc['validated_by'] ?: 'Not validated'; ?></td>
-                                    <td><a href="<?php echo htmlspecialchars($doc['file_path']); ?>" target="_blank">View File</a></td>
+                                    <td><a href="<?php echo $doc['file_path']; ?>" target="_blank">View</a></td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
