@@ -1,14 +1,25 @@
 <?php
-// Start the session
 session_start();
 
+// Include the User class
+include_once 'User.php';
+
+// Database connection variables
+$host     = "LAPTOP-DL9EJTU3\MSSQLSERVER01";
+$database = "sibatta";
+$username = "";
+$password = "";
+
+// Create User object
+$user = new User($host, $database, $username, $password, $_SESSION);
+
 // Check if the user is logged in, if not redirect to login page
-if (!isset($_SESSION['username'])) {
+if (!$user->checkLogin()) {
     header('Location: index.php');
     exit();
 }
 
-$username = $_SESSION['username']; // Get the username from session
+$username = $user->getUsername(); // Get the username
 ?>
 
 <!DOCTYPE html>
@@ -28,14 +39,12 @@ $username = $_SESSION['username']; // Get the username from session
             position: fixed;
             left: -250px;
             top: 56px;
-            /* Adjust to match the height of the horizontal navbar */
             height: calc(100vh - 56px);
             width: 250px;
             background-color: #f8f9fa;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
             transition: left 0.3s ease-in-out;
             z-index: 1050;
-            /* Ensure it is above other content */
         }
 
         #sidebar.active {
@@ -50,7 +59,6 @@ $username = $_SESSION['username']; // Get the username from session
             height: 100vh;
             background-color: rgba(0, 0, 0, 0.5);
             z-index: 1040;
-            /* Just below the sidebar */
             display: none;
         }
 
@@ -58,7 +66,6 @@ $username = $_SESSION['username']; // Get the username from session
             display: block;
         }
 
-        /* Ensure the sidebar toggle button is clickable */
         #sidebarToggle {
             z-index: 1060;
         }
@@ -75,10 +82,9 @@ $username = $_SESSION['username']; // Get the username from session
         <!-- Main Content -->
         <div class="container mt-4">
             <h1>Welcome to SIBATTA</h1>
-            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Molestiae facere obcaecati asperiores quod animi vero maxime quidem nobis enim suscipit. Alias illum dolores debitis reiciendis ea numquam eum. Deleniti, aut.
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos consectetur numquam magni sapiente, velit fugiat dolore alias nemo. Veritatis esse labore non nam praesentium beatae unde quod, quam modi expedita.
-            </p>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae facere obcaecati asperiores quod animi vero maxime quidem nobis enim suscipit. Alias illum dolores debitis reiciendis ea numquam eum. Deleniti, aut.</p>
         </div>
+    </div>
 </body>
 
 </html>

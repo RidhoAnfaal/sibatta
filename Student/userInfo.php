@@ -1,51 +1,69 @@
 <?php
-// Start session
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+// Start the session
+session_start();
 
-// Check if the user is logged in
+// Check if the user is logged in, if not redirect to login page
 if (!isset($_SESSION['username'])) {
-    // Redirect to login page if not logged in
-    header("Location: index.php"); // Corrected path for redirect
-    exit;
+    header('Location: index.php');
+    exit();
 }
 
-// Get logged-in user's username
-$username = $_SESSION['username'];
+$username = $_SESSION['username']; // Get the username from session
 
 // Include the database connection file
-include 'koneksi.php'; // Corrected path
+include '../Admin/koneksi.php';
 
-// Fetch user information from the database
+// // Debug: Output session username
+// echo 'Session Username: ' . htmlspecialchars($username) . '<br>';
+
 $sql = "SELECT 
-            u.username,
-            u.email,
-            s.student_id,
-            s.prodi,
-            s.fullName
-        FROM sibatta_user u
-        JOIN sibatta_student s ON u.user_id = s.user_id
-        WHERE u.username = ?";
-$params = array($username);
+            s.student_id, 
+            s.prodi, 
+            s.fullName, 
+            u.username, 
+            u.email, 
+            u.role
+        FROM [sibatta].[sibatta].[student] s
+        JOIN [sibatta].[sibatta].[user] u ON s.user_id = u.user_id
+        WHERE LOWER(u.username) = LOWER(?)";
+
+
+// Set the query parameter to the session's username
+$params = array($username); // This will pass the logged-in user's username
+
+// // Debug: Output the query and parameters
+// echo 'SQL Query: ' . $sql . '<br>';
+// echo 'Username Parameter: ' . htmlspecialchars($username) . '<br>';
+
+// Prepare and execute the query
 $stmt = sqlsrv_query($conn, $sql, $params);
 
-// Check for errors
 if ($stmt === false) {
-    die(print_r(sqlsrv_errors(), true));
+    echo "<p>SQL Error: " . print_r(sqlsrv_errors(), true) . "</p>";
+} else {
+    echo "</p>";
 }
+
 
 // Fetch the user's data
 $userData = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
 
-// Close the statement
-sqlsrv_free_stmt($stmt);
+// // Debug: Output fetched data
+// echo '<pre>';
+// print_r($userData);
+// echo '</pre>';
 
+// Check if data is found
 if (!$userData) {
-    echo "No data found for the user.";
+    echo '<p>No data found for the user.</p>';
     exit;
 }
+
+
+// Close the statement
+sqlsrv_free_stmt($stmt);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -56,7 +74,7 @@ if (!$userData) {
     <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <link rel="stylesheet" href="css/main_student.css">
-    <title>User Information</title>
+    <title>Home</title>
 </head>
 
 <body>
@@ -68,17 +86,14 @@ if (!$userData) {
 
         <!-- Main Content -->
         <div class="container mt-4">
-            <h1>User Information</h1>
-            <div class="card">
-                <div class="card-body">
-                    <p class="card-text"><strong>Username :</strong> <?php echo htmlspecialchars($userData['username']); ?></p>
-                    <p class="card-text"><strong>Email :</strong> <?php echo htmlspecialchars($userData['email']); ?></p>
-                    <p class="card-text"><strong>Student ID :</strong> <?php echo htmlspecialchars($userData['student_id']); ?></p>
-                    <p class="card-text"><strong>Full Name :</strong> <?php echo htmlspecialchars($userData['fullName']); ?></p>
-                    <p class="card-text"><strong>Study Program :</strong> <?php echo htmlspecialchars($userData['prodi']); ?></p>
-                </div>
-            </div>
+            <h1>Welcome, <?php echo htmlspecialchars($userData['fullName']); ?></h1>
+            <p><strong>Username:</strong> <?php echo htmlspecialchars($userData['username']); ?></p>
+            <p><strong>Email:</strong> <?php echo htmlspecialchars($userData['email']); ?></p>
+            <p><strong>Student ID:</strong> <?php echo htmlspecialchars($userData['student_id']); ?></p>
+            <p><strong>Study Program:</strong> <?php echo htmlspecialchars($userData['prodi']); ?></p>
+            <p><strong>Role:</strong> <?php echo htmlspecialchars($userData['role']); ?></p>
         </div>
+    </div>
 </body>
 
 </html>

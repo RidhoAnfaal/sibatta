@@ -1,5 +1,5 @@
 <?php
-include 'koneksi.php'; // Include the database connection
+include '../Admin/koneksi.php'; // Include the database connection
 session_start();
 
 // Check if the user is logged in
@@ -155,38 +155,37 @@ if ($stmt) {
                 <button type="submit" class="btn btn-primary">Upload</button>
             </form>
 
-            <!-- Uploaded Files -->
-            <div class="table-container mt-4">
-                <h3>Uploaded Documents</h3>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Document ID</th>
-                            <th>Title</th>
-                            <th>Uploaded</th>
-                            <th>Validated</th>
-                            <th>File Path</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php if (!empty($documents)): ?>
-                            <?php foreach ($documents as $doc): ?>
-                                <tr>
-                                    <td><?php echo $doc['document_id']; ?></td>
-                                    <td><?php echo $doc['title']; ?></td>
-                                    <td><?php echo $doc['uploaded_at']->format('Y-m-d'); ?></td>
-                                    <td><?php echo $doc['validated_by'] ?: 'Not validated'; ?></td>
-                                    <td><a href="<?php echo $doc['file_path']; ?>" target="_blank">View</a></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <tr>
-                                <td colspan="5" class="text-center">No documents uploaded yet.</td>
-                            </tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </div>
+           <!-- Uploaded Files -->
+<div class="table-container mt-4">
+    <h3>Uploaded Documents</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Document ID</th>
+                <th>Title</th>
+                <th>Uploaded</th>
+                <th>Validated</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (!empty($documents)): ?>
+                <?php foreach ($documents as $doc): ?>
+                    <tr>
+                        <td><?php echo $doc['document_id']; ?></td>
+                        <td><?php echo $doc['title']; ?></td>
+                        <td><?php echo $doc['uploaded_at']->format('Y-m-d'); ?></td>
+                        <td><?php echo $doc['validated_by'] ?: 'Not validated'; ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="4" class="text-center">No documents uploaded yet.</td>
+                </tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</div>
+
         </div>
     </div>
 </body>

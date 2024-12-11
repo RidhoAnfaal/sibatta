@@ -1,19 +1,14 @@
+
 <?php
+include_once 'Database.php';
 
-// Database connection variables
-$host     = "MSI";  // Server name and instance
-$database = "sibatta";                      // Your database name
-$username = "";                               // Database username if applicable
-$password = "";                               // Database password if applicable
+$host     = "LAPTOP-DL9EJTU3\MSSQLSERVER01";
+$database = "sibatta";
+$username = "";
+$password = "";
 
-// Connection options
-$connInfo = array("Database" => $database, "UID" => $username, "PWD" => $password);
-$conn     = sqlsrv_connect($host, $connInfo);
+// Create Database object
+$db = new Database($host, $database, $username, $password);
 
-// Check if connection was successful
-if (!$conn) {
-    echo "Koneksi Gagal";
-    die("Connection failed: " . print_r(sqlsrv_errors(), true));
-
-}
+// Now you can use $db->query() to execute queries and $db->close() to close the connection
 ?>
