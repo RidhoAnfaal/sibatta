@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Include the database connection file
-include '../admin/koneksi.php'; // Adjust path as necessary
+include 'koneksi.php'; // Adjust path as necessary
 
 // Check if session username is set
 if (!isset($_SESSION['username'])) {
@@ -33,19 +33,19 @@ if (!$userData) {
     die("No user data found for username: " . htmlspecialchars($username));
 }
 
-// Query to get student data
-$queryStudent = "SELECT TOP (1) [student_id], [prodi], [fullName] 
-                 FROM [sibatta].[sibatta].[student]
+// Query to get admin data
+$queryadmin = "SELECT TOP (1) [admin_id], [admin_role], [fullName] 
+                 FROM [sibatta].[sibatta].[admin]
                  WHERE user_id = ?";
-$paramsStudent = [$userData['user_id']];
-$stmtStudent = sqlsrv_query($conn, $queryStudent, $paramsStudent);
-if ($stmtStudent === false) {
-    die("Student query failed: " . print_r(sqlsrv_errors(), true));
+$paramsadmin = [$userData['user_id']];
+$stmtadmin = sqlsrv_query($conn, $queryadmin, $paramsadmin);
+if ($stmtadmin === false) {
+    die("admin query failed: " . print_r(sqlsrv_errors(), true));
 }
 
-$student = sqlsrv_fetch_array($stmtStudent, SQLSRV_FETCH_ASSOC);
-if (!$student) {
-    die("No student data found for user_id: " . htmlspecialchars($userData['user_id']));
+$admin = sqlsrv_fetch_array($stmtadmin, SQLSRV_FETCH_ASSOC);
+if (!$admin) {
+    die("No admin data found for user_id: " . htmlspecialchars($userData['user_id']));
 }
 ?>
 <!DOCTYPE html>
@@ -54,7 +54,7 @@ if (!$student) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Information</title>
-    <link rel="stylesheet" href="css/main_student.css">
+    <link rel="stylesheet" href="css/main_admin.css">
 </head>
 <body>
     <!-- Header -->
@@ -63,12 +63,12 @@ if (!$student) {
     <div class="d-flex">
         <?php include 'Sidebar.php'; ?>
 
-        <!-- Main Content -->
+       <!-- Main Content -->
 <div class="container mt-4">
     <div class="card">
-        <h1 class="text-center">Welcome, <?php echo htmlspecialchars($student['fullName']); ?></h1>
+        <h1 class="text-center">Welcome, <?php echo htmlspecialchars($admin['fullName']); ?></h1>
         <div class="card-body">
-            <!-- Table to display user and student information -->
+            <!-- Table to display user and admin information -->
             <table class="table table-striped">
                 <tbody>
                     <tr>
@@ -80,16 +80,12 @@ if (!$student) {
                         <td><?php echo htmlspecialchars($userData['email']); ?></td>
                     </tr>
                     <tr>
-                        <td><strong>Student ID</strong></td>
-                        <td><?php echo htmlspecialchars($student['student_id']); ?></td>
+                        <td><strong>admin ID</strong></td>
+                        <td><?php echo htmlspecialchars($admin['admin_id']); ?></td>
                     </tr>
                     <tr>
-                        <td><strong>Study Program</strong></td>
-                        <td><?php echo htmlspecialchars($student['prodi']); ?></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Role</strong></td>
-                        <td><?php echo htmlspecialchars($userData['role']); ?></td>
+                        <td><strong>Admin Role</strong></td>
+                        <td><?php echo htmlspecialchars($admin['admin_role']); ?></td>
                     </tr>
                 </tbody>
             </table>

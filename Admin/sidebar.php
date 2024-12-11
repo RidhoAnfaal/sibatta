@@ -163,6 +163,11 @@
                 <ion-icon name="time-outline"></ion-icon> <span>Tugas Akhir</span>
                 </a>
             </li>
+            <li class="nav-item mb-3">
+                <a class="nav-link text-dark <?php echo $current_page == 'userInfoadmin.php' ? 'active' : ''; ?> text-dark d-flex align-items-center" href="userInfoadmin.php">
+                <ion-icon name="person-circle-outline" class="me-2"></ion-icon> <span>User Info</span>
+                </a>
+            </li>
         </ul>
 
 

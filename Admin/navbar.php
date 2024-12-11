@@ -51,7 +51,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link text-light" href="#" role="button" data-bs-toggle="modal" aria-expanded="false">
                         <ion-icon name="person-circle-outline"></ion-icon>
-                        <span id="username"></span>
+                        <span id="username"><?php echo htmlspecialchars($username); ?></span>
                     </a>
                 </li>
 
