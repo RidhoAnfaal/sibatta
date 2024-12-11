@@ -31,7 +31,7 @@ if ($stmt === false) {
 $userData = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
 
 if (!$userData) {
-    echo "<p>No data found for the user.</p>";
+    echo "<!--<p>No data found for the user.</p>";
     exit;
 }
 
@@ -89,6 +89,26 @@ sqlsrv_free_stmt($stmt);
             </div>
         </div>
 
+                        <!-- Footer -->
+                        <footer class="footer mt-auto py-4">
+            <div class="container text-center">
+                <p>&copy; 2024 <strong>SIBATTA</strong>. All rights reserved.</p>
+                <p>Contact us: <a href="mailto:support@sibatta.com">support@sibatta.com</a></p>
+                <div class="social-icons">
+                    <a href="https://facebook.com" target="_blank" class="me-3">
+                        <i class="bi bi-facebook"></i>
+                    </a>
+                    <a href="https://twitter.com" target="_blank" class="me-3">
+                        <i class="bi bi-twitter"></i>
+                    </a>
+                    <a href="https://instagram.com" target="_blank">
+                        <i class="bi bi-instagram"></i>
+                    </a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
         <!-- Notification Pop-up -->
         <div class="toast-container position-fixed bottom-0 end-0 p-3">
             <div id="toastMessage" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
@@ -112,26 +132,6 @@ sqlsrv_free_stmt($stmt);
                 toast.show();
             });
         </script>
-
-        <!-- Footer -->
-        <footer class="footer mt-auto py-4">
-            <div class="container text-center">
-                <p>&copy; 2024 <strong>SIBATTA</strong>. All rights reserved.</p>
-                <p>Contact us: <a href="mailto:support@sibatta.com">support@sibatta.com</a></p>
-                <div class="social-icons">
-                    <a href="https://facebook.com" target="_blank" class="me-3">
-                        <i class="bi bi-facebook"></i>
-                    </a>
-                    <a href="https://twitter.com" target="_blank" class="me-3">
-                        <i class="bi bi-twitter"></i>
-                    </a>
-                    <a href="https://instagram.com" target="_blank">
-                        <i class="bi bi-instagram"></i>
-                    </a>
-                </div>
-            </div>
-        </footer>
-    </div>
 
 
 </body>

@@ -25,7 +25,7 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
 $query = "SELECT [document_id], [user_id], [title], [uploaded_at], [validated_by], [username], [file_path] 
           FROM [sibatta].[sibatta].[document]";
 
-// Tambahkan filter pencarian jika ada
+ Tambahkan filter pencarian jika ada
 if (!empty($search)) {
     $query .= " WHERE [username] LIKE ? OR [title] LIKE ? OR CAST([document_id] AS NVARCHAR) LIKE ?";
     $params = ["%$search%", "%$search%", "%$search%"];
@@ -50,6 +50,7 @@ if ($viewdata === false) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="css/TA.css">
 </head>
 
@@ -63,7 +64,7 @@ if ($viewdata === false) {
         <form method="GET" class="mb-3">
             <div class="input-group">
                 <input type="text" class="form-control" name="search" placeholder="Search by username, title, or document ID"
-                    value="<?php echo htmlspecialchars($search); ?>">
+                    value="<?php echo htmlspecialchars($search); ?>"> 
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </div>
         </form>
@@ -99,18 +100,18 @@ if ($viewdata === false) {
                         echo "<td>{$tampil['validated_by']}</td>";
 
                         // Validation button
-                        echo "<td>
-                                  <form method='POST' action='Tugas_akhir.php'>
-                                      <input type='hidden' name='document_id' value='{$tampil['document_id']}'>
-                                      <button type='submit' name='validate' class='btn btn-success'>Validate</button>
-                                  </form>
-                              </td>";
+                         echo "<td>
+                                   <form method='POST' action='Tugas_akhir.php'>
+                                       <input type='hidden' name='document_id' value='{$tampil['document_id']}'>
+                                       <button type='submit' name='validate' class='btn btn-success'>Validate</button>
+                                   </form>
+                               </td>";
 
                         // File download button only
                         $file_path = '../Student/uploads/' . basename($tampil['file_path']);
-                        if (file_exists($file_path)) {
-                            echo "<td><a href='$file_path' class='btn btn-primary' download>Download</a></td>";
-                        } else {
+                         if (file_exists($file_path)) {
+                             echo "<td><a href='$file_path' class='btn btn-primary' download>Download</a></td>";
+                         } else {
                             echo "<td>File not found</td>";
                         }
 
@@ -122,6 +123,27 @@ if ($viewdata === false) {
             </table>
         </div>
     </div>
+
+            <!-- Footer -->
+            <footer class="footer mt-auto py-4">
+            <div class="container text-center">
+                <p>&copy; 2024 <strong>SIBATTA</strong>. All rights reserved.</p>
+                <p>Contact us: <a href="mailto:support@sibatta.com">support@sibatta.com</a></p>
+                <div class="social-icons">
+                    <a href="https://facebook.com" target="_blank" class="me-3">
+                        <i class="bi bi-facebook"></i>
+                    </a>
+                    <a href="https://twitter.com" target="_blank" class="me-3">
+                        <i class="bi bi-twitter"></i>
+                    </a>
+                    <a href="https://instagram.com" target="_blank">
+                        <i class="bi bi-instagram"></i>
+                    </a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
 </body>
 
 </html>

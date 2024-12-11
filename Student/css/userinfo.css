@@ -1,5 +1,5 @@
 html, body {
-    height: 100%;
+    height: 100%; /* Ensure the body takes the full height */
     margin: 0; /* Remove default margin */
 }
 
@@ -8,39 +8,8 @@ body {
     flex-direction: column; /* Stack children vertically */
 }
 
-#sidebar {
-    position: fixed;
-    left: -250px;
-    top: 56px;
-    height: calc(100vh - 56px);
-    width: 250px;
-    background-color: #f8f9fa;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    transition: left 0.3s ease-in-out;
-    z-index: 1050;
-}
-
-#sidebar.active {
-    left: 0;
-}
-
-#overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1040;
-    display: none;
-}
-
-#overlay.active {
-    display: block;
-}
-
 .container {
-    flex: 1; /* This allows the container to grow and take available space */
+    flex: 1; /* Allow the container to grow and take available space */
 }
 
 .footer {
@@ -56,26 +25,27 @@ body {
 .footer p {
     margin: 5px 0; /* Mengurangi margin antara elemen */
     line-height: 1.4; /* Menjaga jarak antar baris */
-}
-
-.footer a {
+  }
+  
+  .footer a {
     color: #ffc107;
     text-decoration: none;
     font-weight: bold;
     transition: color 0.3s ease;
-}
-
-.footer a:hover {
+  }
+  
+  .footer a:hover {
     text-decoration: underline;
-}
-
-.social-icons a {
+  }
+  
+  .social-icons a {
     font-size: 1.2rem; /* Ukuran ikon sosial media lebih kecil */
     color: #ffc107;
     margin: 0 5px; /* Memberikan jarak antar ikon */
     transition: color 0.3s ease;
-}
-
-.social-icons a:hover {
+  }
+  
+  .social-icons a:hover {
     color: #ffffff;
-}
+  }
+  

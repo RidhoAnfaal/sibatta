@@ -3,14 +3,14 @@ session_start();
 require 'koneksi.php';
 require 'cek.php';
 
-// Placeholder for message if login fails
+Placeholder for message if login fails
 $message = "";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // Initialize Database and User classes
+    Initialize Database and User classes
     $db = new Koneksi();
     $userModel = new cek($db);
 
@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $_SESSION['role'] = $user['role'];
         $_SESSION['username'] = $user['username'];
 
-        // Redirect based on role
+        Redirect based on role
         switch ($user['role']) {
             case 'super_admin':
                 header("Location: superadmin/Dashboard.php");

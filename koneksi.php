@@ -1,5 +1,5 @@
 <?php
-// File: Database.php
+File: Database.php
 class Koneksi
 {
     private $serverName;
