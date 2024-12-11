@@ -82,6 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <div class="form-floating mb-3">
                     <input name="password" type="password" class="form-control" id="floatingPassword" placeholder="Password" required>
                     <label for="floatingPassword">Password</label>
+                    <span id="togglePassword" style="position: absolute; right: 10px; top: 35%; cursor: pointer;">👁️‍🗨️</span>
                     <div class="invalid-feedback">
                         Please enter your password.
                     </div>
@@ -98,23 +99,37 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     <script>
         // Client-side validation
-        (function () {
-        'use strict';
+        (function() {
+            'use strict';
 
-        // Ambil semua formulir dengan class 'needs-validation'
-        var forms = document.querySelectorAll('.needs-validation');
+            // Ambil semua formulir dengan class 'needs-validation'
+            var forms = document.querySelectorAll('.needs-validation');
 
-        // Loop semua form dan tambahkan event listener
-        Array.prototype.slice.call(forms).forEach(function (form) {
-            form.addEventListener('submit', function (event) {
-                if (!form.checkValidity()) {
-                    // Jika form tidak valid, hentikan submit
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-                // Tambahkan class 'was-validated' untuk memberikan feedback
-                form.classList.add('was-validated');
-            }, false);
+            // Loop semua form dan tambahkan event listener
+            Array.prototype.slice.call(forms).forEach(function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        // Jika form tidak valid, hentikan submit
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    // Tambahkan class 'was-validated' untuk memberikan feedback
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+
+        // Toggle visibility password
+        const passwordInput = document.getElementById('floatingPassword');
+        const togglePassword = document.getElementById('togglePassword');
+
+        // Tambahkan event listener untuk toggle password
+        togglePassword.addEventListener('click', () => {
+            // Ubah tipe input antara 'password' dan 'text'
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+
+            // Ubah ikon (atau teks) berdasarkan tipe input
+            togglePassword.textContent = type === 'password' ? '👁️‍🗨️' : '👁️‍🗨️';
         });
-    })();
     </script>
