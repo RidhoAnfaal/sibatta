@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Include the database connection file
-include '../admin/koneksi.php'; // Adjust path as necessary
+include 'koneksi.php'; // Adjust path as necessary
 
 // Check if session username is set
 if (!isset($_SESSION['username'])) {

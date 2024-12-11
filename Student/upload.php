@@ -90,13 +90,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['files'])) {
 // Handle the search functionality
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 
-// Modify the query to filter by search term if provided
-$query = "SELECT document_id, title, uploaded_at, validated_by, file_path FROM [sibatta].[document]";
-$params = [];
+// Modify the query to filter by user_id and search term if provided
+$query = "SELECT document_id, title, uploaded_at, validated_by, file_path FROM [sibatta].[document] WHERE user_id = ?";
+$params = [$userId]; // Filter by the logged-in user's ID
 
 if (!empty($search)) {
-    $query .= " WHERE title LIKE ? OR CAST(document_id AS NVARCHAR) LIKE ? OR user_id IN (SELECT user_id FROM [sibatta].[user] WHERE username LIKE ?)";
-    $params = ["%$search%", "%$search%", "%$search%"];
+    $query .= " AND (title LIKE ? OR CAST(document_id AS NVARCHAR) LIKE ?)";
+    $params[] = "%$search%";
+    $params[] = "%$search%";
 }
 
 $stmt = sqlsrv_query($conn, $query, $params);
@@ -107,6 +108,7 @@ if ($stmt) {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -135,12 +137,13 @@ if ($stmt) {
                 <div class="alert alert-info"><?php echo $message; ?></div>
             <?php endif; ?>
 
-            <form method="GET" class="mb-3">
-                <div class="input-group">
-                    <input type="text" class="form-control" name="search" placeholder="Search by username, title, or document ID" value="<?php echo htmlspecialchars($search); ?>">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                </div>
-            </form>
+           <!-- Search Bar -->
+<form method="GET" class="mb-3">
+    <div class="input-group ms-auto" style="max-width: 300px;">
+        <input type="text" class="form-control" name="search" placeholder="Search" value="<?php echo htmlspecialchars($search); ?>">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </div>
+</form>
 
             <!-- Form Upload -->
             <form method="POST" enctype="multipart/form-data">
@@ -165,7 +168,6 @@ if ($stmt) {
                             <th>Title</th>
                             <th>Uploaded</th>
                             <th>Validated</th>
-                            <th>File Path</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -176,7 +178,6 @@ if ($stmt) {
                                     <td><?php echo $doc['title']; ?></td>
                                     <td><?php echo $doc['uploaded_at']->format('Y-m-d'); ?></td>
                                     <td><?php echo $doc['validated_by'] ?: 'Not validated'; ?></td>
-                                    <td><a href="<?php echo $doc['file_path']; ?>" target="_blank">View</a></td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>

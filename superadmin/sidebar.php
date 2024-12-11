@@ -179,7 +179,7 @@
                 </a>
             </li>
             <li class="nav-item mb-3">
-                <a class="nav-link text-dark <?php echo $current_page == 'add_user.php' ? 'active' : ''; ?>" href="add_user.php">
+                <a class="nav-link text-dark <?php echo $current_page == 'tabel_user.php' ? 'active' : ''; ?>" href="tabel_user.php">
                     <ion-icon name="cloud-upload-outline" class="me-2"></ion-icon> <span>Tambah User</span>
                 </a>
             </li>

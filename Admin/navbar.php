@@ -51,14 +51,14 @@
                         <!-- Username Button -->
                         <a class="nav-link text-light" href="#" id="usernameToggle" role="button">
                             <ion-icon name="person-circle-outline"></ion-icon>
-                            <span id="username"><?php //echo htmlspecialchars($username); ?></span>
+                            <span id="username"><?php echo htmlspecialchars($username); ?></span>
                         </a>
 
                         <!-- Feature Container -->
                         <div id="userFeatures" class="card position-absolute bg-light shadow-sm" style="display: none; right: 0; top: 110%; z-index: 1050; width: 200px;">
                             <div class="card-body">
                                 <!-- Upload TA -->
-                                <a class="d-flex align-items-center mb-3 text-dark text-decoration-none <?php echo $current_page == 'userInfoadmin.php' ? 'active' : ''; ?>" href="userInfo.php">
+                                <a class="d-flex align-items-center mb-3 text-dark text-decoration-none <?php echo $current_page == 'userInfoadmin.php' ? 'active' : ''; ?>" href="userInfoadmin.php">
                                 <ion-icon name="person-circle-outline" class="me-2"></ion-icon> Profil
                                 </a>
                                 <!-- Logout -->

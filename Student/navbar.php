@@ -63,7 +63,7 @@
                         <!-- Username Button -->
                         <a class="nav-link text-light" href="#" id="usernameToggle" role="button">
                             <ion-icon name="person-circle-outline"></ion-icon>
-                            <span id="username"><?php //echo htmlspecialchars($username); ?></span>
+                            <span id="username"><?php echo htmlspecialchars($username); ?></span>
                         </a>
 
                         <!-- Feature Container -->
