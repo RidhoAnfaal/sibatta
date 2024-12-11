@@ -54,7 +54,7 @@ if (!$admin) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Information</title>
-    <link rel="stylesheet" href="css/main_admin.css">
+    <link rel="stylesheet" href="css/infoadmin.css">
 </head>
 <body>
     <!-- Header -->
@@ -91,7 +91,27 @@ if (!$admin) {
             </table>
         </div>
     </div>
+      <!-- Footer -->
+      =<footer class="footer mt-auto py-4">
+        <div class="container text-center">
+            <p>&copy; 2024 <strong>SIBATTA</strong>. All rights reserved.</p>
+            <p>Contact us: <a href="mailto:support@sibatta.com">support@sibatta.com</a></p>
+            <div class="social-icons">
+                <a href="https://facebook.com" target="_blank" class="me-3">
+                    <i class="bi bi-facebook"></i>
+                </a>
+                <a href="https://twitter.com" target="_blank" class="me-3">
+                    <i class="bi bi-twitter"></i>
+                </a>
+                <a href="https://instagram.com" target="_blank">
+                    <i class="bi bi-instagram"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
 </div>
+
+          
 
 </body>
 </html>
