@@ -113,3 +113,7 @@ body {
 .social-icons a:hover {
   color: #ffffff;
 }
+
+.info-card {
+  margin-top: 20px; /* Space above the info card */
+}
