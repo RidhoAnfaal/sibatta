@@ -66,25 +66,25 @@ if (!$admin) {
        <!-- Main Content -->
 <div class="container mt-4">
     <div class="card">
-        <h1 class="text-center">Welcome, <?php echo htmlspecialchars($admin['fullName']); ?></h1>
+        <h1 class="text-center">Profil</h1>
         <div class="card-body">
             <!-- Table to display user and admin information -->
             <table class="table table-striped">
                 <tbody>
                     <tr>
+                        <td><strong>admin ID</strong></td>
+                        <td><?php echo htmlspecialchars($admin['admin_id']); ?></td>
+                    </tr>
+                    <tr>
                         <td><strong>Username</strong></td>
-                        <td><?php echo htmlspecialchars($userData['username']); ?></td>
+                        <td><?php echo htmlspecialchars($admin['fullName']); ?></td>
                     </tr>
                     <tr>
                         <td><strong>Email</strong></td>
                         <td><?php echo htmlspecialchars($userData['email']); ?></td>
                     </tr>
                     <tr>
-                        <td><strong>admin ID</strong></td>
-                        <td><?php echo htmlspecialchars($admin['admin_id']); ?></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Admin Role</strong></td>
+                        <td><strong>Status</strong></td>
                         <td><?php echo htmlspecialchars($admin['admin_role']); ?></td>
                     </tr>
                 </tbody>

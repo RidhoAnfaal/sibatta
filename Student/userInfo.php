@@ -19,7 +19,7 @@ if ($conn === false) {
 
 // Get the logged-in username
 $username = $_SESSION['username'];  
-$queryUser = "SELECT TOP (1) [user_id], [username], [email], [role] 
+$queryUser = "SELECT TOP (1) [user_id], [email], [role] 
               FROM [sibatta].[sibatta].[user]
               WHERE username = ?";
 $params = [$username];
@@ -34,7 +34,7 @@ if (!$userData) {
 }
 
 // Query to get student data
-$queryStudent = "SELECT TOP (1) [student_id], [prodi], [fullName] 
+$queryStudent = "SELECT TOP (1) [student_id], [prodi], [fullName], [kelas]
                  FROM [sibatta].[sibatta].[student]
                  WHERE user_id = ?";
 $paramsStudent = [$userData['user_id']];
@@ -66,29 +66,33 @@ if (!$student) {
         <!-- Main Content -->
 <div class="container mt-4">
     <div class="card">
-        <h1 class="text-center">Welcome, <?php echo htmlspecialchars($student['fullName']); ?></h1>
+        <h1 class="text-center">Profil</h1>
         <div class="card-body">
             <!-- Table to display user and student information -->
             <table class="table table-striped">
                 <tbody>
                     <tr>
-                        <td><strong>Username</strong></td>
-                        <td><?php echo htmlspecialchars($userData['username']); ?></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Email</strong></td>
-                        <td><?php echo htmlspecialchars($userData['email']); ?></td>
-                    </tr>
-                    <tr>
                         <td><strong>Student ID</strong></td>
                         <td><?php echo htmlspecialchars($student['student_id']); ?></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Username</strong></td>
+                        <td><?php echo htmlspecialchars($student['fullName']); ?></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Class</strong></td>
+                        <td><?php echo htmlspecialchars($student['kelas']); ?></td>
                     </tr>
                     <tr>
                         <td><strong>Study Program</strong></td>
                         <td><?php echo htmlspecialchars($student['prodi']); ?></td>
                     </tr>
                     <tr>
-                        <td><strong>Role</strong></td>
+                        <td><strong>Email</strong></td>
+                        <td><?php echo htmlspecialchars($userData['email']); ?></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Status</strong></td>
                         <td><?php echo htmlspecialchars($userData['role']); ?></td>
                     </tr>
                 </tbody>

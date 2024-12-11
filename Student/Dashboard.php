@@ -1,41 +1,20 @@
 <?php
-// session_start();
-// include 'koneksi.php';
-// include '../Admin/koneksi.php';
+session_start();
 
-// if (!isset($_SESSION['username'])) {
-//     header('Location: index.php');
-//     exit();
-// }
+// Include the User class
+include_once 'User.php';
+include 'koneksi.php';
 
-// $username = $_SESSION['username'];
+// Create User object
+$user = new User($host, $database, $username, $password, $_SESSION);
 
-// $sql = "SELECT 
-//             s.student_id, 
-//             s.prodi, 
-//             s.fullName, 
-//             u.username, 
-//             u.email, 
-//             u.role
-//         FROM [sibatta].[sibatta].[student] s
-//         JOIN [sibatta].[sibatta].[user] u ON s.user_id = u.user_id
-//         WHERE LOWER(u.username) = LOWER(?)";
+// Check if the user is logged in, if not redirect to login page
+if (!$user->checkLogin()) {
+    header('Location: index.php');
+    exit();
+}
 
-// $params = array($username);
-// $stmt = sqlsrv_query($conn, $sql, $params);
-
-// if ($stmt === false) {
-//     die("SQL Error: " . print_r(sqlsrv_errors(), true));
-// }
-
-// $userData = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
-
-// if (!$userData) {
-//     echo "<p>No data found for the user.</p>";
-//     exit;
-// }
-
-// sqlsrv_free_stmt($stmt);
+$username = $user->getUsername(); // Get the username
 ?>
 
 <!DOCTYPE html>
