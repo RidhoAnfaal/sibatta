@@ -182,7 +182,7 @@
                 </div>
                 <div class="modal-body">
                     <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Batal</button>
-                    <a href="../index.php" class="btn btn-danger">Log Out</a>
+                    <a href="../logout.php" class="btn btn-danger">Log Out</a>
                 </div>
             </div>
         </div>
@@ -207,9 +207,16 @@
         });
 
         function confirmLogout(event) {
+<<<<<<< HEAD
             event.preventDefault(); // Prevent langsung keluar
             if (confirm("Apakah Anda yakin ingin log out?")) {
                 window.location.href = "../index.php";
+=======
+                event.preventDefault(); // Prevent langsung keluar
+                if (confirm("Apakah Anda yakin ingin log out?")) {
+                    window.location.href = "../logout.php";
+                }
+>>>>>>> 63490870b9df8952e97b6436089684c68918bdb1
             }
         }
     </script>
