@@ -1,5 +1,5 @@
 <?php
-require('koneksi.php');
+require('/sibatta/koneksi.php');
 
 // Cek apakah tombol 'validate' diklik
 if (isset($_POST['validate'])) {
