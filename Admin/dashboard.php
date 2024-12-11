@@ -1,14 +1,15 @@
 <?php
-// Start the session
-session_start();
+// // Start the session
+// session_start();
 
-// Check if the user is logged in, if not redirect to login page
-if (!isset($_SESSION['username'])) {
-header('Location: index.php');
-exit();
-}
+// // Check if the user is logged in, if not redirect to login page
+// if (!isset($_SESSION['username'])) {
+// header('Location: index.php');
+// exit();
+// }
 
-$username = $_SESSION['username']; // Get the username from session
+// $username = $_SESSION['username']; // Get the username from session
+//
 ?>
 
 <!DOCTYPE html>

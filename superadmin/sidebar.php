@@ -47,18 +47,28 @@
 
         #sidebar .nav-link {
             font-weight: 500;
-            transition: transform 0.3s ease, color 0.3s ease;
+            padding: 10px 15px;
+            /* Jarak dalam elemen */
+            margin: 5px 10px;
+            /* Jarak luar elemen */
+            display: flex;
+            /* Untuk menyelaraskan konten dalam elemen */
+            align-items: center;
+            background-color: transparent;
+            /* Warna default */
+            border-radius: 25px;
+            /* Membuat sudut melengkung */
+            transition: all 0.3s ease-in-out;
         }
 
         #sidebar .nav-link:hover {
-            transform: translateX(5px);
-            color: #000 ;
+            color: white;
         }
 
         #sidebar .nav-link.active {
             background-color: #333;
+            /* Warna latar untuk nav-link aktif */
             color: white !important;
-            border-radius: 500px;
         }
 
         .logout-btn {
