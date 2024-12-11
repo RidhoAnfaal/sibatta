@@ -1,83 +1,52 @@
-.nav-link ion-icon {
-  margin-left: 5px;
-  font-size: 18px;
-}
-.navbar .person-icon {
-  font-size: 2rem; /* Adjust the size as needed */
+html, body {
+  height: 100%; /* Pastikan body mengambil tinggi penuh */
+  margin: 0; /* Hapus margin default */
 }
 
-.logout-btn {
+body {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  color: white;
-  background-color: #1e2235; /* Warna merah */
-  padding: 10px 20px;
-  font-size: 16px;
-  text-decoration: none;
-  border-radius: 8px;
-  transition: background-color 0.3s ease;
+  flex-direction: column; /* Susun anak secara vertikal */
 }
 
-.logout-btn:hover {
-  background-color: #555; /* Efek hover */
+.container {
+  flex: 1; /* Biarkan kontainer tumbuh dan mengambil ruang yang tersedia */
+  display: flex;
+  flex-direction: column; /* Susun konten di dalam kontainer secara vertikal */
 }
 
-.modal-footer {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  width: calc(100% - 40px);
-}
-
-/* Modal Styling */
-#logoutModal .modal-content {
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-#logoutModal .modal-header {
-  border-bottom: none; /* Menghilangkan garis bawah header */
-  padding: 15px 20px;
+.footer {
+  background-color: #000;
+  color: #ffffff;
+  padding: 10px 15px; /* Mengurangi padding */
   text-align: center;
+  font-size: 0.8rem; /* Ukuran font lebih kecil */
+  width: 100%;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
 }
 
-#logoutModal .modal-title {
-  font-size: 20px;
-  font-weight: 600;
-  margin: 0 auto; /* Memastikan judul berada di tengah */
+.footer p {
+  margin: 5px 0; /* Mengurangi margin antara elemen */
+  line-height: 1.4; /* Menjaga jarak antar baris */
 }
 
-#logoutModal .modal-body {
-  padding: 20px;
-  font-size: 16px;
-  line-height: 1.5;
-  color: #333;
+.footer a {
+  color: #ffc107;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
 }
 
-#logoutModal .modal-footer {
-  border-top: none; /* Menghilangkan garis atas footer */
-  padding: 15px 20px;
+.footer a:hover {
+  text-decoration: underline;
 }
 
-#logoutModal .btn {
-  width: 100px; /* Membuat tombol memiliki lebar konsisten */
+.social-icons a {
+  font-size: 1.2rem; /* Ukuran ikon sosial media lebih kecil */
+  color: #ffc107;
+  margin: 0 5px; /* Memberikan jarak antar ikon */
+  transition: color 0.3s ease;
 }
 
-#logoutModal .btn-secondary {
-  background-color: #6c757d;
-  border: none;
-}
-
-#logoutModal .btn-secondary:hover {
-  background-color: #5a6268;
-}
-
-#logoutModal .btn-danger {
-  background-color: #dc3545;
-  border: none;
-}
-
-#logoutModal .btn-danger:hover {
-  background-color: #c82333;
+.social-icons a:hover {
+  color: #ffffff;
 }

@@ -6,11 +6,11 @@ $database = "sibatta";                      // Your database name
 $username = "";                               // Database username if applicable
 $password = "";                               // Database password if applicable
 
-// Connection options
+//Connection options
 $connInfo = array("Database" => $database, "UID" => $username, "PWD" => $password);
 $conn     = sqlsrv_connect($host, $connInfo);
 
-// Check if connection was successful
+//Check if connection was successful
 if (!$conn) {
     echo "Koneksi Gagal";
     die("Connection failed: " . print_r(sqlsrv_errors(), true));

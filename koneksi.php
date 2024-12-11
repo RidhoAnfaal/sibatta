@@ -1,5 +1,4 @@
 <?php
-// File: Database.php
 class Koneksi
 {
     private $serverName;
@@ -11,8 +10,8 @@ class Koneksi
         $this->serverName = "LAPTOP-DL9EJTU3\MSSQLSERVER01"; // Server name and instance
         $this->connectionOptions = [
             "Database" => "sibatta",
-            "UID" => "", // Database username
-            "PWD" => "", // Database password
+            "UID" => "", 
+            "PWD" => "", 
         ];
     }
 

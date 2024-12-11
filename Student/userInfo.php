@@ -54,7 +54,8 @@ if (!$student) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Information</title>
-    <link rel="stylesheet" href="css/main_student.css">
+    <link rel="stylesheet" href="css/userinfo.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
     <!-- Header -->
@@ -64,42 +65,59 @@ if (!$student) {
         <?php include 'Sidebar.php'; ?>
 
         <!-- Main Content -->
-<div class="container mt-4">
-    <div class="card">
-        <h1 class="text-center">Profil</h1>
-        <div class="card-body">
-            <!-- Table to display user and student information -->
-            <table class="table table-striped">
-                <tbody>
-                    <tr>
-                        <td><strong>Student ID</strong></td>
-                        <td><?php echo htmlspecialchars($student['student_id']); ?></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Username</strong></td>
-                        <td><?php echo htmlspecialchars($student['fullName']); ?></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Class</strong></td>
-                        <td><?php echo htmlspecialchars($student['kelas']); ?></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Study Program</strong></td>
-                        <td><?php echo htmlspecialchars($student['prodi']); ?></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Email</strong></td>
-                        <td><?php echo htmlspecialchars($userData['email']); ?></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Status</strong></td>
-                        <td><?php echo htmlspecialchars($userData['role']); ?></td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="container mt-4">
+            <div class="card">
+                <h1>Welcome, <?php echo htmlspecialchars($student['fullName']); ?></h1>
+                <div class="card-body">
+                    <!-- Table to display user and student information -->
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <td><strong>Username</strong></td>
+                                <td><?php echo htmlspecialchars($userData['username']); ?></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Email</strong></td>
+                                <td><?php echo htmlspecialchars($userData['email']); ?></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Student ID</strong></td>
+                                <td><?php echo htmlspecialchars($student['student_id']); ?></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Study Program</strong></td>
+                                <td><?php echo htmlspecialchars($student['prodi']); ?></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Role</strong></td>
+                                <td><<?php echo htmlspecialchars($userData['role']); ?></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-4">
+        <div class="container text-center">
+            <p>&copy; 2024 <strong>SIBATTA</strong>. All rights reserved.</p>
+            <p>Contact us: <a href="mailto:support@sibatta.com">support@sibatta.com</a></p>
+            <div class="social-icons">
+                <a href="https://facebook.com" target="_blank" class="me-3">
+                    <i class="bi bi-facebook"></i>
+                </a>
+                <a href="https://twitter.com" target="_blank" class="me-3">
+                    <i class="bi bi-twitter"></i>
+                </a>
+                <a href="https://instagram.com" target="_blank">
+                    <i class="bi bi-instagram"></i>
+                    </a>
+                </div>
+            </div>
+        </footer>
+    </div>
 
 </body>
 </html>

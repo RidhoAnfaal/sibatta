@@ -11,7 +11,7 @@ class UserManagement {
 
     // Function to fetch all students
     public function fetchAllStudents() {
-        $query = "SELECT student.student_id, [user].username, [user].email, student.prodi, student.fullName 
+        $query = "SELECT student.student_id, [user].username, [user].password, [user].email, student.prodi, student.fullName 
                   FROM sibatta.student 
                   JOIN sibatta.[user] ON sibatta.student.user_id = sibatta.[user].user_id
                   WHERE sibatta.[user].role = 'student';";
@@ -22,29 +22,33 @@ class UserManagement {
     }
 
     // Function to add a new student
-    public function addStudent($username, $email, $prodi, $fullName) {
-        try {
-            $this->db->beginTransaction();
+    public function addStudent($username, $password, $email, $prodi, $fullName) {
+      try {
+          $this->db->beginTransaction();
 
-            // Insert into user table
-            $userQuery = "INSERT INTO [user] (username, email, role) VALUES (:username, :email, 'student');";
-            $stmt = $this->db->prepare($userQuery);
-            $stmt->execute(['username' => $username, 'email' => $email]);
+          // Hash the password
+          $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-            $userId = $this->db->lastInsertId(); // SQL Server supports lastInsertId with PDO.
+          // Insert into user table
+          $userQuery = "INSERT INTO [user] (username, password, email, role) VALUES (:username, :password, :email, 'student');";
+          $stmt = $this->db->prepare($userQuery);
+          $stmt->execute(['username' => $username, 'password' => $hashedPassword, 'email' => $email]);
 
-            // Insert into student table
-            $studentQuery = "INSERT INTO student (user_id, prodi, fullName) VALUES (:user_id, :prodi, :fullName);";
-            $stmt = $this->db->prepare($studentQuery);
-            $stmt->execute(['user_id' => $userId, 'prodi' => $prodi, 'fullName' => $fullName]);
+          $userId = $this->db->lastInsertId();
 
-            $this->db->commit();
-            return true;
-        } catch (Exception $e) {
-            $this->db->rollBack();
-            return false;
-        }
-    }
+          // Insert into student table
+          $studentQuery = "INSERT INTO student (user_id, prodi, fullName) VALUES (:user_id, :prodi, :fullName);";
+          $stmt = $this->db->prepare($studentQuery);
+          $stmt->execute(['user_id' => $userId, 'prodi' => $prodi, 'fullName' => $fullName]);
+
+          $this->db->commit();
+          return true;
+      } catch (Exception $e) {
+          $this->db->rollBack();
+          error_log("Error adding student: " . $e->getMessage());
+          return false;
+      }
+  }
 
     // Function to delete a student
     public function deleteStudent($studentId) {
@@ -108,7 +112,7 @@ try {
         $action = $_POST['action'] ?? '';
 
         if ($action === 'add') {
-            $userManager->addStudent($_POST['username'], $_POST['email'], $_POST['prodi'], $_POST['fullName']);
+          $userManager->addStudent($_POST['username'], $_POST['password'], $_POST['email'], $_POST['prodi'], $_POST['fullName']);
         } elseif ($action === 'update') {
             $userManager->updateStudent($_POST['student_id'], $_POST['username'], $_POST['email'], $_POST['prodi'], $_POST['fullName']);
         } elseif ($action === 'delete') {
@@ -121,7 +125,6 @@ try {
 } catch (Exception $e) {
     die("Error: " . $e->getMessage());
 }
-
 ?>
 
 <!doctype html>
@@ -227,39 +230,47 @@ try {
 
     <!-- Add Student Modal -->
     <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
+    <div class="modal-dialog">
         <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Add New Student</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form method="POST">
-              <input type="hidden" name="action" value="add">
-              <div class="mb-3">
-                <label for="fullName" class="form-label">Full Name</label>
-                <input type="text" class="form-control" id="fullName" name="fullName" required>
-              </div>
-              <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" name="email" required>
-              </div>
-              <div class="mb-3">
-                <label for="prodi" class="form-label">Program</label>
-                <select class="form-select" id="prodi" name="prodi" required>
-                  <option value="Teknik Informatika">Teknik Informatika</option>
-                  <option value="Sistem Informasi">Sistem Informasi</option>
-                </select>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary">Add</button>
-              </div>
-            </form>
-          </div>
+            <div class="modal-header">
+                <h5 class="modal-title">Add New Student</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST">
+                    <input type="hidden" name="action" value="add">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="fullName" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="fullName" name="fullName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="prodi" class="form-label">Program</label>
+                        <select class="form-select" id="prodi" name="prodi" required>
+                            <option value="Teknik Informatika">Teknik Informatika</option>
+                            <option value="Sistem Informasi">Sistem Informasi</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </div>
+                </form>
+            </div>
         </div>
-      </div>
     </div>
+</div>
 
   </div>
 

@@ -59,7 +59,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
   <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-  <link rel="stylesheet" href="css/main.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="css/add_user.css">
 </head>
 
@@ -96,6 +96,23 @@
         </tbody>
       </table>
     </div>
+
+        <!-- footeer -->
+        <div class="footer fixed-bottom text-center mb-2">
+    <p>&copy; 2024 <strong>SIBATTA</strong>. All rights reserved.</p>
+            <p>Contact us: <a href="mailto:support@sibatta.com">support@sibatta.com</a></p>
+            <div class="social-icons">
+                <a href="https://facebook.com" target="_blank" class="me-3">
+                    <i class="bi bi-facebook"></i>
+                </a>
+                <a href="https://twitter.com" target="_blank" class="me-3">
+                    <i class="bi bi-twitter"></i>
+                </a>
+                <a href="https://instagram.com" target="_blank">
+                    <i class="bi bi-instagram"></i>
+                </a>
+            </div>
+        </div>
 
     <!-- Modal to Add User -->
     <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
@@ -157,11 +174,6 @@
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- footeer -->
-    <div class="fixed-bottom text-center mb-2">
-      &copy; Copyright Rey 2024
     </div>
 
 </body>
