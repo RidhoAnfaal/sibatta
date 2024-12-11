@@ -9,6 +9,10 @@
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
         #overlay {
             position: fixed;
             top: 0;
@@ -16,14 +20,13 @@
             width: 100vw;
             height: 100vh;
             background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1070;
+            z-index: 1040;
             display: none;
             transition: opacity 0.3s ease-in-out;
         }
 
         #overlay.active {
             display: block;
-            opacity: 1;
         }
 
         #sidebar {
@@ -42,25 +45,20 @@
             left: 0;
         }
 
-        #overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1040;
-            /* Just below the sidebar */
-            display: none;
+        #sidebar .nav-link {
+            font-weight: 500;
+            transition: transform 0.3s ease, color 0.3s ease;
         }
 
-        #overlay.active {
-            display: block;
+        #sidebar .nav-link:hover {
+            transform: translateX(5px);
+            color: #000 ;
         }
 
-        /* Ensure the sidebar toggle button is clickable */
-        #sidebarToggle {
-            z-index: 1060;
+        #sidebar .nav-link.active {
+            background-color: #333;
+            color: white !important;
+            border-radius: 500px;
         }
 
         .logout-btn {
@@ -68,18 +66,17 @@
             align-items: center;
             justify-content: center;
             color: white;
-            background-color: #1e2235;
+            background-color: #333;
             padding: 10px 20px;
             font-size: 16px;
             text-decoration: none;
             border-radius: 8px;
             transition: background-color 0.3s ease;
             width: 100%;
-            height: 100%;
         }
 
         .logout-btn:hover {
-            background-color: #555;
+            background-color: #000;
         }
 
         .logout-container {
@@ -90,43 +87,36 @@
             padding: 20px;
         }
 
-        /* Modal Styling */
         #logoutModal .modal-content {
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
 
         #logoutModal .modal-header {
+            background-color: #343a40;
+            color: white;
             border-bottom: none;
-            padding: 15px 20px;
             text-align: center;
         }
 
         #logoutModal .modal-title {
             font-size: 20px;
             font-weight: 600;
-            margin: 0 auto;
         }
 
         #logoutModal .modal-body {
             padding: 20px;
             font-size: 16px;
-            line-height: 1.5;
             color: #333;
+            text-align: center;
         }
 
         #logoutModal .modal-footer {
             border-top: none;
-            padding: 15px 20px;
-        }
-
-        #logoutModal .btn {
-            width: 100px;
         }
 
         #logoutModal .btn-secondary {
             background-color: #6c757d;
-            border: none;
         }
 
         #logoutModal .btn-secondary:hover {
@@ -134,68 +124,74 @@
         }
 
         #logoutModal .btn-danger {
-            background-color: #dc3545;
-            border: none;
+            background-color: #6c757d;
         }
 
         #logoutModal .btn-danger:hover {
-            background-color: #c82333;
+            background-color: #5a6268;
+        }
+
+        @media (max-width: 768px) {
+            #sidebar {
+                width: 200px;
+            }
         }
     </style>
 </head>
 
 <body>
+    <!-- Overlay -->
+    <div id="overlay"></div>
+
     <!-- Sidebar -->
     <div id="sidebar">
         <div class="text-center p-3">
             <img src="css/images/Logo_Sibatta.png" alt="Logo" width="50" height="40" class="img-fluid">
             <h5 class="mt-2 text-dark">SIBATTA</h5>
         </div>
+        <?php
+        $current_page = basename($_SERVER['PHP_SELF']); // Mendapatkan nama file saat ini
+        ?>
         <ul class="nav flex-column">
             <li class="nav-item mb-3">
-                <a class="nav-link text-dark d-flex align-items-center" href="Dashboard.php">
+                <a class="nav-link <?php echo $current_page == 'Dashboard.php' ? 'active' : ''; ?> text-dark d-flex align-items-center" href="Dashboard.php">
                     <ion-icon name="home-outline" class="me-2"></ion-icon> <span>Beranda</span>
                 </a>
             </li>
             <li class="nav-item mb-3">
-                <a class="nav-link text-dark d-flex align-items-center" href="upload.php">
+                <a class="nav-link  <?php echo $current_page == 'upload.php' ? 'active' : ''; ?>text-dark d-flex align-items-center" href="upload.php">
                     <ion-icon name="cloud-upload-outline" class="me-2"></ion-icon> <span>Upload TA</span>
                 </a>
             </li>
         </ul>
-        <div class="modal-footer">
-            <button class="logout-btn btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">
-                <ion-icon name="log-out-outline" style="font-size: 20px;"></ion-icon>
-                <span>Log Out</span>
-                </a>
-        </div>
 
+
+        <div class="logout-container">
+            <button class="logout-btn btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                <ion-icon name="log-out-outline"></ion-icon>
+                <span>Log Out</span>
+            </button>
+        </div>
     </div>
 
-    <!-- Overlay -->
-    <div id="overlay"></div>
-
-    <!-- Log Out -->
     <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <!-- Header -->
-                <div class="modal-header bg-danger text-white">
+                <div class="modal-header">
                     <h5 class="modal-title mx-auto" id="logoutModalLabel">Apakah Anda yakin ingin keluar dari akun Anda?</h5>
                 </div>
-                <!-- Body -->
-                <div class="modal-body text-center">
+                <div class="modal-body">
                     <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Batal</button>
                     <a href="../logout.php" class="btn btn-danger">Log Out</a>
                 </div>
-
             </div>
         </div>
     </div>
 
 
-     <!-- JavaScript -->
-     <script>
+
+    <!-- JavaScript -->
+    <script>
         const sidebarToggle = document.getElementById('sidebarToggle');
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
