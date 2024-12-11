@@ -89,29 +89,19 @@ sqlsrv_free_stmt($stmt);
             </div>
         </div>
 
-        <div class="info-card mt-4">
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Important Information</h5>
-            <p class="card-text">
-                Information Here
-            </p>
+        <!-- Notification Pop-up -->
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+            <div id="toastMessage" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <strong class="me-auto">Notification</strong>
+                    <small>just now</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    You have a new update on your report!
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-
-            <!-- Other content can go here -->
-        </div>
-
-        <div class="toast" id="toastMessage" role="alert" aria-live="assertive" aria-atomic="true" style="position: fixed; top: 20px; right: 20px; z-index: 1050;">
-    <div class="toast-header">
-        <strong class="me-auto">Notification</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body">
-        Welcome to SIBATTA! You have successfully logged in.
-    </div>
-</div>
 
         <!-- Optional JavaScript -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

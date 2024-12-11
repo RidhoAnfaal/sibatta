@@ -48,7 +48,6 @@ if (!$student) {
     die("No student data found for user_id: " . htmlspecialchars($userData['user_id']));
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -97,6 +96,5 @@ if (!$student) {
                 </div>
             </div>
         </div>
-    </div>
 </body>
 </html>

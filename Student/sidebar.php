@@ -165,7 +165,7 @@
             </li>
             <li class="nav-item mb-3">
                 <a class="nav-link text-dark <?php echo $current_page == 'userInfo.php' ? 'active' : ''; ?> text-dark d-flex align-items-center" href="userInfo.php">
-                <ion-icon name="person-circle-outline" class="me-2"></ion-icon> <span>User Info</span>
+                <ion-icon name="person-circle-outline" class="me-2"></ion-icon> <span>Upload TA</span>
                 </a>
             </li>
         </ul>

@@ -207,18 +207,11 @@
         });
 
         function confirmLogout(event) {
-<<<<<<< HEAD
-            event.preventDefault(); // Prevent langsung keluar
-            if (confirm("Apakah Anda yakin ingin log out?")) {
-                window.location.href = "../index.php";
-=======
                 event.preventDefault(); // Prevent langsung keluar
                 if (confirm("Apakah Anda yakin ingin log out?")) {
                     window.location.href = "../logout.php";
                 }
->>>>>>> 63490870b9df8952e97b6436089684c68918bdb1
             }
-        }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

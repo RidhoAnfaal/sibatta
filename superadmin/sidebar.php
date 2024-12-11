@@ -160,7 +160,7 @@
             </li>
             <li class="nav-item mb-3">
                 <a class="nav-link text-dark <?php echo $current_page == 'history.php' ? 'active' : ''; ?>" href="history.php">
-                    <ion-icon name="time-outline" class="me-2"></ion-icon> <span>Riwayat</span>
+                    <ion-icon name="time-outline" class="me-2"></ion-icon> <span>History</span>
                 </a>
             </li>
             <li class="nav-item mb-3">
