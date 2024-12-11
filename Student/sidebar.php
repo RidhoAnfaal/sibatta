@@ -154,13 +154,18 @@
         ?>
         <ul class="nav flex-column">
             <li class="nav-item mb-3">
-                <a class="nav-link <?php echo $current_page == 'Dashboard.php' ? 'active' : ''; ?> text-dark d-flex align-items-center" href="Dashboard.php">
+                <a class="nav-link text-dark <?php echo $current_page == 'Dashboard.php' ? 'active' : ''; ?> text-dark d-flex align-items-center" href="Dashboard.php">
                     <ion-icon name="home-outline" class="me-2"></ion-icon> <span>Beranda</span>
                 </a>
             </li>
             <li class="nav-item mb-3">
-                <a class="nav-link  <?php echo $current_page == 'upload.php' ? 'active' : ''; ?>text-dark d-flex align-items-center" href="upload.php">
-                    <ion-icon name="cloud-upload-outline" class="me-2"></ion-icon> <span>Upload TA</span>
+                <a class="nav-link text-dark <?php echo $current_page == 'upload.php' ? 'active' : ''; ?> text-dark d-flex align-items-center" href="upload.php">
+                <ion-icon name="cloud-upload-outline" class="me-2"></ion-icon> <span>Upload TA</span>
+                </a>
+            </li>
+            <li class="nav-item mb-3">
+                <a class="nav-link text-dark <?php echo $current_page == 'userInfo.php' ? 'active' : ''; ?> text-dark d-flex align-items-center" href="userInfo.php">
+                <ion-icon name="person-circle-outline" class="me-2"></ion-icon> <span>Upload TA</span>
                 </a>
             </li>
         </ul>
