@@ -56,19 +56,21 @@ if ($viewdata === false) {
 
 <body>
     <!-- Header -->
-    <?php include 'navbar.php'; ?>
-    <?php include 'Sidebar.php'; ?>
+    
+   <!-- Header -->
+   <?php include 'navbar.php'; ?>
 
-    <!-- Main Content -->
+<div class="d-flex">
+    <?php include 'Sidebar.php'; ?>
     <div class="container mt-4">
+        <!-- Search Bar -->
         <form method="GET" class="mb-3">
-            <div class="input-group">
-                <input type="text" class="form-control" name="search" placeholder="Search by username, title, or document ID"
-                    value="<?php echo htmlspecialchars($search); ?>"> 
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            <div class="input-group ms-auto" style="max-width: 300px;">
+                <input type="text" class="form-control" name="search" placeholder="Search" value="<?php echo htmlspecialchars($search); ?>">
+                <button class="btn btn-outline-success" type="submit">Search</button>
             </div>
         </form>
-
+        
         <div class="container mt-4">
             <h3>Documents List</h3>
             <table class="table table-striped">

@@ -1,0 +1,4 @@
+.input-group {
+    max-width: 300px; /* Mengatur lebar maksimal untuk search bar */
+    margin: 10 auto; /* Menempatkan elemen di tengah */
+}
