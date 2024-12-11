@@ -25,18 +25,16 @@ class UserManagement {
     public function addStudent($username, $password, $email, $prodi, $fullName) {
       try {
           $this->db->beginTransaction();
-
-          // Hash the password
+          // hash pw
           $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-          // Insert into user table
+          // insert
           $userQuery = "INSERT INTO [user] (username, password, email, role) VALUES (:username, :password, :email, 'student');";
           $stmt = $this->db->prepare($userQuery);
           $stmt->execute(['username' => $username, 'password' => $hashedPassword, 'email' => $email]);
 
           $userId = $this->db->lastInsertId();
 
-          // Insert into student table
+          // insert
           $studentQuery = "INSERT INTO student (user_id, prodi, fullName) VALUES (:user_id, :prodi, :fullName);";
           $stmt = $this->db->prepare($studentQuery);
           $stmt->execute(['user_id' => $userId, 'prodi' => $prodi, 'fullName' => $fullName]);
@@ -100,7 +98,7 @@ class UserManagement {
     }
 }
 
-// Instantiate the UserManagement class
+// Inst UserManagement class
 try {
     $dbConnection = new PDO('sqlsrv:Server=MSI;Database=sibatta', '', ''); // Update with your DB credentials
     $dbConnection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -120,7 +118,7 @@ try {
         }
     }
 
-    // Fetch all students for display
+    // fetch students for display
     $students = $userManager->fetchAllStudents();
 } catch (Exception $e) {
     die("Error: " . $e->getMessage());
@@ -139,13 +137,13 @@ try {
 </head>
 
 <body>
-  <!-- Header -->
+  <!-- header -->
   <?php include 'navbar.php'; ?>
 
   <div class="d-flex">
     <?php include 'sidebar.php'; ?>
 
-    <!-- Main Content -->
+    <!-- main -->
     <div class="container mt-4">
       <div class="d-flex justify-content-between align-items-center">
         <h2>Student List</h2>
@@ -187,7 +185,7 @@ try {
               </td>
             </tr>
 
-            <!-- Update Modal -->
+            <!-- update -->
             <div class="modal fade" id="updateStudentModal-<?php echo $student['student_id']; ?>" tabindex="-1" aria-labelledby="updateStudentModalLabel" aria-hidden="true">
               <div class="modal-dialog">
                 <div class="modal-content">
@@ -228,7 +226,7 @@ try {
       </table>
     </div>
 
-    <!-- Add Student Modal -->
+    <!-- add -->
     <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
