@@ -62,8 +62,6 @@
         }
 
         #sidebar .nav-link:hover {
-            background-color: #444;
-            /* Warna hover */
             color: white;
         }
 
