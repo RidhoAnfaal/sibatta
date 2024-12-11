@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['files'])) {
 
             // Check if there were any errors with the upload
             if ($fileError === UPLOAD_ERR_OK) {
-                
+
                 // Validate the file size (e.g., limit to 5MB)
                 if ($fileSize > 5 * 1024 * 1024) {
                     $message = 'File size exceeds the limit of 5MB.';
@@ -129,7 +129,7 @@ if ($stmt) {
 
         <!-- Main Content -->
         <div class="container mt-4">
-            
+
             <h1>Upload File</h1>
             <?php if ($message): ?>
                 <div class="alert alert-info"><?php echo $message; ?></div>
@@ -189,40 +189,6 @@ if ($stmt) {
             </div>
         </div>
     </div>
-
-    <!-- Optional JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-
-        // Close sidebar when overlay is clicked
-        overlay.addEventListener('click', () => {
-            sidebar.classList.remove('active');
-            overlay.classList.remove('active');
-        });
-
-        function confirmLogout(event) {
-            event.preventDefault(); // Prevent langsung keluar
-            if (confirm("Apakah Anda yakin ingin log out?")) {
-                window.location.href = "../index.php";
-            }
-        }
-        document.getElementById("composeBtn").addEventListener("click", function() {
-            // Hide default content and show the compose form
-            document.getElementById("defaultContent").style.display = "none";
-            document.getElementById("composeForm").style.display = "block";
-        });
-
-        // Reset modal content when it is closed
-        const emailModal = document.getElementById('emailModal');
-        emailModal.addEventListener('hidden.bs.modal', function() {
-            // Reset content to show default content
-            document.getElementById("defaultContent").style.display = "block";
-            document.getElementById("composeForm").style.display = "none";
-        });
-    </script>
 </body>
 
 </html>

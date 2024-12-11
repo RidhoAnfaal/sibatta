@@ -99,14 +99,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <script>
         // Client-side validation
         (function () {
-            'use strict'
-            var forms = document.querySelectorAll('.needs-validation')
-            Array.prototype.slice.call(forms)
-                .forEach(function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }
-                        form.classList.add('was-validated')
-                  
+        'use strict';
+
+        // Ambil semua formulir dengan class 'needs-validation'
+        var forms = document.querySelectorAll('.needs-validation');
+
+        // Loop semua form dan tambahkan event listener
+        Array.prototype.slice.call(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    // Jika form tidak valid, hentikan submit
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                // Tambahkan class 'was-validated' untuk memberikan feedback
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+    </script>

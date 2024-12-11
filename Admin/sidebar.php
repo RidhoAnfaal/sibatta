@@ -212,6 +212,13 @@
             sidebar.classList.remove('active');
             overlay.classList.remove('active');
         });
+
+        function confirmLogout(event) {
+                event.preventDefault(); // Prevent langsung keluar
+                if (confirm("Apakah Anda yakin ingin log out?")) {
+                    window.location.href = "login.php";
+                }
+            }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

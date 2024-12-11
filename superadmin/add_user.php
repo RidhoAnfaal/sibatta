@@ -11,10 +11,10 @@ $username = "root";
 $password = "";
 $dbname = "sibatta";
 
-//$conn = new mysqli($host, $username, $password, $dbname);
-//if ($conn->connect_error) {
-//  die("Connection failed: " . $conn->connect_error);
-// }
+$conn = new mysqli($host, $username, $password, $dbname);
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   // Get form data
@@ -64,125 +64,106 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 
 <body>
-    <!-- Header -->
-      <?php include 'navbar.php'; ?>
+  <!-- Header -->
+  <?php include 'navbar.php'; ?>
 
   <div class="d-flex">
     <?php include 'Sidebar.php'; ?>
 
-  <!-- Table and Add User Section -->
-  <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center">
-      <h2>User List</h2>
-      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal"><i class="bi bi-person-plus-fill"></i> Add User</button>
+    <!-- Table and Add User Section -->
+    <div class="container mt-4">
+      <div class="d-flex justify-content-between align-items-center">
+        <h2>User List</h2>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addUserModal"><i class="bi bi-person-plus-fill"></i> Add User</button>
+      </div>
+      <div class="my-3">
+        <input type="text" class="form-control" id="search" placeholder="Search..." />
+      </div>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>NIM</th>
+            <th>Nama</th>
+            <th>Email</th>
+            <th>No Telepon</th>
+            <th>Prodi</th>
+            <th>Level</th>
+          </tr>
+        </thead>
+        <tbody id="userTableBody">
+          <!-- Populate with PHP dynamically -->
+        </tbody>
+      </table>
     </div>
-    <div class="my-3">
-      <input type="text" class="form-control" id="search" placeholder="Search..." />
-    </div>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>No</th>
-          <th>NIM</th>
-          <th>Nama</th>
-          <th>Email</th>
-          <th>No Telepon</th>
-          <th>Prodi</th>
-          <th>Level</th>
-        </tr>
-      </thead>
-      <tbody id="userTableBody">
-        <!-- Populate with PHP dynamically -->
-      </tbody>
-    </table>
-  </div>
 
-  <!-- Modal to Add User -->
-  <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addUserModalLabel">Add New User</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form method="POST" action="add_user_process.php">
-            <div class="mb-3">
-              <label for="ID" class="form-label">NIM</label>
-              <input type="text" class="form-control" id="ID" name="ID" required>
-            </div>
-            <div class="mb-3">
-              <label for="username" class="form-label">Nama</label>
-              <input type="text" class="form-control" id="username" name="username" required>
-            </div>
-            <div class="mb-3">
-              <label for="email" class="form-label">Email</label>
-              <input type="email" class="form-control" id="email" name="email" required>
-            </div>
-            <div class="mb-3">
-              <label for="no_telepon" class="form-label">No Telepon</label>
-              <input type="text" class="form-control" id="no_telepon" name="no_telepon" required>
-            </div>
-            <div class="mb-3">
-              <label for="prodi" class="form-label">Prodi</label>
-              <select class="form-select" id="prodi" name="prodi" required>
-                <option value="user">Teknologi Informasi</option>
-                <option value="admin">Sistem Informasi Bisnis</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label for="password" class="form-label">Password</label>
-              <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-            <div class="mb-3">
-              <label for="confirm_password" class="form-label">Confirm Password</label>
-              <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
-            </div>
-            <div class="mb-3">
-              <label for="level" class="form-label">User Level</label>
-              <select class="form-select" id="level" name="level" required>
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div>
-            <br>
-            <br>
-            <br>
+    <!-- Modal to Add User -->
+    <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addUserModalLabel">Add New User</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form method="POST" action="add_user_process.php">
+              <div class="mb-3">
+                <label for="ID" class="form-label">NIM</label>
+                <input type="text" class="form-control" id="ID" name="ID" required>
+              </div>
+              <div class="mb-3">
+                <label for="username" class="form-label">Nama</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+              </div>
+              <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+              </div>
+              <div class="mb-3">
+                <label for="no_telepon" class="form-label">No Telepon</label>
+                <input type="text" class="form-control" id="no_telepon" name="no_telepon" required>
+              </div>
+              <div class="mb-3">
+                <label for="prodi" class="form-label">Prodi</label>
+                <select class="form-select" id="prodi" name="prodi" required>
+                  <option value="user">Teknologi Informasi</option>
+                  <option value="admin">Sistem Informasi Bisnis</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+              </div>
+              <div class="mb-3">
+                <label for="confirm_password" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+              </div>
+              <div class="mb-3">
+                <label for="level" class="form-label">User Level</label>
+                <select class="form-select" id="level" name="level" required>
+                  <option value="user">User</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+              <br>
+              <br>
+              <br>
 
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-              <button type="submit" class="btn btn-primary">Add</button>
-            </div>
-          </form>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Add</button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- footeer -->
-  <div class="fixed-bottom text-center mb-2">
-    &copy; Copyright Rey 2024
-  </div>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
+    <!-- footeer -->
+    <div class="fixed-bottom text-center mb-2">
+      &copy; Copyright Rey 2024
+    </div>
 
-    // Search functionality
-    document.getElementById('search').addEventListener('input', function() {
-      let filter = this.value.toUpperCase();
-      let rows = document.getElementById('userTableBody').getElementsByTagName('tr');
-      for (let i = 0; i < rows.length; i++) {
-        let cells = rows[i].getElementsByTagName('td');
-        let found = false;
-        for (let j = 0; j < cells.length; j++) {
-          if (cells[j].innerText.toUpperCase().includes(filter)) {
-            found = true;
-            break;
-          }
-        }
-        rows[i].style.display = found ? '' : 'none';
-      }
-    });
-  </script>
 </body>
 
 </html>

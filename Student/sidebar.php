@@ -11,12 +11,12 @@
     <style>
         #overlay {
             position: fixed;
-            top: 0; 
+            top: 0;
             left: 0;
             width: 100vw;
-            height: 100vh; 
+            height: 100vh;
             background-color: rgba(0, 0, 0, 0.5);
-            z-index: 1070; 
+            z-index: 1070;
             display: none;
             transition: opacity 0.3s ease-in-out;
         }
@@ -29,14 +29,15 @@
         #sidebar {
             position: fixed;
             left: -250px;
-            top: 0; 
-            height: 100vh; 
+            top: 0;
+            height: 100vh;
             width: 250px;
             background-color: #f8f9fa;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
             transition: left 0.3s ease-in-out;
-            z-index: 1060; 
+            z-index: 1060;
         }
+
         #sidebar.active {
             left: 0;
         }
@@ -163,13 +164,13 @@
             </li>
         </ul>
         <div class="modal-footer">
-        <button class="logout-btn btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">
-        <ion-icon name="log-out-outline" style="font-size: 20px;"></ion-icon>
-        <span>Log Out</span>
-    </a>
-</div>
+            <button class="logout-btn btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                <ion-icon name="log-out-outline" style="font-size: 20px;"></ion-icon>
+                <span>Log Out</span>
+                </a>
+        </div>
 
-    </div>  
+    </div>
 
     <!-- Overlay -->
     <div id="overlay"></div>
@@ -193,8 +194,8 @@
     </div>
 
 
-    <!-- JavaScript -->
-    <script>
+     <!-- JavaScript -->
+     <script>
         const sidebarToggle = document.getElementById('sidebarToggle');
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
@@ -208,6 +209,13 @@
             sidebar.classList.remove('active');
             overlay.classList.remove('active');
         });
+
+        function confirmLogout(event) {
+                event.preventDefault(); // Prevent langsung keluar
+                if (confirm("Apakah Anda yakin ingin log out?")) {
+                    window.location.href = "login.php";
+                }
+            }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

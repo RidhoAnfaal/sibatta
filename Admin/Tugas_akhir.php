@@ -62,8 +62,8 @@ if ($viewdata === false) {
     <div class="container mt-4">
         <form method="GET" class="mb-3">
             <div class="input-group">
-                <input type="text" class="form-control" name="search" placeholder="Search by username, title, or document ID" 
-                       value="<?php echo htmlspecialchars($search); ?>">
+                <input type="text" class="form-control" name="search" placeholder="Search by username, title, or document ID"
+                    value="<?php echo htmlspecialchars($search); ?>">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </div>
         </form>
@@ -122,24 +122,6 @@ if ($viewdata === false) {
             </table>
         </div>
     </div>
-
-    <!-- Optional JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-
-        sidebarToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
-        });
-
-        overlay.addEventListener('click', () => {
-            sidebar.classList.remove('active');
-            overlay.classList.remove('active');
-        });
-    </script>
 </body>
 
 </html>

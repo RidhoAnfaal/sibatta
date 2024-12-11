@@ -154,6 +154,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.getElementById("composeBtn").addEventListener("click", function() {
                 // Hide default content and show the compose form
