@@ -51,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>PBL</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="superadmin/css/login.css">
 </head>
 
 <body class="d-flex align-items-center py-4 bg-body-tertiary">
