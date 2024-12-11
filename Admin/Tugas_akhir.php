@@ -25,7 +25,7 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
 $query = "SELECT [document_id], [user_id], [title], [uploaded_at], [validated_by], [username], [file_path] 
           FROM [sibatta].[sibatta].[document]";
 
- Tambahkan filter pencarian jika ada
+ //Tambahkan filter pencarian jika ada
 if (!empty($search)) {
     $query .= " WHERE [username] LIKE ? OR [title] LIKE ? OR CAST([document_id] AS NVARCHAR) LIKE ?";
     $params = ["%$search%", "%$search%", "%$search%"];
@@ -126,8 +126,10 @@ if ($viewdata === false) {
         </div>
     </div>
 
-            <!-- Footer -->
-            <footer class="footer mt-auto py-4">
+          
+    </div>
+  <!-- Footer -->
+  <footer class="footer mt-auto py-4">
             <div class="container text-center">
                 <p>&copy; 2024 <strong>SIBATTA</strong>. All rights reserved.</p>
                 <p>Contact us: <a href="mailto:support@sibatta.com">support@sibatta.com</a></p>
@@ -144,8 +146,6 @@ if ($viewdata === false) {
                 </div>
             </div>
         </footer>
-    </div>
-
 </body>
 
 </html>

@@ -168,16 +168,7 @@
                     <ion-icon name="home-outline" class="me-2"></ion-icon> <span>Beranda</span>
                 </a>
             </li>
-            <!-- <li class="nav-item mb-3">
-                <a class="nav-link text-dark <?php //echo $current_page == 'history.php' ? 'active' : ''; ?>" href="history.php">
-                    <ion-icon name="time-outline" class="me-2"></ion-icon> <span>History</span>
-                </a>
-            </li>
-            <li class="nav-item mb-3">
-                <a class="nav-link text-dark <?php //echo $current_page == 'add_admin.php' ? 'active' : ''; ?>" href="add_admin.php">
-                    <ion-icon name="cloud-upload-outline" class="me-2"></ion-icon> <span>Tambah Admin</span>
-                </a>
-            </li> -->
+            
             <li class="nav-item mb-3">
                 <a class="nav-link text-dark <?php echo $current_page == 'StudentManagement.php' ? 'active' : ''; ?>" href="StudentManagement.php">
                     <ion-icon name="cloud-upload-outline" class="me-2"></ion-icon> <span>Tambah User</span>
