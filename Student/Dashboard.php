@@ -1,14 +1,41 @@
 <?php
-// Start the session
 session_start();
+include 'koneksi.php';
+include '../Admin/koneksi.php';
 
-// Check if the user is logged in, if not redirect to login page
-// if (!isset($_SESSION['username'])) {
-// header('Location: login.php');
-// exit();
-// }
+if (!isset($_SESSION['username'])) {
+    header('Location: index.php');
+    exit();
+}
 
-// $username = $_SESSION['username']; // Get the username from session
+$username = $_SESSION['username'];
+
+$sql = "SELECT 
+            s.student_id, 
+            s.prodi, 
+            s.fullName, 
+            u.username, 
+            u.email, 
+            u.role
+        FROM [sibatta].[sibatta].[student] s
+        JOIN [sibatta].[sibatta].[user] u ON s.user_id = u.user_id
+        WHERE LOWER(u.username) = LOWER(?)";
+
+$params = array($username);
+$stmt = sqlsrv_query($conn, $sql, $params);
+
+if ($stmt === false) {
+    die("SQL Error: " . print_r(sqlsrv_errors(), true));
+}
+
+$userData = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+
+if (!$userData) {
+    echo "<p>No data found for the user.</p>";
+    exit;
+}
+
+sqlsrv_free_stmt($stmt);
 ?>
 
 <!DOCTYPE html>

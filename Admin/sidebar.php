@@ -159,7 +159,7 @@
                 </a>
             </li>
             <li class="nav-item mb-3">
-                <a class="nav-link text-dark <?php echo $current_page == 'add_user.php' ? 'active' : ''; ?>" href="Tugas_akhir.php">
+                <a class="nav-link text-dark <?php echo $current_page == 'Tugas_akhir.php' ? 'active' : ''; ?>" href="Tugas_akhir.php">
                 <ion-icon name="time-outline"></ion-icon> <span>Tugas Akhir</span>
                 </a>
             </li>
