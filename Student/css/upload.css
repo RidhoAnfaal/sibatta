@@ -3,19 +3,14 @@
     margin: 10 auto; /* Menempatkan elemen di tengah */
 }
 
-html,
-body {
-  height: 100%; /* Pastikan latar belakang mencakup seluruh tinggi halaman */
-  margin: 0;
-  padding: 0;
+html, body {
+    height: 100%; /* Ensure the body takes the full height */
+    margin: 0; /* Remove default margin */
 }
 
 body {
-  font-family: "Roboto", sans-serif;
-  background-image: url("images/Background.png");
-  background-size: cover; /* Cover the entire screen */
-  background-position: center; /* Center the image */
-  background-repeat: no-repeat; /* Prevent repeating */
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
 }
 
 .image-container,
