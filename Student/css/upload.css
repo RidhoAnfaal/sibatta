@@ -2,3 +2,119 @@
     max-width: 300px; /* Mengatur lebar maksimal untuk search bar */
     margin: 10 auto; /* Menempatkan elemen di tengah */
 }
+
+html,
+body {
+  height: 100%; /* Pastikan latar belakang mencakup seluruh tinggi halaman */
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  background-image: url("images/Background.png");
+  background-size: cover; /* Cover the entire screen */
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Prevent repeating */
+}
+
+.image-container,
+.card2 {
+  margin-bottom: 40px; /* Tambahkan jarak antar card */
+}
+
+.card2 {
+  width: 1000px; /* Atur lebar card */
+  margin: 0 auto; /* Center jika diperlukan */
+  background: linear-gradient(120deg, #ffffff, #ffffff);
+  line-height: 1.6;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  overflow: hidden;
+  color: #ffffff;
+  padding: 20px;
+}
+
+.card2 .text-container p {
+  font-family: "Open Sans", sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-top: 0; /* Hilangkan jarak atas */
+  margin-bottom: 10px; /* Kurangi jarak bawah */
+  color: #555555;
+  text-align: justify; /* Pastikan teks rata kiri-kanan */
+}
+
+.card2 .text-container h1 {
+  font-family: "Poppins", sans-serif;
+  padding: 0; /* Hilangkan padding tambahan */
+  margin-bottom: 15px; /* Kurangi jarak bawah */
+  margin-top: 15px;
+  color: #343a40;
+}
+
+.card-body {
+  padding: 10px;
+}
+
+.content-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.image-container {
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+  margin-bottom: 30px;
+  position: relative;
+  z-index: 1; 
+}
+
+.text-container p {
+  font-family: "Open Sans", sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  color: #555555;
+  text-align: justify; 
+}
+
+.footer {
+  background-color: #000;
+  color: #ffffff;
+  padding: 10px 15px; 
+  text-align: center;
+  font-size: 0.8rem; 
+  width: 100%;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.footer p {
+  margin: 5px 0; 
+  line-height: 1.4; 
+}
+
+.footer a {
+  color: #ffc107;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+.social-icons a {
+  font-size: 1.2rem; 
+  color: #ffc107;
+  margin: 0 5px; 
+  transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: #ffffff;
+}
