@@ -1,32 +1,32 @@
 html, body {
-    height: 100%; /* Pastikan body mengambil tinggi penuh */
-    margin: 0; /* Hapus margin default */
+    height: 100%; 
+    margin: 0; 
 }
 
 body {
     display: flex;
-    flex-direction: column; /* Susun anak secara vertikal */
+    flex-direction: column; 
 }
 
 .container {
-    flex: 1; /* Biarkan kontainer tumbuh dan mengambil ruang yang tersedia */
+    flex: 1; 
     display: flex;
-    flex-direction: column; /* Susun konten di dalam kontainer secara vertikal */
+    flex-direction: column;
 }
 
 footer {
     background-color: #343a40;
     color: #ffffff;
-    padding: 10px 15px; /* Mengurangi padding */
+    padding: 10px 15px; 
     text-align: center;
-    font-size: 0.8rem; /* Ukuran font lebih kecil */
+    font-size: 0.8rem; 
     width: 100%;
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
   }
   
   .footer p {
-    margin: 5px 0; /* Mengurangi margin antara elemen */
-    line-height: 1.4; /* Menjaga jarak antar baris */
+    margin: 5px 0; 
+    line-height: 1.4; 
   }
   
   .footer a {
@@ -41,9 +41,9 @@ footer {
   }
   
   .social-icons a {
-    font-size: 1.2rem; /* Ukuran ikon sosial media lebih kecil */
+    font-size: 1.2rem; 
     color: #ffc107;
-    margin: 0 5px; /* Memberikan jarak antar ikon */
+    margin: 0 5px; 
     transition: color 0.3s ease;
   }
   
