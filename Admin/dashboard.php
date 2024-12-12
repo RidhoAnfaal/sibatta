@@ -48,14 +48,13 @@ $username = $_SESSION['username']; // Get the username from session
                         <div class="text-container ms-4">
                             <h1>Welcome to SIBATTA</h1>
                             <p>
-                                SIBATTA (Sistem Informasi Bebas Tanggungan Tugas Akhir) This project aims to
-                                implement a system where final-year students (D3, D4, and S2) of Politeknik Negeri Malang
-                                (Polinema) can upload their final project reports (Laporan Akhir, Skripsi, Tesis) to the
-                                Polinema Library website. The system should automate the submission process, validate file
-                                completeness, verify student debt obligations (such as book loans), and issue a "Surat
-                                Keterangan Bebas Tanggungan" (Clearance Letter) once all requirements are fulfilled. This
-                                will enable the student to obtain their diploma, transcripts, and SKPI (Surat Keterangan
-                                Pendamping Ijazah).
+                            SIBATTA (Sistem Informasi Bebas Tanggungan Tugas Akhir) This project aims to implement a system where final-year students (D4) of Information Technology major in Politeknik Negeri Malang (Polinema) can upload their final project reports to the Admin Library. The system should automate the submission process, validate file completeness, verify student final project, Clearance status once all requirements are fulfilled.
+                            </p>
+                            <p>
+                            Library admin:
+Final project publication approval.
+Give final project dependency status
+Recording the final project deposit.
                             </p>
                         </div>
                     </div>

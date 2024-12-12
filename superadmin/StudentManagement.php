@@ -1,6 +1,16 @@
 <?php
 // Database connection configuration
 require_once '../koneksi.php';
+session_start();
+
+//Check if the user is logged in, if not redirect to login page
+if (!isset($_SESSION['username'])) {
+header('Location: index.php');
+exit();
+}
+
+$username = $_SESSION['username']; 
+
 
 class UserManagement {
     private $db;
@@ -100,7 +110,7 @@ class UserManagement {
 
 // Inst UserManagement class
 try {
-    $dbConnection = new PDO('sqlsrv:Server=MSI;Database=sibatta', '', ''); // Update with your DB credentials
+    $dbConnection = new PDO('sqlsrv:Server=LAPTOP-DL9EJTU3\MSSQLSERVER01;Database=sibatta', '', ''); // Update with your DB credentials
     $dbConnection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     $userManager = new UserManagement($dbConnection);
@@ -129,11 +139,14 @@ try {
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-  <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+  <link rel="stylesheet" href="css/student.css">
 </head>
 
 <body>
@@ -206,10 +219,10 @@ try {
                         <input type="email" class="form-control" name="email" value="<?php echo htmlspecialchars($student['email']); ?>" required>
                       </div>
                       <div class="mb-3">
-                        <label for="prodi" class="form-label">Program</label>
+                        <label for="prodi" class="form-label">Study Program</label>
                         <select class="form-select" name="prodi" required>
-                          <option value="Teknik Informatika" <?php echo ($student['prodi'] === 'Teknik Informatika' ? 'selected' : ''); ?>>Teknik Informatika</option>
-                          <option value="Sistem Informasi" <?php echo ($student['prodi'] === 'Sistem Informasi' ? 'selected' : ''); ?>>Sistem Informasi</option>
+                          <option value="Teknik Informatika" <?php echo ($student['prodi'] === 'Teknik Informatika' ? 'selected' : ''); ?>>Informatics Engineering</option>
+                          <option value="Sistem Informasi" <?php echo ($student['prodi'] === 'Sistem Informasi' ? 'selected' : ''); ?>>Business Information System</option>
                         </select>
                       </div>
                       <div class="modal-footer">
@@ -254,10 +267,10 @@ try {
                         <input type="text" class="form-control" id="fullName" name="fullName" required>
                     </div>
                     <div class="mb-3">
-                        <label for="prodi" class="form-label">Program</label>
+                        <label for="prodi" class="form-label">Study Program</label>
                         <select class="form-select" id="prodi" name="prodi" required>
-                            <option value="Teknik Informatika">Teknik Informatika</option>
-                            <option value="Sistem Informasi">Sistem Informasi</option>
+                            <option value="Teknik Informatika">Informatics Engineering</option>
+                            <option value="Sistem Informasi">Business Information System</option>
                         </select>
                     </div>
                     <div class="modal-footer">
@@ -272,7 +285,25 @@ try {
 
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Footer -->
+        <footer class="footer mt-auto py-4">
+            <div class="container text-center">
+                <p>&copy; 2024 <strong>SIBATTA</strong>. All rights reserved.</p>
+                <p>Contact us: <a href="mailto:support@sibatta.com">support@sibatta.com</a></p>
+                <div class="social-icons">
+                    <a href="https://facebook.com" target="_blank" class="me-3">
+                        <i class="bi bi-facebook"></i>
+                    </a>
+                    <a href="https://twitter.com" target="_blank" class="me-3">
+                        <i class="bi bi-twitter"></i>
+                    </a>
+                    <a href="https://instagram.com" target="_blank">
+                        <i class="bi bi-instagram"></i>
+                    </a>
+                </div>
+            </div>
+        </footer>
+  
 </body>
 
 </html>

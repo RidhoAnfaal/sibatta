@@ -165,16 +165,24 @@
         <ul class="nav flex-column">
             <li class="nav-item mb-3">
                 <a class="nav-link text-dark <?php echo $current_page == 'Dashboard.php' ? 'active' : ''; ?>" href="Dashboard.php">
-                    <ion-icon name="home-outline" class="me-2"></ion-icon> <span>Beranda</span>
+                    <ion-icon name="home-outline" class="me-2"></ion-icon> <span>Home</span>
                 </a>
             </li>
             
             <li class="nav-item mb-3">
                 <a class="nav-link text-dark <?php echo $current_page == 'StudentManagement.php' ? 'active' : ''; ?>" href="StudentManagement.php">
-                    <ion-icon name="cloud-upload-outline" class="me-2"></ion-icon> <span>Tambah User</span>
+                <ion-icon name="add"class="me-2"></ion-icon> <span>Add Student</span>
+                </a>
+            </li>
+            <li class="nav-item mb-3">
+                <a class="nav-link text-dark <?php echo $current_page == 'add_admin.php' ? 'active' : ''; ?>" href="add_admin.php">
+                <ion-icon name="person-add-outline" class="me-2"></ion-icon> <span>Add Admin</span>
                 </a>
             </li>
         </ul>
+       
+        
+     
 
 
         <div class="logout-container">

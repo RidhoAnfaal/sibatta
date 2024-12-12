@@ -71,7 +71,7 @@
                             <div class="card-body">
                                 <!-- Upload TA -->
                                 <a class="d-flex align-items-center mb-3 text-dark text-decoration-none <?php echo $current_page == 'userInfo.php' ? 'active' : ''; ?>" href="userInfo.php">
-                                <ion-icon name="person-circle-outline" class="me-2"></ion-icon> Profil
+                                <ion-icon name="person-circle-outline" class="me-2"></ion-icon> Profile
                                 </a>
                                 <!-- Logout -->
                                 <a class="d-flex align-items-center text-dark text-decoration-none" href="../logout.php">
@@ -189,11 +189,11 @@
 
             <div class="modal-body">
                 <div class="mb-3">
-                    <label for="message" class="form-label">Pesan</label>
+                    <label for="message" class="form-label">Message</label>
                     <textarea class="form-control" id="message" name="message" rows="1" required></textarea>
                 </div>
                 <div class="mb-3">
-                    <label for="chatFileInput" class="form-label">Lampiran</label>
+                    <label for="chatFileInput" class="form-label">Attachment</label>
                     <input type="file" id="chatFileInput" name="chat_file" class="form-control">
                 </div>
             </div>

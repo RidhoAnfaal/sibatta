@@ -19,3 +19,34 @@
 <br clear="both">
 
 ###
+
+
+alur
+
+
+User(Mahasiswa)
+-login✅
+-menerima email
+-Upload Dokumen
+(revisi:
+ 1. upload TA
+ 2. upload surat)
+-Lihat Reaksi✅
+-Log Out✅
+- profile✅
+
+user(Admin perpus,
+tambahin admin jurusan(tugase acc project))
+-Melihat Dokumen ✅
+-download dokumen✅
+-send email (upload surat)
+-Memberi Reaksi(Approve,tolak dokumen)
+-Log Out✅
+
+Super Admin(CRUD SEMUA)
+-Tambah Mahasiswa
+-Tambah Dosen
+-Memberi Reaksi(Approve)
+-view dokumen keseluruhan
+-terima Report (History)
+-Log Out✅

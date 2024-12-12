@@ -1,17 +1,46 @@
 html, body {
-  height: 100%; /* Pastikan body mengambil tinggi penuh */
-  margin: 0; /* Hapus margin default */
+  height: 100%;
+  margin: 0; /* Remove default margin */
 }
 
 body {
   display: flex;
-  flex-direction: column; /* Susun anak secara vertikal */
+  flex-direction: column; /* Stack children vertically */
+}
+
+#sidebar {
+  position: fixed;
+  left: -250px;
+  top: 56px;
+  height: calc(100vh - 56px);
+  width: 250px;
+  background-color: #f8f9fa;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  transition: left 0.3s ease-in-out;
+  z-index: 1050;
+}
+
+#sidebar.active {
+  left: 0;
+}
+
+#overlay {
+  position: fixed;
+  top: 10;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1040;
+  display: none;
+}
+
+#overlay.active {
+  display: block;
 }
 
 .container {
-  flex: 1; /* Biarkan kontainer tumbuh dan mengambil ruang yang tersedia */
-  display: flex;
-  flex-direction: column; /* Susun konten di dalam kontainer secara vertikal */
+  flex: 1; /* This allows the container to grow and take available space */
 }
 
 .footer {
