@@ -175,7 +175,7 @@
                 </a>
             </li>
             <li class="nav-item mb-3">
-                <a class="nav-link text-dark <?php echo $current_page == 'add_admin.php' ? 'active' : ''; ?>" href="add_admin.php">
+                <a class="nav-link text-dark <?php echo $current_page == 'admincrud.php' ? 'active' : ''; ?>" href="admincrud.php">
                 <ion-icon name="person-add-outline" class="me-2"></ion-icon> <span>Add Admin</span>
                 </a>
             </li>
