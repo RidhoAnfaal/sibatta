@@ -170,7 +170,7 @@
             </li>
             
             <li class="nav-item mb-3">
-                <a class="nav-link text-dark <?php echo $current_page == 'StudentManagement.php' ? 'active' : ''; ?>" href="StudentManagement.php">
+                <a class="nav-link text-dark <?php echo $current_page == 'studentcrud.php' ? 'active' : ''; ?>" href="studentcrud.php">
                 <ion-icon name="add"class="me-2"></ion-icon> <span>Add Student</span>
                 </a>
             </li>
@@ -228,7 +228,7 @@
         function confirmLogout(event) {
             event.preventDefault(); // Prevent langsung keluar
             if (confirm("Apakah Anda yakin ingin log out?")) {
-                window.location.href = "../index.php";
+                window.location.href = "../logout.php";
             }
         }
     </script>

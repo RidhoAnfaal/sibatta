@@ -110,7 +110,7 @@ class UserManagement {
 
 // Inst UserManagement class
 try {
-    $dbConnection = new PDO('sqlsrv:Server=LAPTOP-DL9EJTU3\MSSQLSERVER01;Database=sibatta', '', ''); // Update with your DB credentials
+    $dbConnection = new PDO('sqlsrv:Server=MSI; Database=sibatta', '', ''); // Update with your DB credentials
     $dbConnection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     $userManager = new UserManagement($dbConnection);
