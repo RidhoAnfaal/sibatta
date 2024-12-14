@@ -21,32 +21,59 @@
 ###
 
 
-alur
+
 
 
 User(Mahasiswa)
 -login✅
 -menerima email
+-
 -Upload Dokumen
 (revisi:
  1. upload TA
- 2. upload surat)
--Lihat Reaksi✅
--Log Out✅
+ 2. upload surat
+ Tabel
+ 1.Nim
+ 2.Nama
+ 3.Title
+ 4.upload
+ 5.Reaksi(proces,validate,not validate))
 - profile✅
+-Log Out✅
 
 user(Admin perpus,
 tambahin admin jurusan(tugase acc project))
 -Melihat Dokumen ✅
--download dokumen✅
+tabel dokumen(
+  1.no
+  2.Nim
+  3.Nama
+  4.email
+  4.title
+  5.uploaded
+  6.action(terima,tolak)
+  7.download
+)
 -send email (upload surat)
--Memberi Reaksi(Approve,tolak dokumen)
 -Log Out✅
 
 Super Admin(CRUD SEMUA)
--Tambah Mahasiswa
--Tambah Dosen
--Memberi Reaksi(Approve)
--view dokumen keseluruhan
--terima Report (History)
+-Tambah Mahasiswa(
+  1.Nim
+  2.Nama
+  3.Kelas
+  4.Email
+  5.Prodi
+  6.role
+)
+-Tambah Dosen(
+  1.Nip
+  2.Nama
+  3.admmin library,admin jurusan
+  4.email
+  5.jenis kelamin
+  6.role
+)
+-view dokumen keseluruhan(CRUD)
+-terima Report ()
 -Log Out✅
