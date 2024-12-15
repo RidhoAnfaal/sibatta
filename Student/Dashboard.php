@@ -77,18 +77,18 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3>Welcome, <?php echo $userData['fullName']; ?>!</h3>
+                            <h3>Welcome, <?php echo $student['fullName']; ?>!</h3>
                         </div>
                         <div class="card-body">
                             <h5>Informasi Mahasiswa</h5>
                             <table class="table table-bordered">
                                 <tr>
                                     <th>Nama</th>
-                                    <td><?php echo $userData['fullName']; ?></td>
+                                    <td><?php echo $student['fullName']; ?></td>
                                 </tr>
                                 <tr>
                                     <th>Program Studi</th>
-                                    <td><?php echo $userData['prodi']; ?></td>
+                                    <td><?php echo $student['prodi']; ?></td>
                                 </tr>
                                 <tr>
                                     <th>Username</th>
@@ -96,18 +96,17 @@
                                 </tr>
                                 <tr>
                                     <th>Email</th>
-                                    <td><?php echo $userData['email']; ?></td>
+                                    <td><?php echo htmlspecialchars($userData['email']); ?></td>
+
                                 </tr>
                                 <tr>
                                     <th>Status Tugas Akhir</th>
                                     <td>
                                         <?php
-                                        if ($userData['final_project_status'] == 1) {
-                                            echo "<span class='badge bg-success'>Approved</span>";
-                                        } elseif ($userData['final_project_status'] == 0) {
-                                            echo "<span class='badge bg-warning'>Waiting</span>";
-                                        } elseif ($userData['final_project_status'] == -1) {
-                                            echo "<span class='badge bg-danger'>Approval Denied</span>";
+                                        if ($student['final_project_status'] == 1) {
+                                            echo "<span class='badge bg-success'>Sudah Disetujui</span>";
+                                        } else {
+                                            echo "<span class='badge bg-warning'>Menunggu Persetujuan</span>";
                                         }
                                         ?>
                                     </td>
@@ -116,8 +115,8 @@
                                     <th>Status Hutang</th>
                                     <td>
                                         <?php
-                                        if ($userData['debt_status'] == 0) {
-                                            echo "<span class='badge bg-danger'>Arrears</span>";
+                                        if ($student['debt_status'] == 0) {
+                                            echo "<span class='badge bg-danger'>Tunggakan</span>";
                                         } else {
                                             echo "<span class='badge bg-success'>No Arrears</span>";
                                         }
@@ -125,7 +124,7 @@
                                     </td>
                                 </tr>
                             </table>
-                            <a href="upload_report.php" class="btn btn-primary">Upload Tugas Akhir</a>
+                            <a href="uploaad.php" class="btn btn-primary">Upload Tugas Akhir</a>
                             <a href="payment_status.php" class="btn btn-warning">Cek Status Pembayaran</a>
                         </div>
                     </div>
