@@ -1,14 +1,14 @@
 <?php
-// Start the session
-session_start();
+// // Start the session
+// session_start();
 
-// Check if the user is logged in, if not redirect to login page
-if (!isset($_SESSION['username'])) {
-header('Location: index.php');
-exit();
-}
+// // Check if the user is logged in, if not redirect to login page
+// if (!isset($_SESSION['username'])) {
+// header('Location: index.php');
+// exit();
+// }
 
-$username = $_SESSION['username']; // Get the username from session
+// $username = $_SESSION['username']; // Get the username from session
 
 ?>
 
@@ -48,13 +48,13 @@ $username = $_SESSION['username']; // Get the username from session
                         <div class="text-container ms-4">
                             <h1>Welcome to SIBATTA</h1>
                             <p>
-                            SIBATTA (Sistem Informasi Bebas Tanggungan Tugas Akhir) This project aims to implement a system where final-year students (D4) of Information Technology major in Politeknik Negeri Malang (Polinema) can upload their final project reports to the Admin Library. The system should automate the submission process, validate file completeness, verify student final project, Clearance status once all requirements are fulfilled.
+                                SIBATTA (Sistem Informasi Bebas Tanggungan Tugas Akhir) This project aims to implement a system where final-year students (D4) of Information Technology major in Politeknik Negeri Malang (Polinema) can upload their final project reports to the Admin Library. The system should automate the submission process, validate file completeness, verify student final project, Clearance status once all requirements are fulfilled.
                             </p>
                             <p>
-                            Library admin:
-Final project publication approval.
-Give final project dependency status
-Recording the final project deposit.
+                                Library admin:
+                                Final project publication approval.
+                                Give final project dependency status
+                                Recording the final project deposit.
                             </p>
                         </div>
                     </div>
@@ -87,25 +87,8 @@ Recording the final project deposit.
         </script>
 
         <!-- Footer -->
-        <footer class="footer mt-auto py-4">
-            <div class="container text-center">
-                <p>&copy; 2024 <strong>SIBATTA</strong>. All rights reserved.</p>
-                <p>Contact us: <a href="mailto:support@sibatta.com">support@sibatta.com</a></p>
-                <div class="social-icons">
-                    <a href="https://facebook.com" target="_blank" class="me-3">
-                        <i class="bi bi-facebook"></i>
-                    </a>
-                    <a href="https://twitter.com" target="_blank" class="me-3">
-                        <i class="bi bi-twitter"></i>
-                    </a>
-                    <a href="https://instagram.com" target="_blank">
-                        <i class="bi bi-instagram"></i>
-                    </a>
-                </div>
-            </div>
-        </footer>
+        <?php include 'footer.php'; ?>
     </div>
-
 
 </body>
 
