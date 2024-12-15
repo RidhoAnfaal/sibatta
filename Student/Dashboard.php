@@ -74,8 +74,7 @@ $student = sqlsrv_fetch_array($stmtStudent, SQLSRV_FETCH_ASSOC);
         <?php include 'Sidebar.php'; ?>
 
         <!-- Main Content -->
-         <!-- Main Content -->
-         <div class="container flex-grow-1">
+        <div class="container flex-grow-1">
             <div class="row mt-4">
                 <div class="col-md-12">
                     <div class="card">
@@ -121,7 +120,7 @@ $student = sqlsrv_fetch_array($stmtStudent, SQLSRV_FETCH_ASSOC);
                                         if ($student['debt_status'] == 0) {
                                             echo "<span class='badge bg-danger'>Tunggakan</span>";
                                         } else {
-                                            echo "<span class='badge bg-success'>Tidak Ada Tunggakan</span>";
+                                            echo "<span class='badge bg-success'>No Arrears</span>";
                                         }
                                         ?>
                                     </td>
@@ -135,8 +134,8 @@ $student = sqlsrv_fetch_array($stmtStudent, SQLSRV_FETCH_ASSOC);
             </div>
         </div>
 
-                        <!-- Footer -->
-                        <footer class="footer mt-auto py-4">
+        <!-- Footer -->
+        <footer class="footer mt-auto py-4">
             <div class="container text-center">
                 <p>&copy; 2024 <strong>SIBATTA</strong>. All rights reserved.</p>
                 <p>Contact us: <a href="mailto:support@sibatta.com">support@sibatta.com</a></p>
@@ -155,30 +154,29 @@ $student = sqlsrv_fetch_array($stmtStudent, SQLSRV_FETCH_ASSOC);
         </footer>
     </div>
 
-        <!-- Notification Pop-up -->
-        <div class="toast-container position-fixed bottom-0 end-0 p-3">
-            <div id="toastMessage" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header">
-                    <strong class="me-auto">Notification</strong>
-                    <small>just now</small>
-                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div class="toast-body">
-                    You have a new update on your report!
-                </div>
+    <!-- Notification Pop-up -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="toastMessage" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">Notification</strong>
+                <small>just now</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                You have a new update on your report!
             </div>
         </div>
+    </div>
 
-        <!-- Optional JavaScript -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-        <script>
-            // Display toast notification on page load
-            document.addEventListener('DOMContentLoaded', () => {
-                const toast = new bootstrap.Toast(document.getElementById('toastMessage'));
-                toast.show();
-            });
-        </script>
-
+    <!-- Optional JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Display toast notification on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const toast = new bootstrap.Toast(document.getElementById('toastMessage'));
+            toast.show();
+        });
+    </script>
 
 </body>
 
