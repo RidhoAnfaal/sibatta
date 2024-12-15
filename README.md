@@ -26,8 +26,12 @@
 
 User(Mahasiswa)
 -login✅
--menerima email
--
+Dashboard
+Pembayaran UKT
+Laporan PKL
+Surat Bebas Kompen
+Scan TOEIC
+
 -Upload Dokumen
 (revisi:
  1. upload TA
