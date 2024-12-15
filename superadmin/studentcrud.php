@@ -4,10 +4,10 @@ require_once '../koneksi.php';  // Make sure this path is correct based on your 
 session_start();
 //Check if the user is logged in, if not redirect to login page
 if (!isset($_SESSION['username'])) {
-header('Location: ../index.php');
-exit();
+    header('Location: ../index.php');
+    exit();
 }
-$username = $_SESSION['username']; 
+$username = $_SESSION['username'];
 
 // Create an instance of the Koneksi class and establish connection
 $koneksi = new Koneksi();
@@ -160,10 +160,10 @@ function searchStudents($searchTerm)
               FROM [sibatta].[student] s
               JOIN [sibatta].[user] u ON s.user_id = u.user_id
               WHERE u.email LIKE ? OR s.fullName LIKE ? OR u.username LIKE ?";
-    
+
     $searchPattern = "%" . $searchTerm . "%"; // Add wildcards for partial matching
     $params = [$searchPattern, $searchPattern, $searchPattern];
-    
+
     // Prepare and execute the query with parameters
     $stmt = sqlsrv_query($conn, $query, $params);
 
@@ -264,112 +264,115 @@ $koneksi->close();
 <!-- Frontend Form to Add Student -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student User CRUD</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body>
-<?php include 'navbar.php'; ?>
-<div class="d-flex">
-<?php include 'sidebar.php'; ?>
-<div class="container mt-5">
-    <h2 class="mb-4">Student Data:</h2>
-    
-    <!-- Add Student Form -->
-    <form method="POST" action="">
-        <input type="hidden" name="action" value="add">
-        <div class="mb-3">
-            <input type="text" name="username" placeholder="Username" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <input type="password" name="password" placeholder="Password" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <input type="email" name="email" placeholder="Email" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <input type="text" name="prodi" placeholder="Study Program" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <input type="text" name="fullName" placeholder="Full Name" class="form-control" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Add Student</button>
-    </form>
+    <?php include 'navbar.php'; ?>
+    <div class="d-flex">
+        <?php include 'sidebar.php'; ?>
+        <div class="container mt-5">
+            <h2 class="mb-4">Student Data:</h2>
 
-    <hr>
+            <!-- Add Student Form -->
+            <form method="POST" action="">
+                <input type="hidden" name="action" value="add">
+                <div class="mb-3">
+                    <input type="text" name="username" placeholder="Username" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <input type="password" name="password" placeholder="Password" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <input type="email" name="email" placeholder="Email" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <input type="text" name="prodi" placeholder="Study Program" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <input type="text" name="fullName" placeholder="Full Name" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Student</button>
+            </form>
 
-    <h3 class="mb-4">Student List</h3>
+            <hr>
 
-    <!-- Search Form -->
-    <form method="POST" class="mb-3">
-        <input type="text" name="search" class="form-control" placeholder="Search students" value="<?php echo isset($searchTerm) ? $searchTerm : ''; ?>">
-        <button type="submit" class="btn btn-info mt-2">Search</button>
-    </form>
+            <h3 class="mb-4">Student List</h3>
 
-    <!-- Student Table -->
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Full Name</th>
-                <th>Email</th>
-                <th>Program</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($students as $index => $student): ?>
-                <tr>
-                    <td><?php echo $index + 1; ?></td>
-                    <td><?php echo htmlspecialchars($student['fullName']); ?></td>
-                    <td><?php echo htmlspecialchars($student['email']); ?></td>
-                    <td><?php echo htmlspecialchars($student['prodi']); ?></td>
-                    <td>
-                        <!-- Edit Button -->
-                        <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#updateStudentModal-<?php echo $student['student_id']; ?>">Edit</button>
-                        <!-- Delete Button -->
-                        <form method="POST" style="display:inline;">
-                            <input type="hidden" name="action" value="delete">
-                            <input type="hidden" name="student_id" value="<?php echo $student['student_id']; ?>">
-                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                        </form>
-                    </td>
-                </tr>
+            <!-- Search Form -->
+            <form method="POST" class="mb-3">
+                <input type="text" name="search" class="form-control" placeholder="Search students" value="<?php echo isset($searchTerm) ? $searchTerm : ''; ?>">
+                <button type="submit" class="btn btn-info mt-2">Search</button>
+            </form>
 
-                <!-- Edit Student Modal -->
-                <div class="modal fade" id="updateStudentModal-<?php echo $student['student_id']; ?>" tabindex="-1" aria-labelledby="updateStudentModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Update Student</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form method="POST" action="">
-                                    <input type="hidden" name="action" value="update">
+            <!-- Student Table -->
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Program</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($students as $index => $student): ?>
+                        <tr>
+                            <td><?php echo $index + 1; ?></td>
+                            <td><?php echo htmlspecialchars($student['fullName']); ?></td>
+                            <td><?php echo htmlspecialchars($student['email']); ?></td>
+                            <td><?php echo htmlspecialchars($student['prodi']); ?></td>
+                            <td>
+                                <!-- Edit Button -->
+                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#updateStudentModal-<?php echo $student['student_id']; ?>">Edit</button>
+                                <!-- Delete Button -->
+                                <form method="POST" style="display:inline;">
+                                    <input type="hidden" name="action" value="delete">
                                     <input type="hidden" name="student_id" value="<?php echo $student['student_id']; ?>">
-                                    <div class="mb-3">
-                                        <input type="text" name="fullName" value="<?php echo htmlspecialchars($student['fullName']); ?>" class="form-control" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <input type="email" name="email" value="<?php echo htmlspecialchars($student['email']); ?>" class="form-control" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <input type="text" name="prodi" value="<?php echo htmlspecialchars($student['prodi']); ?>" class="form-control" required>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Update</button>
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                 </form>
+                            </td>
+                        </tr>
+
+                        <!-- Edit Student Modal -->
+                        <div class="modal fade" id="updateStudentModal-<?php echo $student['student_id']; ?>" tabindex="-1" aria-labelledby="updateStudentModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Update Student</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form method="POST" action="">
+                                            <input type="hidden" name="action" value="update">
+                                            <input type="hidden" name="student_id" value="<?php echo $student['student_id']; ?>">
+                                            <div class="mb-3">
+                                                <input type="text" name="fullName" value="<?php echo htmlspecialchars($student['fullName']); ?>" class="form-control" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <input type="email" name="email" value="<?php echo htmlspecialchars($student['email']); ?>" class="form-control" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <input type="text" name="prodi" value="<?php echo htmlspecialchars($student['prodi']); ?>" class="form-control" required>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-</div>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
