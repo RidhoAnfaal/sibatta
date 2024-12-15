@@ -1,118 +1,155 @@
 <?php
-// include 'koneksi.php'; // Include the database connection
-// session_start();
+include 'koneksi.php'; // Include the database connection
+session_start();
 
-// // Check if the user is logged in
-// if (!isset($_SESSION['username'])) {
-//     header('Location: index.php'); // Redirect to login if not logged in
-//     exit();
-// }
+// Check if the user is logged in
+if (!isset($_SESSION['username'])) {
+    header('Location: index.php'); // Redirect to login if not logged in
+    exit();
+}
 
-// // Retrieve the logged-in user's username
-// $username = $_SESSION['username'];
+// Retrieve the logged-in user's username
+$username = $_SESSION['username'];
 
-// // Get the user ID associated with the username
-// $sql = "SELECT user_id FROM [sibatta].[user] WHERE username = ?";
-// $params = array($username);
-// $stmt = sqlsrv_query($conn, $sql, $params);
-// $user = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+// Get the user ID associated with the username
+$sql = "SELECT user_id FROM [sibatta].[user] WHERE username = ?";
+$params = array($username);
+$stmt = sqlsrv_query($conn, $sql, $params);
+$user = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
 
-// if ($user) {
-//     $userId = $user['user_id'];
-// } else {
-//     // Handle the case if the user is not found in the database
-//     $userId = 0;
-// }
+if ($user) {
+    $userId = $user['user_id'];
+} else {
+    // Handle the case if the user is not found in the database
+    $userId = 0;
+}
 
-// $uploadDir = 'uploads/';
-// if (!file_exists($uploadDir)) {
-//     mkdir($uploadDir, 0777, true);
-// }
+// Query to get student data based on user_id
+$queryStudent = "SELECT TOP (1) 
+                      [student_id], 
+                      [user_id], 
+                      [prodi], 
+                      [fullName], 
+                      [kelas] 
+                 FROM [sibatta].[sibatta].[student] 
+                 WHERE user_id = ?";
+$paramsStudent = array($userId);
+$stmtStudent = sqlsrv_query($conn, $queryStudent, $paramsStudent);
+if ($stmtStudent === false) {
+    die(print_r(sqlsrv_errors(), true));
+}
 
-// $message = '';
-// if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['files'])) {
-//     // Retrieve the title from the form
-//     $title = isset($_POST['title']) ? $_POST['title'] : '';
-//     $uploadedAt = date('Y-m-d'); // Current date
+// Fetch the student data
+$student = sqlsrv_fetch_array($stmtStudent, SQLSRV_FETCH_ASSOC);
 
-//     if ($userId > 0 && !empty($title)) {
-//         foreach ($_FILES['files']['tmp_name'] as $key => $tmpName) {
-//             $fileName = $_FILES['files']['name'][$key];
-//             $fileTmpName = $_FILES['files']['tmp_name'][$key];
-//             $fileError = $_FILES['files']['error'][$key];
-//             $fileSize = $_FILES['files']['size'][$key];
-//             $fileType = $_FILES['files']['type'][$key];
+// Create the upload directory if it doesn't exist
+$uploadDir = 'uploads/';
+if (!file_exists($uploadDir)) {
+    mkdir($uploadDir, 0777, true);
+}
 
-//             // Check if there were any errors with the upload
-//             if ($fileError === UPLOAD_ERR_OK) {
+$message = '';
+$messageType = ''; // This will hold the message type for styling
 
-//                 // Validate the file size (e.g., limit to 5MB)
-//                 if ($fileSize > 5 * 1024 * 1024) {
-//                     $message = 'File size exceeds the limit of 5MB.';
-//                     continue;
-//                 }
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['files'])) {
+    // Initialize title with an empty string, it will be replaced by the file name
+    $title = '';
+    $uploadedAt = date('Y-m-d'); // Current date
 
-//                 // Validate the file type (e.g., allow only PDF and image files)
-//                 $allowedTypes = ['image/jpeg', 'image/png', 'application/pdf']; // You can adjust this
-//                 if (!in_array($fileType, $allowedTypes)) {
-//                     $message = 'Invalid file type. Only JPEG, PNG, and PDF files are allowed.';
-//                     continue;
-//                 }
+    if ($userId > 0) {
+        foreach ($_FILES['files']['tmp_name'] as $key => $tmpName) {
+            $fileName = $_FILES['files']['name'][$key];
+            $fileTmpName = $_FILES['files']['tmp_name'][$key];
+            $fileError = $_FILES['files']['error'][$key];
+            $fileSize = $_FILES['files']['size'][$key];
+            $fileType = $_FILES['files']['type'][$key];
 
-//                 // Generate a unique filename to avoid overwrite
-//                 $targetFile = $uploadDir . time() . '_' . basename($fileName);
+            // Debugging: Output $_FILES array for checking
+            echo '<pre>';
+            print_r($_FILES);
+            echo '</pre>';
 
-//                 // Move the uploaded file to the target directory
-//                 if (move_uploaded_file($fileTmpName, $targetFile)) {
-//                     // Insert file data into the database including the file path
-//                     $sql = "INSERT INTO [sibatta].[document] (user_id, title, uploaded_at, file_path) 
-//                             VALUES (?, ?, ?, ?)";
-//                     $params = [$userId, $title, $uploadedAt, $targetFile];
-//                     $stmt = sqlsrv_query($conn, $sql, $params);
+            // Set the title as the file name (without extension)
+            $title = pathinfo($fileName, PATHINFO_FILENAME);
 
-//                     if ($stmt) {
-//                         $message = 'File uploaded and saved to the database successfully!';
-//                     } else {
-//                         $message = 'Database error: ' . print_r(sqlsrv_errors(), true);
-//                     }
-//                 } else {
-//                     $message = 'Error moving uploaded file.';
-//                 }
-//             } else {
-//                 $message = 'There was an error with the file upload.';
-//             }
-//         }
-//     } else {
-//         $message = 'Please provide a valid Title.';
-//     }
-// }
+            // Set message to yellow (processing)
+            $message = 'Processing file upload...';
+            $messageType = 'text-warning';
 
-// // Handle the search functionality
-// $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+            // Check if there were any errors with the upload
+            if ($fileError === UPLOAD_ERR_OK) {
+                // Validate the file size (e.g., limit to 5MB)
+                if ($fileSize > 5 * 1024 * 1024) {
+                    $message = 'File size exceeds the limit of 5MB.';
+                    $messageType = 'text-danger'; // Red (rejected)
+                    continue;
+                }
 
-// // Modify the query to filter by user_id and search term if provided
-// $query = "SELECT document_id, title, uploaded_at, validated_by, file_path FROM [sibatta].[document] WHERE user_id = ?";
-// $params = [$userId]; // Filter by the logged-in user's ID
+                // Validate the file type (e.g., allow only PDF and image files)
+                $allowedTypes = ['image/jpeg', 'image/png', 'application/pdf']; // You can adjust this
+                if (!in_array($fileType, $allowedTypes)) {
+                    $message = 'Invalid file type. Only JPEG, PNG, and PDF files are allowed.';
+                    $messageType = 'text-danger'; // Red (rejected)
+                    continue;
+                }
 
-// if (!empty($search)) {
-//     $query .= " AND (title LIKE ? OR CAST(document_id AS NVARCHAR) LIKE ?)";
-//     $params[] = "%$search%";
-//     $params[] = "%$search%";
-// }
+                // Generate a unique filename to avoid overwrite
+                $targetFile = $uploadDir . time() . '_' . basename($fileName);
 
-// $stmt = sqlsrv_query($conn, $query, $params);
-// $documents = [];
-// if ($stmt) {
-//     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-//         $documents[] = $row;
-//     }
-// }
+                // Move the uploaded file to the target directory
+                if (move_uploaded_file($fileTmpName, $targetFile)) {
+                    // Insert file data into the database including the file path
+                    $sql = "INSERT INTO [sibatta].[document] (user_id, title, uploaded_at, file_path) 
+                            VALUES (?, ?, ?, ?)";
+                    $params = [$userId, $title, $uploadedAt, $targetFile];
+                    $stmt = sqlsrv_query($conn, $sql, $params);
+
+                    if ($stmt) {
+                        $message = 'File uploaded and saved to the database successfully!';
+                        $messageType = 'text-success'; // Green (accepted)
+                    } else {
+                        $message = 'Database error: ' . print_r(sqlsrv_errors(), true);
+                        $messageType = 'text-danger'; // Red (rejected)
+                    }
+                } else {
+                    $message = 'Error moving uploaded file.';
+                    $messageType = 'text-danger'; // Red (rejected)
+                }
+            } else {
+                $message = 'There was an error with the file upload.';
+                $messageType = 'text-danger'; // Red (rejected)
+            }
+        }
+    } else {
+        $message = 'User ID not found.';
+        $messageType = 'text-danger'; // Red (rejected)
+    }
+}
+
+// Handle the search functionality
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+
+// Modify the query to filter by user_id and search term if provided
+$query = "SELECT document_id, title, uploaded_at, document_status, file_path FROM [sibatta].[document] WHERE user_id = ?";
+$params = [$userId]; // Filter by the logged-in user's ID
+
+if (!empty($search)) {
+    $query .= " AND (title LIKE ? OR CAST(document_id AS NVARCHAR) LIKE ?)";
+    $params[] = "%$search%";
+    $params[] = "%$search%";
+}
+
+$stmt = sqlsrv_query($conn, $query, $params);
+$documents = [];
+if ($stmt) {
+    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+        $documents[] = $row;
+    }
+}
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -122,7 +159,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="css/upload.css">
 </head>
-
 <body>
     <!-- Header -->
     <?php include 'navbar.php'; ?>
@@ -134,7 +170,7 @@
         <div class="container mt-4">
             <h1>Upload File</h1>
             <?php if ($message): ?>
-                <div class="alert alert-info"><?php echo $message; ?></div>
+                <div class="alert <?php echo $messageType; ?>"><?php echo $message; ?></div>
             <?php endif; ?>
 
             <!-- Search Bar -->
@@ -177,27 +213,33 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>NIM</th>
+                            <th>Student ID</th>
+                            <th>Program Studi</th>
                             <th>Nama</th>
+                            <th>Kelas</th>
                             <th>Title</th>
                             <th>Uploaded</th>
-                            <th>Validated</th>
+                            <th>Document Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (!empty($documents)): ?>
                             <?php foreach ($documents as $doc): ?>
                                 <tr>
-                                    <td><?php echo $doc['nim']; ?></td>
-                                    <td><?php echo $doc['nama']; ?></td>
+                                    <td><?php echo $student['student_id']; ?></td>
+                                    <td><?php echo $student['prodi']; ?></td>
+                                    <td><?php echo $student['fullName']; ?></td>
+                                    <td><?php echo $student['kelas']; ?></td>
                                     <td><?php echo $doc['title']; ?></td>
                                     <td><?php echo $doc['uploaded_at']->format('Y-m-d'); ?></td>
-                                    <td><?php echo $doc['validated_by'] ?: 'Not validated'; ?></td>
+                
+                                    <td><?php echo $doc['document_status'] ?: 'Not validated'; ?></td>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="5" class="text-center">No documents uploaded yet.</td>
+                                <td colspan="7" class="text-center">No documents uploaded yet.</td>
                             </tr>
                         <?php endif; ?>
                     </tbody>
@@ -226,5 +268,4 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

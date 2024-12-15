@@ -1,53 +1,61 @@
 <?php
-// session_start();
+session_start();
 
-// // Include the User class
-// include_once 'User.php';
-// include 'koneksi.php';
+// Include the User class and database connection
+include_once 'User.php';
+include 'koneksi.php';
 
-// // Create User object
-// $user = new User($host, $database, $username, $password, $_SESSION);
+// Create User object
+$user = new User($host, $database, $username, $password, $_SESSION);
 
-// // Check if the user is logged in, if not redirect to login page
-// if (!$user->checkLogin()) {
-//     header('Location: index.php');
-//     exit();
-// }
+// Check if the user is logged in; if not, redirect to login page
+if (!$user->checkLogin()) {
+    header('Location: index.php');
+    exit();
+}
 
-// $username = $_SESSION['username'];
+$username = $_SESSION['username'];
 
-// // Ambil data pembayaran mahasiswa
-// $sql = "SELECT s.student_id, p.total_amount, p.amount_paid, p.due_amount, p.payment_status, p.payment_date
-//         FROM student s
-//         JOIN payment p ON s.student_id = p.student_id
-//         JOIN user u ON s.user_id = u.user_id
-//         WHERE LOWER(u.username) = LOWER(?)";
+// SQL query to fetch payment data from the database
+$sql = "SELECT s.student_id, p.total_amount, p.amount_paid, p.due_amount, p.payment_status, p.payment_date
+        FROM [sibatta].[student] s  -- Explicitly referencing schema
+        JOIN [sibatta].[payment] p ON s.student_id = p.student_id
+        JOIN [sibatta].[user] u ON s.user_id = u.user_id
+        WHERE LOWER(u.username) = LOWER(?)";
 
-// $params = array($username);
-// $stmt = sqlsrv_query($conn, $sql, $params);
 
-// if ($stmt === false) {
-//     die("SQL Error: " . print_r(sqlsrv_errors(), true));
-// }
 
-// $paymentData = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+$params = array($username);
+$stmt = sqlsrv_query($conn, $sql, $params);
 
-// if (!$paymentData) {
-//     echo "<p>No payment data found for the user.</p>";
-//     exit;
-// }
+// Check if the query ran successfully
+if ($stmt === false) {
+    die("SQL Error: " . print_r(sqlsrv_errors(), true));
+}
 
-// sqlsrv_free_stmt($stmt);
-// ?>
+// Fetch the payment data from the query result
+$paymentData = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+
+// If no data is found, show a message and exit
+if (!$paymentData) {
+    echo "<p>No payment data found for the user.</p>";
+    exit;
+}
+
+// Free statement resources after use
+sqlsrv_free_stmt($stmt);
+?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <title>Bukti Pembayaran</title>
 </head>
+
 <body>
     <!-- Header -->
     <?php include 'navbar.php'; ?>
@@ -90,4 +98,5 @@
     <!-- Footer -->
     <?php include 'footer.php'; ?>
 </body>
+
 </html>

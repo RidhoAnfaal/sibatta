@@ -1,48 +1,57 @@
 <?php
-// session_start();
+session_start();
 
-// // Include the User class
-// include_once 'User.php';
-// include 'koneksi.php';
+// Include the User class and database connection
+include_once 'User.php';
+include 'koneksi.php';
 
-// // Create User object
-// $user = new User($host, $database, $username, $password, $_SESSION);
+// Create User object
+$user = new User($host, $database, $username, $password, $_SESSION);
 
-// // Check if the user is logged in, if not redirect to login page
-// if (!$user->checkLogin()) {
-//     header('Location: index.php');
-//     exit();
-// }
+// Check if the user is logged in; if not, redirect to login page
+if (!$user->checkLogin()) {
+    header('Location: index.php');
+    exit();
+}
 
-// $username = $_SESSION['username'];
+$username = $_SESSION['username'];
 
-// // Ambil data pembayaran dari database
-// $sql = "SELECT 
-//             p.payment_status,
-//             p.total_amount,
-//             p.amount_paid,
-//             p.due_amount,
-//             p.payment_date
-//         FROM payment p
-//         JOIN student s ON p.student_id = s.student_id
-//         JOIN user u ON s.user_id = u.user_id
-//         WHERE LOWER(u.username) = LOWER(?)";
+// SQL query to fetch payment data from the database
+$sql = "SELECT 
+    COALESCE(p.payment_status, 0) AS payment_status,  -- Default to 0 if no payment record exists
+    6500000 AS total_amount,  -- Fixed total amount for each user
+    COALESCE(p.amount, 0) AS amount_paid,
+    0 AS due_amount,  -- Placeholder for due_amount
+    p.payment_date
+FROM [sibatta].[sibatta].[user] u
+LEFT JOIN [sibatta].[sibatta].[student] s ON u.user_id = s.user_id
+LEFT JOIN [sibatta].[sibatta].[ukt_payment] p ON s.student_id = p.student_id
+WHERE LOWER(u.username) = LOWER(?)";
 
-// $params = array($username);
-// $stmt = sqlsrv_query($conn, $sql, $params);
+$params = array($username);
+$stmt = sqlsrv_query($conn, $sql, $params);
 
-// if ($stmt === false) {
-//     die("SQL Error: " . print_r(sqlsrv_errors(), true));
-// }
+// Check if the query ran successfully
+if ($stmt === false) {
+    die("SQL Error: " . print_r(sqlsrv_errors(), true));
+}
 
-// $paymentData = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+// Fetch the payment data from the query result
+$paymentData = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
 
-// if (!$paymentData) {
-//     echo "<p>No payment data found for the user.</p>";
-//     exit;
-// }
+// If no data is found, set default values
+if (!$paymentData) {
+    $paymentData = [
+        'payment_status' => 0,
+        'total_amount' => 6500000,  // Default to 6500000 if no payment data exists
+        'amount_paid' => 0,
+        'due_amount' => 0,
+        'payment_date' => null
+    ];
+}
 
-// sqlsrv_free_stmt($stmt);
+// Free statement resources after use
+sqlsrv_free_stmt($stmt);
 ?>
 
 <!DOCTYPE html>
@@ -84,13 +93,10 @@
                                     <td>Rp <?php echo number_format($paymentData['amount_paid'], 0, ',', '.'); ?></td>
                                 </tr>
                                 <tr>
-                                    <th>Sisa Tagihan</th>
-                                    <td>Rp <?php echo number_format($paymentData['due_amount'], 0, ',', '.'); ?></td>
-                                </tr>
-                                <tr>
                                     <th>Status Pembayaran</th>
                                     <td>
                                         <?php
+                                        // Display payment status with appropriate badge
                                         if ($paymentData['payment_status'] == 1) {
                                             echo "<span class='badge bg-success'>Lunas</span>";
                                         } else {
@@ -101,7 +107,12 @@
                                 </tr>
                                 <tr>
                                     <th>Tanggal Pembayaran Terakhir</th>
-                                    <td><?php echo $paymentData['payment_date'] ? date("d-m-Y", strtotime($paymentData['payment_date'])) : '-'; ?></td>
+                                    <td>
+                                        <?php 
+                                        // Check if payment date exists and format it
+                                        echo ($paymentData['payment_date']) ? $paymentData['payment_date']->format('d-m-Y') : '-';
+                                        ?>
+                                    </td>
                                 </tr>
                             </table>
 

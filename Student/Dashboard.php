@@ -49,6 +49,23 @@ if ($stmtStudent === false) {
 
 // Fetch the student data
 $student = sqlsrv_fetch_array($stmtStudent, SQLSRV_FETCH_ASSOC);
+
+// Query to get payment status
+$queryPaymentStatus = "SELECT TOP (1) [payment_status] 
+                       FROM [sibatta].[sibatta].[ukt_payment]
+                       WHERE student_id = ?"; // Assuming student_id links to payment status
+$paramsPayment = [$student['student_id']];
+
+// Execute the payment status query
+$stmtPayment = sqlsrv_query($conn, $queryPaymentStatus, $paramsPayment);
+if ($stmtPayment === false) {
+    die(print_r(sqlsrv_errors(), true));
+}
+
+// Fetch the payment status
+$paymentStatus = sqlsrv_fetch_array($stmtPayment, SQLSRV_FETCH_ASSOC);
+
+
 ?>
 
 <!DOCTYPE html>
@@ -100,34 +117,23 @@ $student = sqlsrv_fetch_array($stmtStudent, SQLSRV_FETCH_ASSOC);
                                     <th>Email</th>
                                     <td><?php echo htmlspecialchars($userData['email']); ?></td>
 
-                                </tr>
-                                <tr>
-                                    <th>Status Tugas Akhir</th>
-                                    <td>
-                                        <?php
-                                        if ($student['final_project_status'] == 1) {
-                                            echo "<span class='badge bg-success'>Sudah Disetujui</span>";
-                                        } else {
-                                            echo "<span class='badge bg-warning'>Menunggu Persetujuan</span>";
-                                        }
-                                        ?>
-                                    </td>
-                                </tr>
+</tr>
                                 <tr>
                                     <th>Status Hutang</th>
                                     <td>
                                         <?php
-                                        if ($student['debt_status'] == 0) {
-                                            echo "<span class='badge bg-danger'>Tunggakan</span>";
+                                        // Display payment status with appropriate badge
+                                        if ($paymentStatus['payment_status'] == 1) {
+                                            echo "<span class='badge bg-success'>Lunas</span>";
                                         } else {
-                                            echo "<span class='badge bg-success'>No Arrears</span>";
+                                            echo "<span class='badge bg-danger'>Belum Lunas</span>";
                                         }
                                         ?>
                                     </td>
                                 </tr>
                             </table>
                             <a href="uploaad.php" class="btn btn-primary">Upload Tugas Akhir</a>
-                            <a href="payment_status.php" class="btn btn-warning">Cek Status Pembayaran</a>
+                            <a href="status_pembayaran.php" class="btn btn-warning">Cek Status Pembayaran</a>
                         </div>
                     </div>
                 </div>

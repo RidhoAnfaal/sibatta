@@ -4,11 +4,11 @@ require('koneksi.php');
 // Cek apakah tombol 'validate' diklik
 if (isset($_POST['validate'])) {
     $document_id = $_POST['document_id'];
-    $validated_by = 'Admin'; // Ganti dengan nama pengguna jika diperlukan
+    $document_status = 'Admin'; // Ganti dengan nama pengguna jika diperlukan
 
     // Update query
-    $query = "UPDATE [sibatta].[sibatta].[document] SET [validated_by] = ? WHERE [document_id] = ?";
-    $params = [$validated_by, $document_id];
+    $query = "UPDATE [sibatta].[sibatta].[document] SET [document_status] = ? WHERE [document_id] = ?";
+    $params = [$document_status, $document_id];
     $result = sqlsrv_query($conn, $query, $params);
 
     if ($result) {
@@ -22,7 +22,7 @@ if (isset($_POST['validate'])) {
 
 // Cek apakah ada parameter pencarian
 $search = isset($_GET['search']) ? $_GET['search'] : '';
-$query = "SELECT [document_id], [user_id], [title], [uploaded_at], [validated_by], [username], [file_path] 
+$query = "SELECT [document_id], [user_id], [title], [uploaded_at], [document_status], [username], [file_path] 
           FROM [sibatta].[sibatta].[document]";
 
  //Tambahkan filter pencarian jika ada
@@ -99,7 +99,7 @@ if ($viewdata === false) {
                         echo "<td>{$tampil['user_id']}</td>";
                         echo "<td>{$tampil['title']}</td>";
                         echo "<td>" . date_format($tampil['uploaded_at'], 'Y-m-d') . "</td>";
-                        echo "<td>{$tampil['validated_by']}</td>";
+                        echo "<td>{$tampil['document_status']}</td>";
 
                         // Validation button
                          echo "<td>
