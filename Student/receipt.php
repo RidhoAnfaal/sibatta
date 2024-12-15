@@ -84,7 +84,7 @@
                 <td><?php echo date("d-m-Y", strtotime($paymentData['payment_date'])); ?></td>
             </tr>
         </table>
-        <a href="index.php" class="btn btn-primary">Kembali ke Dashboard</a>
+        <a href="dashboard.php" class="btn btn-primary">Kembali ke Dashboard</a>
     </div>
 
     <!-- Footer -->
