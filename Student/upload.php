@@ -246,25 +246,9 @@ if ($stmt) {
                 </table>
             </div>
         </div>
-        <!-- Footer -->
     </div>
-    <footer class="footer mt-auto py-4">
-        <div class="container text-center">
-            <p>&copy; 2024 <strong>SIBATTA</strong>. All rights reserved.</p>
-            <p>Contact us: <a href="mailto:support@sibatta.com">support@sibatta.com</a></p>
-            <div class="social-icons">
-                <a href="https://facebook.com" target="_blank" class="me-3">
-                    <i class="bi bi-facebook"></i>
-                </a>
-                <a href="https://twitter.com" target="_blank" class="me-3">
-                    <i class="bi bi-twitter"></i>
-                </a>
-                <a href="https://instagram.com" target="_blank">
-                    <i class="bi bi-instagram"></i>
-                </a>
-            </div>
-        </div>
-    </footer>
+    <!-- Footer -->
+    <?php include 'footer.php'; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

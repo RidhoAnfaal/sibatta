@@ -1,51 +1,48 @@
 <?php
-// Start the session if not already started
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+// session_start();
 
-// Include the database connection file
-include '../admin/koneksi.php'; // Adjust path as necessary
+// // Include the User class
+// include_once 'User.php';
+// include 'koneksi.php';
 
-// Check if session username is set
-if (!isset($_SESSION['username'])) {
-    die("Session 'username' is not set.");
-}
+// // Create User object
+// $user = new User($host, $database, $username, $password, $_SESSION);
 
-// Debug database connection
-if ($conn === false) {
-    die("Database connection failed: " . print_r(sqlsrv_errors(), true));
-}
+// // Check if the user is logged in, if not redirect to login page
+// if (!$user->checkLogin()) {
+//     header('Location: index.php');
+//     exit();
+// }
 
-// Get the logged-in username
-$username = $_SESSION['username'];
+// // Get the logged-in username
+// $username = $_SESSION['username'];
 
-// Query to get user data
-$queryUser = "SELECT TOP (1) [user_id], [username], [email], [role] 
-              FROM [sibatta].[sibatta].[user]
-              WHERE username = ?";
-$params = [$username];
+// // Query to get user data
+// $queryUser = "SELECT TOP (1) [user_id], [username], [email], [role] 
+//               FROM [sibatta].[sibatta].[user]
+//               WHERE username = ?";
+// $params = [$username];
 
-// Execute the user query
-$stmt = sqlsrv_query($conn, $queryUser, $params);
-if ($stmt === false) {
-    die(print_r(sqlsrv_errors(), true));
-}
+// // Execute the user query
+// $stmt = sqlsrv_query($conn, $queryUser, $params);
+// if ($stmt === false) {
+//     die(print_r(sqlsrv_errors(), true));
+// }
 
-// Fetch the user data
-$userData = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+// // Fetch the user data
+// $userData = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
 
-// Query to get student data
-$queryStudent = "SELECT TOP (1) [student_id], [prodi], [fullName], [kelas] 
-                 FROM [sibatta].[sibatta].[student]
-                 WHERE user_id = ?";
-$paramsStudent = [$userData['user_id']];
+// // Query to get student data
+// $queryStudent = "SELECT TOP (1) [student_id], [prodi], [fullName], [kelas] 
+//                  FROM [sibatta].[sibatta].[student]
+//                  WHERE user_id = ?";
+// $paramsStudent = [$userData['user_id']];
 
-// Execute the student query
-$stmtStudent = sqlsrv_query($conn, $queryStudent, $paramsStudent);
-if ($stmtStudent === false) {
-    die(print_r(sqlsrv_errors(), true));
-}
+// // Execute the student query
+// $stmtStudent = sqlsrv_query($conn, $queryStudent, $paramsStudent);
+// if ($stmtStudent === false) {
+//     die(print_r(sqlsrv_errors(), true));
+// }
 
 // Fetch the student data
 $student = sqlsrv_fetch_array($stmtStudent, SQLSRV_FETCH_ASSOC);
@@ -67,6 +64,7 @@ $paymentStatus = sqlsrv_fetch_array($stmtPayment, SQLSRV_FETCH_ASSOC);
 
 
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -141,23 +139,7 @@ $paymentStatus = sqlsrv_fetch_array($stmtPayment, SQLSRV_FETCH_ASSOC);
         </div>
 
         <!-- Footer -->
-        <footer class="footer mt-auto py-4">
-            <div class="container text-center">
-                <p>&copy; 2024 <strong>SIBATTA</strong>. All rights reserved.</p>
-                <p>Contact us: <a href="mailto:support@sibatta.com">support@sibatta.com</a></p>
-                <div class="social-icons">
-                    <a href="https://facebook.com" target="_blank" class="me-3">
-                        <i class="bi bi-facebook"></i>
-                    </a>
-                    <a href="https://twitter.com" target="_blank" class="me-3">
-                        <i class="bi bi-twitter"></i>
-                    </a>
-                    <a href="https://instagram.com" target="_blank">
-                        <i class="bi bi-instagram"></i>
-                    </a>
-                </div>
-            </div>
-        </footer>
+        <?php include 'footer.php'; ?>
     </div>
 
     <!-- Notification Pop-up -->

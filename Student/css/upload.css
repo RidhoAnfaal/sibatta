@@ -1,16 +1,17 @@
 .input-group {
-    max-width: 300px; /* Mengatur lebar maksimal untuk search bar */
-    margin: 10 auto; /* Menempatkan elemen di tengah */
+  max-width: 300px; /* Mengatur lebar maksimal untuk search bar */
+  margin: 10 auto; /* Menempatkan elemen di tengah */
 }
 
-html, body {
-    height: 100%; /* Ensure the body takes the full height */
-    margin: 0; /* Remove default margin */
+html,
+body {
+  height: 100%; /* Ensure the body takes the full height */
+  margin: 0; /* Remove default margin */
 }
 
 body {
-    display: flex;
-    flex-direction: column; /* Stack children vertically */
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
 }
 
 .image-container,
@@ -61,11 +62,11 @@ body {
 
 .image-container {
   display: flex;
-  justify-content: center; 
-  align-items: center; 
+  justify-content: center;
+  align-items: center;
   margin-bottom: 30px;
   position: relative;
-  z-index: 1; 
+  z-index: 1;
 }
 
 .text-container p {
@@ -74,42 +75,5 @@ body {
   line-height: 1.6;
   margin-bottom: 20px;
   color: #555555;
-  text-align: justify; 
-}
-
-.footer {
-  background-color: #000;
-  color: #ffffff;
-  padding: 10px 15px; 
-  text-align: center;
-  font-size: 0.8rem; 
-  width: 100%;
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.footer p {
-  margin: 5px 0; 
-  line-height: 1.4; 
-}
-
-.footer a {
-  color: #ffc107;
-  text-decoration: none;
-  font-weight: bold;
-  transition: color 0.3s ease;
-}
-
-.footer a:hover {
-  text-decoration: underline;
-}
-
-.social-icons a {
-  font-size: 1.2rem; 
-  color: #ffc107;
-  margin: 0 5px; 
-  transition: color 0.3s ease;
-}
-
-.social-icons a:hover {
-  color: #ffffff;
+  text-align: justify;
 }
