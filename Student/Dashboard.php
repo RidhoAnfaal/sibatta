@@ -1,47 +1,51 @@
 <?php
-session_start();
+    // session_start();
 
-// Include the User class
-include_once 'User.php';
-include 'koneksi.php';
+    // // Include the User class
+    // include_once 'User.php';
+    // include 'koneksi.php';
 
-// Create User object
-$user = new User($host, $database, $username, $password, $_SESSION);
+    // // Create User object
+    // $user = new User($host, $database, $username, $password, $_SESSION);
 
-// Check if the user is logged in, if not redirect to login page
-if (!$user->checkLogin()) {
-    header('Location: index.php');
-    exit();
-}
+    // // Check if the user is logged in, if not redirect to login page
+    // if (!$user->checkLogin()) {
+    //     header('Location: index.php');
+    //     exit();
+    // }
 
-$username = $_SESSION['username'];
+    // // Get the logged-in username
+    // $username = $_SESSION['username'];
 
-$sql = "SELECT 
-            s.student_id, 
-            s.prodi, 
-            s.fullName, 
-            u.username, 
-            u.email, 
-            u.role
-        FROM [sibatta].[sibatta].[student] s
-        JOIN [sibatta].[sibatta].[user] u ON s.user_id = u.user_id
-        WHERE LOWER(u.username) = LOWER(?)";
+    // // Query to get user data
+    // $queryUser = "SELECT TOP (1) [user_id], [username], [email], [role] 
+    //               FROM [sibatta].[sibatta].[user]
+    //               WHERE username = ?";
+    // $params = [$username];
 
-$params = array($username);
-$stmt = sqlsrv_query($conn, $sql, $params);
+    // // Execute the user query
+    // $stmt = sqlsrv_query($conn, $queryUser, $params);
+    // if ($stmt === false) {
+    //     die(print_r(sqlsrv_errors(), true));
+    // }
 
-if ($stmt === false) {
-    die("SQL Error: " . print_r(sqlsrv_errors(), true));
-}
+    // // Fetch the user data
+    // $userData = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
 
-$userData = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+    // // Query to get student data
+    // $queryStudent = "SELECT TOP (1) [student_id], [prodi], [fullName], [kelas] 
+    //                  FROM [sibatta].[sibatta].[student]
+    //                  WHERE user_id = ?";
+    // $paramsStudent = [$userData['user_id']];
 
-if (!$userData) {
-    echo "<!--<p>No data found for the user.</p>";
-    exit;
-}
+    // // Execute the student query
+    // $stmtStudent = sqlsrv_query($conn, $queryStudent, $paramsStudent);
+    // if ($stmtStudent === false) {
+    //     die(print_r(sqlsrv_errors(), true));
+    // }
 
-sqlsrv_free_stmt($stmt);
+    // // Fetch the student data
+    // $student = sqlsrv_fetch_array($stmtStudent, SQLSRV_FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -67,28 +71,60 @@ sqlsrv_free_stmt($stmt);
         <?php include 'Sidebar.php'; ?>
 
         <!-- Main Content -->
-        <div class="container flex-grow-1">
-
-            <div class="image-container">
-                <img src="css/images/Sibatta Picture.png" class="img-fluid" alt="Dashboard Image">
-            </div>
-
-
-            <div class="card2">
-                <div class="card-body">
-                    <div class="content-container d-flex flex-wrap">
-                        <div class="text-container ms-4">
-                            <h1>Welcome to SIBATTA</h1>
-                            <p>
-                            SIBATTA (Sistem Informasi Bebas Tanggungan Tugas Akhir) This project aims to implement a system where final-year students (D4) of Information Technology major in Politeknik Negeri Malang (Polinema) can upload their final project reports to the Admin Library. The system should automate the submission process, validate file completeness, verify student final project, Clearance status once all requirements are fulfilled.
-                            </p>
-                            <p>
-                            Students
-Information related to the status of the final project.
-Publication of final project.
-Provides a downloadable report of dependency-free status.
-
-                            </p>
+         <!-- Main Content -->
+         <div class="container flex-grow-1">
+            <div class="row mt-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Welcome, <?php echo $userData['fullName']; ?>!</h3>
+                        </div>
+                        <div class="card-body">
+                            <h5>Informasi Mahasiswa</h5>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Nama</th>
+                                    <td><?php echo $userData['fullName']; ?></td>
+                                </tr>
+                                <tr>
+                                    <th>Program Studi</th>
+                                    <td><?php echo $userData['prodi']; ?></td>
+                                </tr>
+                                <tr>
+                                    <th>Username</th>
+                                    <td><?php echo $userData['username']; ?></td>
+                                </tr>
+                                <tr>
+                                    <th>Email</th>
+                                    <td><?php echo $userData['email']; ?></td>
+                                </tr>
+                                <tr>
+                                    <th>Status Tugas Akhir</th>
+                                    <td>
+                                        <?php
+                                        if ($userData['final_project_status'] == 1) {
+                                            echo "<span class='badge bg-success'>Sudah Disetujui</span>";
+                                        } else {
+                                            echo "<span class='badge bg-warning'>Menunggu Persetujuan</span>";
+                                        }
+                                        ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Status Hutang</th>
+                                    <td>
+                                        <?php
+                                        if ($userData['debt_status'] == 0) {
+                                            echo "<span class='badge bg-danger'>Tunggakan</span>";
+                                        } else {
+                                            echo "<span class='badge bg-success'>Tidak Ada Tunggakan</span>";
+                                        }
+                                        ?>
+                                    </td>
+                                </tr>
+                            </table>
+                            <a href="upload_report.php" class="btn btn-primary">Upload Tugas Akhir</a>
+                            <a href="payment_status.php" class="btn btn-warning">Cek Status Pembayaran</a>
                         </div>
                     </div>
                 </div>
