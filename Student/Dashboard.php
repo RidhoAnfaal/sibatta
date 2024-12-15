@@ -1,51 +1,51 @@
 <?php
-    // session_start();
+session_start();
 
-    // // Include the User class
-    // include_once 'User.php';
-    // include 'koneksi.php';
+// Include the User class
+include_once 'User.php';
+include 'koneksi.php';
 
-    // // Create User object
-    // $user = new User($host, $database, $username, $password, $_SESSION);
+// Create User object
+$user = new User($host, $database, $username, $password, $_SESSION);
 
-    // // Check if the user is logged in, if not redirect to login page
-    // if (!$user->checkLogin()) {
-    //     header('Location: index.php');
-    //     exit();
-    // }
+// Check if the user is logged in, if not redirect to login page
+if (!$user->checkLogin()) {
+    header('Location: index.php');
+    exit();
+}
 
-    // // Get the logged-in username
-    // $username = $_SESSION['username'];
+// Get the logged-in username
+$username = $_SESSION['username'];
 
-    // // Query to get user data
-    // $queryUser = "SELECT TOP (1) [user_id], [username], [email], [role] 
-    //               FROM [sibatta].[sibatta].[user]
-    //               WHERE username = ?";
-    // $params = [$username];
+// Query to get user data
+$queryUser = "SELECT TOP (1) [user_id], [username], [email], [role] 
+              FROM [sibatta].[sibatta].[user]
+              WHERE username = ?";
+$params = [$username];
 
-    // // Execute the user query
-    // $stmt = sqlsrv_query($conn, $queryUser, $params);
-    // if ($stmt === false) {
-    //     die(print_r(sqlsrv_errors(), true));
-    // }
+// Execute the user query
+$stmt = sqlsrv_query($conn, $queryUser, $params);
+if ($stmt === false) {
+    die(print_r(sqlsrv_errors(), true));
+}
 
-    // // Fetch the user data
-    // $userData = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+// Fetch the user data
+$userData = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
 
-    // // Query to get student data
-    // $queryStudent = "SELECT TOP (1) [student_id], [prodi], [fullName], [kelas] 
-    //                  FROM [sibatta].[sibatta].[student]
-    //                  WHERE user_id = ?";
-    // $paramsStudent = [$userData['user_id']];
+// Query to get student data
+$queryStudent = "SELECT TOP (1) [student_id], [prodi], [fullName], [kelas] 
+                 FROM [sibatta].[sibatta].[student]
+                 WHERE user_id = ?";
+$paramsStudent = [$userData['user_id']];
 
-    // // Execute the student query
-    // $stmtStudent = sqlsrv_query($conn, $queryStudent, $paramsStudent);
-    // if ($stmtStudent === false) {
-    //     die(print_r(sqlsrv_errors(), true));
-    // }
+// Execute the student query
+$stmtStudent = sqlsrv_query($conn, $queryStudent, $paramsStudent);
+if ($stmtStudent === false) {
+    die(print_r(sqlsrv_errors(), true));
+}
 
-    // // Fetch the student data
-    // $student = sqlsrv_fetch_array($stmtStudent, SQLSRV_FETCH_ASSOC);
+// Fetch the student data
+$student = sqlsrv_fetch_array($stmtStudent, SQLSRV_FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -71,8 +71,7 @@
         <?php include 'Sidebar.php'; ?>
 
         <!-- Main Content -->
-         <!-- Main Content -->
-         <div class="container flex-grow-1">
+        <div class="container flex-grow-1">
             <div class="row mt-4">
                 <div class="col-md-12">
                     <div class="card">
@@ -103,9 +102,11 @@
                                     <td>
                                         <?php
                                         if ($userData['final_project_status'] == 1) {
-                                            echo "<span class='badge bg-success'>Sudah Disetujui</span>";
-                                        } else {
-                                            echo "<span class='badge bg-warning'>Menunggu Persetujuan</span>";
+                                            echo "<span class='badge bg-success'>Approved</span>";
+                                        } elseif ($userData['final_project_status'] == 0) {
+                                            echo "<span class='badge bg-warning'>Waiting</span>";
+                                        } elseif ($userData['final_project_status'] == -1) {
+                                            echo "<span class='badge bg-danger'>Approval Denied</span>";
                                         }
                                         ?>
                                     </td>
@@ -115,9 +116,9 @@
                                     <td>
                                         <?php
                                         if ($userData['debt_status'] == 0) {
-                                            echo "<span class='badge bg-danger'>Tunggakan</span>";
+                                            echo "<span class='badge bg-danger'>Arrears</span>";
                                         } else {
-                                            echo "<span class='badge bg-success'>Tidak Ada Tunggakan</span>";
+                                            echo "<span class='badge bg-success'>No Arrears</span>";
                                         }
                                         ?>
                                     </td>
@@ -131,8 +132,8 @@
             </div>
         </div>
 
-                        <!-- Footer -->
-                        <footer class="footer mt-auto py-4">
+        <!-- Footer -->
+        <footer class="footer mt-auto py-4">
             <div class="container text-center">
                 <p>&copy; 2024 <strong>SIBATTA</strong>. All rights reserved.</p>
                 <p>Contact us: <a href="mailto:support@sibatta.com">support@sibatta.com</a></p>
@@ -151,30 +152,29 @@
         </footer>
     </div>
 
-        <!-- Notification Pop-up -->
-        <div class="toast-container position-fixed bottom-0 end-0 p-3">
-            <div id="toastMessage" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header">
-                    <strong class="me-auto">Notification</strong>
-                    <small>just now</small>
-                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                </div>
-                <div class="toast-body">
-                    You have a new update on your report!
-                </div>
+    <!-- Notification Pop-up -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="toastMessage" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">Notification</strong>
+                <small>just now</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                You have a new update on your report!
             </div>
         </div>
+    </div>
 
-        <!-- Optional JavaScript -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-        <script>
-            // Display toast notification on page load
-            document.addEventListener('DOMContentLoaded', () => {
-                const toast = new bootstrap.Toast(document.getElementById('toastMessage'));
-                toast.show();
-            });
-        </script>
-
+    <!-- Optional JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Display toast notification on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const toast = new bootstrap.Toast(document.getElementById('toastMessage'));
+            toast.show();
+        });
+    </script>
 
 </body>
 
