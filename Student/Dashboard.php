@@ -1,51 +1,54 @@
 <?php
-    // session_start();
+// Start the session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-    // // Include the User class
-    // include_once 'User.php';
-    // include 'koneksi.php';
+// Include the database connection file
+include '../admin/koneksi.php'; // Adjust path as necessary
 
-    // // Create User object
-    // $user = new User($host, $database, $username, $password, $_SESSION);
+// Check if session username is set
+if (!isset($_SESSION['username'])) {
+    die("Session 'username' is not set.");
+}
 
-    // // Check if the user is logged in, if not redirect to login page
-    // if (!$user->checkLogin()) {
-    //     header('Location: index.php');
-    //     exit();
-    // }
+// Debug database connection
+if ($conn === false) {
+    die("Database connection failed: " . print_r(sqlsrv_errors(), true));
+}
 
-    // // Get the logged-in username
-    // $username = $_SESSION['username'];
+// Get the logged-in username
+$username = $_SESSION['username'];
 
-    // // Query to get user data
-    // $queryUser = "SELECT TOP (1) [user_id], [username], [email], [role] 
-    //               FROM [sibatta].[sibatta].[user]
-    //               WHERE username = ?";
-    // $params = [$username];
+// Query to get user data
+$queryUser = "SELECT TOP (1) [user_id], [username], [email], [role] 
+              FROM [sibatta].[sibatta].[user]
+              WHERE username = ?";
+$params = [$username];
 
-    // // Execute the user query
-    // $stmt = sqlsrv_query($conn, $queryUser, $params);
-    // if ($stmt === false) {
-    //     die(print_r(sqlsrv_errors(), true));
-    // }
+// Execute the user query
+$stmt = sqlsrv_query($conn, $queryUser, $params);
+if ($stmt === false) {
+    die(print_r(sqlsrv_errors(), true));
+}
 
-    // // Fetch the user data
-    // $userData = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+// Fetch the user data
+$userData = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
 
-    // // Query to get student data
-    // $queryStudent = "SELECT TOP (1) [student_id], [prodi], [fullName], [kelas] 
-    //                  FROM [sibatta].[sibatta].[student]
-    //                  WHERE user_id = ?";
-    // $paramsStudent = [$userData['user_id']];
+// Query to get student data
+$queryStudent = "SELECT TOP (1) [student_id], [prodi], [fullName], [kelas] 
+                 FROM [sibatta].[sibatta].[student]
+                 WHERE user_id = ?";
+$paramsStudent = [$userData['user_id']];
 
-    // // Execute the student query
-    // $stmtStudent = sqlsrv_query($conn, $queryStudent, $paramsStudent);
-    // if ($stmtStudent === false) {
-    //     die(print_r(sqlsrv_errors(), true));
-    // }
+// Execute the student query
+$stmtStudent = sqlsrv_query($conn, $queryStudent, $paramsStudent);
+if ($stmtStudent === false) {
+    die(print_r(sqlsrv_errors(), true));
+}
 
-    // // Fetch the student data
-    // $student = sqlsrv_fetch_array($stmtStudent, SQLSRV_FETCH_ASSOC);
+// Fetch the student data
+$student = sqlsrv_fetch_array($stmtStudent, SQLSRV_FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -77,18 +80,18 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3>Welcome, <?php echo $userData['fullName']; ?>!</h3>
+                            <h3>Welcome, <?php echo $student['fullName']; ?>!</h3>
                         </div>
                         <div class="card-body">
                             <h5>Informasi Mahasiswa</h5>
                             <table class="table table-bordered">
                                 <tr>
                                     <th>Nama</th>
-                                    <td><?php echo $userData['fullName']; ?></td>
+                                    <td><?php echo $student['fullName']; ?></td>
                                 </tr>
                                 <tr>
                                     <th>Program Studi</th>
-                                    <td><?php echo $userData['prodi']; ?></td>
+                                    <td><?php echo $student['prodi']; ?></td>
                                 </tr>
                                 <tr>
                                     <th>Username</th>
@@ -96,13 +99,14 @@
                                 </tr>
                                 <tr>
                                     <th>Email</th>
-                                    <td><?php echo $userData['email']; ?></td>
+                                    <td><?php echo htmlspecialchars($userData['email']); ?></td>
+
                                 </tr>
                                 <tr>
                                     <th>Status Tugas Akhir</th>
                                     <td>
                                         <?php
-                                        if ($userData['final_project_status'] == 1) {
+                                        if ($student['final_project_status'] == 1) {
                                             echo "<span class='badge bg-success'>Sudah Disetujui</span>";
                                         } else {
                                             echo "<span class='badge bg-warning'>Menunggu Persetujuan</span>";
@@ -114,7 +118,7 @@
                                     <th>Status Hutang</th>
                                     <td>
                                         <?php
-                                        if ($userData['debt_status'] == 0) {
+                                        if ($student['debt_status'] == 0) {
                                             echo "<span class='badge bg-danger'>Tunggakan</span>";
                                         } else {
                                             echo "<span class='badge bg-success'>Tidak Ada Tunggakan</span>";
@@ -123,7 +127,7 @@
                                     </td>
                                 </tr>
                             </table>
-                            <a href="upload_report.php" class="btn btn-primary">Upload Tugas Akhir</a>
+                            <a href="uploaad.php" class="btn btn-primary">Upload Tugas Akhir</a>
                             <a href="payment_status.php" class="btn btn-warning">Cek Status Pembayaran</a>
                         </div>
                     </div>
