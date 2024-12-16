@@ -1,52 +1,52 @@
 <?php
-// Start the session if not already started
-// if (session_status() === PHP_SESSION_NONE) {
-//     session_start();
-// }
+Start the session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-// // Include the database connection file
-// include 'koneksi.php'; // Adjust path as necessary
+// Include the database connection file
+include 'koneksi.php'; // Adjust path as necessary
 
-// // Check if session username is set
-// if (!isset($_SESSION['username'])) {
-//     die("Session 'username' is not set.");
-// }
+// Check if session username is set
+if (!isset($_SESSION['username'])) {
+    die("Session 'username' is not set.");
+}
 
-// // Debug database connection
-// if ($conn === false) {
-//     die("Database connection failed: " . print_r(sqlsrv_errors(), true));
-// }
+// Debug database connection
+if ($conn === false) {
+    die("Database connection failed: " . print_r(sqlsrv_errors(), true));
+}
 
-// // Get the logged-in username
-// $username = $_SESSION['username'];
-// $queryUser = "SELECT TOP (1) [user_id], [username], [email], [role] 
-//               FROM [sibatta].[sibatta].[user]
-//               WHERE username = ?";
-// $params = [$username];
-// $stmtUser = sqlsrv_query($conn, $queryUser, $params);
-// if ($stmtUser === false) {
-//     die("User query failed: " . print_r(sqlsrv_errors(), true));
-// }
+// Get the logged-in username
+$username = $_SESSION['username'];
+$queryUser = "SELECT TOP (1) [user_id], [username], [email], [role] 
+              FROM [].[].[]
+              WHERE username = ?";
+$params = [$username];
+$stmtUser = sqlsrv_query($conn, $queryUser, $params);
+if ($stmtUser === false) {
+    die("User query failed: " . print_r(sqlsrv_errors(), true));
+}
 
-// $userData = sqlsrv_fetch_array($stmtUser, SQLSRV_FETCH_ASSOC);
-// if (!$userData) {
-//     die("No user data found for username: " . htmlspecialchars($username));
-// }
+$userData = sqlsrv_fetch_array($stmtUser, SQLSRV_FETCH_ASSOC);
+if (!$userData) {
+    die("No user data found for username: " . htmlspecialchars($username));
+}
 
-// // Query to get admin data
-// $queryadmin = "SELECT TOP (1) [admin_id], [admin_role], [fullName] 
-//                  FROM [sibatta].[sibatta].[admin]
-//                  WHERE user_id = ?";
-// $paramsadmin = [$userData['user_id']];
-// $stmtadmin = sqlsrv_query($conn, $queryadmin, $paramsadmin);
-// if ($stmtadmin === false) {
-//     die("admin query failed: " . print_r(sqlsrv_errors(), true));
-// }
+// Query to get admin data
+$queryadmin = "SELECT TOP (1) [], [], [] 
+                 FROM [].[].[]
+                 WHERE user_id = ?";
+$paramsadmin = [$userData['user_id']];
+$stmtadmin = sqlsrv_query($conn, $queryadmin, $paramsadmin);
+if ($stmtadmin === false) {
+    die("admin query failed: " . print_r(sqlsrv_errors(), true));
+}
 
-// $admin = sqlsrv_fetch_array($stmtadmin, SQLSRV_FETCH_ASSOC);
-// if (!$admin) {
-//     die("No admin data found for user_id: " . htmlspecialchars($userData['user_id']));
-// }
+$admin = sqlsrv_fetch_array($stmtadmin, SQLSRV_FETCH_ASSOC);
+if (!$admin) {
+    die("No admin data found for user_id: " . htmlspecialchars($userData['user_id']));
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
