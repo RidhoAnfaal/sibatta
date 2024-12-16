@@ -1,55 +1,17 @@
+.main-content {
+  flex: 1; /* Isi seluruh ruang kosong di tengah */
+}
+
 html,
 body {
-  height: 100%; /* Pastikan latar belakang mencakup seluruh tinggi halaman */
-  margin: 0;
-  padding: 0;
+  height: 100%; /* Pastikan tinggi penuh untuk viewport */
+  display: flex;
+  flex-direction: column; /* Atur elemen di dalam body vertikal */
 }
 
+/* Konten Utama */
 .container {
-    flex: 1; /* Biarkan kontainer tumbuh dan mengambil ruang yang tersedia */
-    display: flex;
-    flex-direction: column; /* Susun konten di dalam kontainer secara vertikal */
-}
-
-.footer {
-    background-color: #000;
-    color: #ffffff;
-    padding: 15px 10px;
-    text-align: center;
-    font-size: 0.9rem;
-    width: 100%;
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.footer p {
-    margin: 5px 0;
-    line-height: 1.5;
-}
-
-.footer a {
-    color: #ffc107;
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s ease;
-}
-
-.footer a:hover {
-    text-decoration: underline;
-}
-
-.social-icons {
-    margin-top: 10px;
-}
-
-.social-icons a {
-    font-size: 1.2rem;
-    color: #ffc107;
-    margin: 0 10px;
-    display: inline-block;
-    transition: color 0.3s ease, transform 0.3s ease;
-}
-
-.social-icons a:hover {
-    color: #ffffff;
-    transform: scale(1.2);
+  flex: 1; /* Membuat kontainer fleksibel dan memenuhi ruang */
+  padding: 20px;
+  background-color: #f9f9f9;
 }

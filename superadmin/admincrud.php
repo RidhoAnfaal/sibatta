@@ -213,77 +213,83 @@ $koneksi->close();
 <!-- Frontend Form to Add Admin -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin User CRUD</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </head>
-<body>
-<?php include 'navbar.php'; ?>
-<div class="d-flex">
-<?php include 'sidebar.php'; ?>
-<div class="container mt-5">
-    <h2 class="mb-4">Admin Data:</h2>
-    
-    <!-- Add Admin Form -->
-    <form method="POST" action="">
-        <input type="hidden" name="action" value="add">
-        <div class="mb-3">
-            <input type="text" name="username" placeholder="Username" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <input type="password" name="password" placeholder="Password" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <input type="email" name="email" placeholder="Email" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <input type="text" name="admin_role" placeholder="Admin Role" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <input type="text" name="fullName" placeholder="Full Name" class="form-control" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Add Admin</button>
-    </form>
 
-    <!-- Admin Table -->
-    <h3 class="mt-5">Admin List</h3>
-    <form method="POST">
-        <input type="text" name="search" placeholder="Search Admin" class="form-control mb-3">
-        <button type="submit" class="btn btn-secondary">Search</button>
-    </form>
-    
-    <table class="table mt-3">
-        <thead>
-            <tr>
-                <th>Username</th>
-                <th>Email</th>
-                <th>Full Name</th>
-                <th>Admin Role</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($admins as $admin): ?>
-                <tr>
-                    <td><?= $admin['username'] ?></td>
-                    <td><?= $admin['email'] ?></td>
-                    <td><?= $admin['fullName'] ?></td>
-                    <td><?= $admin['admin_role'] ?></td>
-                    <td>
-                        <a href="updateAdmin.php?admin_id=<?= $admin['admin_id'] ?>" class="btn btn-warning btn-sm">Edit</a>
-                        <form action="" method="POST" style="display:inline;">
-                            <input type="hidden" name="action" value="delete">
-                            <input type="hidden" name="admin_id" value="<?= $admin['admin_id'] ?>">
-                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-</div>
-</div>
+<body>
+    <?php include 'navbar.php'; ?>
+    <div class="d-flex">
+        <?php include 'sidebar.php'; ?>
+        <div class="container mt-5">
+            <h2 class="mb-4">Admin Data:</h2>
+
+            <!-- Add Admin Form -->
+            <form method="POST" action="">
+                <input type="hidden" name="action" value="add">
+                <div class="mb-3">
+                    <input type="text" name="username" placeholder="Username" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <input type="password" name="password" placeholder="Password" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <input type="email" name="email" placeholder="Email" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <input type="text" name="admin_role" placeholder="Admin Role" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <input type="text" name="fullName" placeholder="Full Name" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Admin</button>
+            </form>
+
+            <!-- Admin Table -->
+            <h3 class="mt-5">Admin List</h3>
+            <form method="POST">
+                <input type="text" name="search" placeholder="Search Admin" class="form-control mb-3">
+                <button type="submit" class="btn btn-secondary">Search</button>
+            </form>
+
+            <table class="table mt-3">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Full Name</th>
+                        <th>Admin Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($admins as $admin): ?>
+                        <tr>
+                            <td><?= $admin['username'] ?></td>
+                            <td><?= $admin['email'] ?></td>
+                            <td><?= $admin['fullName'] ?></td>
+                            <td><?= $admin['admin_role'] ?></td>
+                            <td>
+                                <a href="updateAdmin.php?admin_id=<?= $admin['admin_id'] ?>" class="btn btn-warning btn-sm">Edit</a>
+                                <form action="" method="POST" style="display:inline;">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="admin_id" value="<?= $admin['admin_id'] ?>">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Footer -->
+    <?php include 'footer.php'; ?>
 </body>
+
 </html>

@@ -257,7 +257,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-// Close connection
+Close connection
 $koneksi->close();
 ?>
 
@@ -270,11 +270,13 @@ $koneksi->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student User CRUD</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/add_user.css">
 </head>
 
 <body>
     <?php include 'navbar.php'; ?>
-    <div class="d-flex">
+    <div class="main-content">
         <?php include 'sidebar.php'; ?>
         <div class="container mt-5">
             <h2 class="mb-4">Student Data:</h2>
@@ -371,6 +373,9 @@ $koneksi->close();
                 </tbody>
             </table>
         </div>
+
+        <!-- Footer -->
+        <?php include 'footer.php'; ?>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
