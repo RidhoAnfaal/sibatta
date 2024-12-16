@@ -52,8 +52,10 @@
 </head>
 
 <body>
-    <?php include 'sidebar.php'; ?>
-    <?php include 'navbar.php'; ?>
+<?php include 'navbar.php'; ?>
+
+<div class="d-flex flex-column min-vh-100">
+    <?php include 'Sidebar.php'; ?>
 
     <div class="container">
         <div class="status-card">
