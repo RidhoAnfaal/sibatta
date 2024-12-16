@@ -58,7 +58,8 @@ tabel dokumen(
   6.action(terima,tolak)
   7.download
 )
--send email (upload surat)
+-send email (upload surat
+-cek ukt yang sudah bayar dan belum
 -Log Out✅
 
 Super Admin(CRUD SEMUA)
