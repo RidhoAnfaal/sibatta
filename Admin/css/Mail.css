@@ -1,0 +1,40 @@
+/* Mail.css */
+body {
+    font-family: Arial, sans-serif;
+}
+
+.status-card {
+    margin: 50px auto;
+    max-width: 800px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.status-header {
+    background-color: #343a40;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+.status-body {
+    padding: 20px;
+    font-size: 16px;
+    color: #333;
+}
+
+.search-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border: none;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
