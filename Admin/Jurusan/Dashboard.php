@@ -1,14 +1,14 @@
 <?php
-// // Start the session
-// session_start();
+// Start the session
+session_start();
 
-// // Check if the user is logged in, if not redirect to login page
-// if (!isset($_SESSION['username'])) {
-// header('Location: index.php');
-// exit();
-// }
+// Check if the user is logged in, if not redirect to login page
+if (!isset($_SESSION['username'])) {
+header('Location: index.php');
+exit();
+}
 
-// $username = $_SESSION['username']; // Get the username from session
+$username = $_SESSION['username']; // Get the username from session
 
 ?>
 
@@ -23,7 +23,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
     <title>Home</title>
 </head>
 
@@ -38,7 +38,7 @@
         <div class="container flex-grow-1">
 
             <div class="image-container">
-                <img src="css/images/Sibatta Picture.png" class="img-fluid" alt="Dashboard Image">
+                <img src="../css/images/Sibatta Picture.png" class="img-fluid" alt="Dashboard Image">
             </div>
 
 

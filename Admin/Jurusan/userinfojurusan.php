@@ -1,11 +1,11 @@
 <?php
-Start the session if not already started
+// Start the session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
 // Include the database connection file
-include 'koneksi.php'; // Adjust path as necessary
+include '../koneksi.php'; // Adjust path as necessary
 
 // Check if session username is set
 if (!isset($_SESSION['username'])) {
@@ -19,8 +19,8 @@ if ($conn === false) {
 
 // Get the logged-in username
 $username = $_SESSION['username'];
-$queryUser = "SELECT TOP (1) [user_id], [username], [email], [role] 
-              FROM [].[].[]
+$queryUser = "SELECT TOP (1) *
+              FROM [sibatta].[sibatta].[user]
               WHERE username = ?";
 $params = [$username];
 $stmtUser = sqlsrv_query($conn, $queryUser, $params);
@@ -34,8 +34,8 @@ if (!$userData) {
 }
 
 // Query to get admin data
-$queryadmin = "SELECT TOP (1) [], [], [] 
-                 FROM [].[].[]
+$queryadmin = "SELECT TOP (1) *
+                 FROM [sibatta].[sibatta].[admin]
                  WHERE user_id = ?";
 $paramsadmin = [$userData['user_id']];
 $stmtadmin = sqlsrv_query($conn, $queryadmin, $paramsadmin);
@@ -75,7 +75,7 @@ if (!$admin) {
                         <tbody>
                             <tr>
                                 <td><strong>admin ID</strong></td>
-                                <!-- <td><?php echo htmlspecialchars($admin['admin_id']); ?></td>
+                                <td><?php echo htmlspecialchars($admin['admin_id']); ?></td>
                             </tr>
                             <tr>
                                 <td><strong>Username</strong></td>
@@ -88,7 +88,7 @@ if (!$admin) {
                             <tr>
                                 <td><strong>Status</strong></td>
                                 <td><?php echo htmlspecialchars($admin['admin_role']); ?></td>
-                            </tr> -->
+                            </tr>
                         </tbody>
                     </table>
                 </div>

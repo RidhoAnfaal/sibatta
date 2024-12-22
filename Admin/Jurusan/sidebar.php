@@ -150,7 +150,7 @@
     <!-- Sidebar -->
     <div id="sidebar">
         <div class="text-center p-3">
-            <img src="css/images/Logo_Sibatta.png" alt="Logo" width="50" height="40" class="img-fluid">
+            <img src="../css/images/Logo_Sibatta.png" alt="Logo" width="50" height="40" class="img-fluid">
             <h5 class="mt-2 text-dark">SIBATTA</h5>
         </div>
         <?php
@@ -174,7 +174,7 @@
             </li>
             <!-- Tambahan Mail -->
             <li class="nav-item mb-3">
-                <a class="nav-link text-dark <?php echo $current_page == 'mail.php' ? 'active' : ''; ?>" href="mail.php">
+                <a class="nav-link text-dark <?php echo $current_page == 'Mail.php' ? 'active' : ''; ?>" href="Mail.php">
                     <ion-icon name="mail-outline" class="me-2"></ion-icon> <span>UKT Status</span>
                 </a>
             </li>
@@ -196,7 +196,7 @@
                 </div>
                 <div class="modal-body">
                     <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
-                    <a href="../logout.php" class="btn btn-danger">Log Out</a>
+                    <a href="../../logout.php" class="btn btn-danger">Log Out</a>
                 </div>
             </div>
         </div>

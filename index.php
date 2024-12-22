@@ -32,6 +32,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             case 'student':
                 header("Location: Student/Dashboard.php");
                 break;
+            case 'admin_academic':
+                header("Location: admin/Jurusan/Dashboard.php");
+                break;
             default:
                 $message = "Invalid role.";
                 break;

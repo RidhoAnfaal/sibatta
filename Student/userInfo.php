@@ -1,54 +1,54 @@
 <?php
-// // Start the session if not already started
-// if (session_status() === PHP_SESSION_NONE) {
-//     session_start();
-// }
+// Start the session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-// // Include the database connection file
-// include '../admin/koneksi.php'; // Adjust path as necessary
+// Include the database connection file
+include '../admin/koneksi.php'; // Adjust path as necessary
 
-// // Check if session username is set
-// if (!isset($_SESSION['username'])) {
-//     die("Session 'username' is not set.");
-// }
+// Check if session username is set
+if (!isset($_SESSION['username'])) {
+    die("Session 'username' is not set.");
+}
 
-// // Debug database connection
-// if ($conn === false) {
-//     die("Database connection failed: " . print_r(sqlsrv_errors(), true));
-// }
+// Debug database connection
+if ($conn === false) {
+    die("Database connection failed: " . print_r(sqlsrv_errors(), true));
+}
 
-// // Get the logged-in username
-// $username = $_SESSION['username'];
+// Get the logged-in username
+$username = $_SESSION['username'];
 
-// // Query to get user data
-// $queryUser = "SELECT TOP (1) [user_id], [username], [email], [role] 
-//               FROM [sibatta].[sibatta].[user]
-//               WHERE username = ?";
-// $params = [$username];
+// Query to get user data
+$queryUser = "SELECT TOP (1) [user_id], [username], [email], [role] 
+              FROM [sibatta].[sibatta].[user]
+              WHERE username = ?";
+$params = [$username];
 
-// // Execute the user query
-// $stmt = sqlsrv_query($conn, $queryUser, $params);
-// if ($stmt === false) {
-//     die(print_r(sqlsrv_errors(), true));
-// }
+// Execute the user query
+$stmt = sqlsrv_query($conn, $queryUser, $params);
+if ($stmt === false) {
+    die(print_r(sqlsrv_errors(), true));
+}
 
-// // Fetch the user data
-// $userData = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+// Fetch the user data
+$userData = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
 
-// // Query to get student data
-// $queryStudent = "SELECT TOP (1) [student_id], [prodi], [fullName], [kelas] 
-//                  FROM [sibatta].[sibatta].[student]
-//                  WHERE user_id = ?";
-// $paramsStudent = [$userData['user_id']];
+// Query to get student data
+$queryStudent = "SELECT TOP (1) [student_id], [prodi], [fullName], [kelas] 
+                 FROM [sibatta].[sibatta].[student]
+                 WHERE user_id = ?";
+$paramsStudent = [$userData['user_id']];
 
-// // Execute the student query
-// $stmtStudent = sqlsrv_query($conn, $queryStudent, $paramsStudent);
-// if ($stmtStudent === false) {
-//     die(print_r(sqlsrv_errors(), true));
-// }
+// Execute the student query
+$stmtStudent = sqlsrv_query($conn, $queryStudent, $paramsStudent);
+if ($stmtStudent === false) {
+    die(print_r(sqlsrv_errors(), true));
+}
 
-// // Fetch the student data
-// $student = sqlsrv_fetch_array($stmtStudent, SQLSRV_FETCH_ASSOC);
+// Fetch the student data
+$student = sqlsrv_fetch_array($stmtStudent, SQLSRV_FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>

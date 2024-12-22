@@ -1,14 +1,15 @@
 <?php
 require('koneksi.php');
+session_start(); // Start session to access session variables
 
 // Cek apakah tombol 'validate' diklik
 if (isset($_POST['validate'])) {
     $document_id = $_POST['document_id'];
-    $validated_by = 'Admin'; // Ganti dengan nama pengguna jika diperlukan
+    $document_status = 'Admin'; // Ganti dengan nama pengguna jika diperlukan
 
     // Update query
-    $query = "UPDATE [sibatta].[sibatta].[document] SET [validated_by] = ? WHERE [document_id] = ?";
-    $params = [$validated_by, $document_id];
+    $query = "UPDATE [sibatta].[sibatta].[document] SET [document_status] = ? WHERE [document_id] = ?";
+    $params = [$document_status, $document_id];
     $result = sqlsrv_query($conn, $query, $params);
 
     if ($result) {
@@ -22,10 +23,10 @@ if (isset($_POST['validate'])) {
 
 // Cek apakah ada parameter pencarian
 $search = isset($_GET['search']) ? $_GET['search'] : '';
-$query = "SELECT [document_id], [user_id], [title], [uploaded_at], [validated_by], [username], [file_path] 
+$query = "SELECT [document_id], [user_id], [title], [uploaded_at], [document_status], [username], [file_path] 
           FROM [sibatta].[sibatta].[document]";
 
- //Tambahkan filter pencarian jika ada
+// Tambahkan filter pencarian jika ada
 if (!empty($search)) {
     $query .= " WHERE [username] LIKE ? OR [title] LIKE ? OR CAST([document_id] AS NVARCHAR) LIKE ?";
     $params = ["%$search%", "%$search%", "%$search%"];
@@ -38,6 +39,7 @@ if (!empty($search)) {
 if ($viewdata === false) {
     die(print_r(sqlsrv_errors(), true));
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -56,9 +58,10 @@ if ($viewdata === false) {
 
 <body>
     <!-- Header -->
-    
-   <!-- Header -->
-   <?php include 'navbar.php'; ?>
+   <?php 
+      $username = $_SESSION['username']; // Get the username from session
+   include 'navbar.php'; 
+   ?>
 
 <div class="d-flex">
     <?php include 'Sidebar.php'; ?>
@@ -99,10 +102,10 @@ if ($viewdata === false) {
                         echo "<td>{$tampil['user_id']}</td>";
                         echo "<td>{$tampil['title']}</td>";
                         echo "<td>" . date_format($tampil['uploaded_at'], 'Y-m-d') . "</td>";
-                        echo "<td>{$tampil['validated_by']}</td>";
+                        echo "<td>{$tampil['document_status']}</td>";
 
                         // Validation button
-                         echo "<td>
+                        echo "<td>
                                    <form method='POST' action='Tugas_akhir.php'>
                                        <input type='hidden' name='document_id' value='{$tampil['document_id']}'>
                                        <button type='submit' name='validate' class='btn btn-success'>Validate</button>
@@ -111,9 +114,9 @@ if ($viewdata === false) {
 
                         // File download button only
                         $file_path = '../Student/uploads/' . basename($tampil['file_path']);
-                         if (file_exists($file_path)) {
+                        if (file_exists($file_path)) {
                              echo "<td><a href='$file_path' class='btn btn-primary' download>Download</a></td>";
-                         } else {
+                        } else {
                             echo "<td>File not found</td>";
                         }
 
@@ -125,27 +128,26 @@ if ($viewdata === false) {
             </table>
         </div>
     </div>
+</div>
 
-          
+<!-- Footer -->
+<footer class="footer mt-auto py-4">
+    <div class="container text-center">
+        <p>&copy; 2024 <strong>SIBATTA</strong>. All rights reserved.</p>
+        <p>Contact us: <a href="mailto:support@sibatta.com">support@sibatta.com</a></p>
+        <div class="social-icons">
+            <a href="https://facebook.com" target="_blank" class="me-3">
+                <i class="bi bi-facebook"></i>
+            </a>
+            <a href="https://twitter.com" target="_blank" class="me-3">
+                <i class="bi bi-twitter"></i>
+            </a>
+            <a href="https://instagram.com" target="_blank">
+                <i class="bi bi-instagram"></i>
+            </a>
+        </div>
     </div>
-  <!-- Footer -->
-  <footer class="footer mt-auto py-4">
-            <div class="container text-center">
-                <p>&copy; 2024 <strong>SIBATTA</strong>. All rights reserved.</p>
-                <p>Contact us: <a href="mailto:support@sibatta.com">support@sibatta.com</a></p>
-                <div class="social-icons">
-                    <a href="https://facebook.com" target="_blank" class="me-3">
-                        <i class="bi bi-facebook"></i>
-                    </a>
-                    <a href="https://twitter.com" target="_blank" class="me-3">
-                        <i class="bi bi-twitter"></i>
-                    </a>
-                    <a href="https://instagram.com" target="_blank">
-                        <i class="bi bi-instagram"></i>
-                    </a>
-                </div>
-            </div>
-        </footer>
+</footer>
 </body>
 
 </html>

@@ -51,7 +51,7 @@
                         <!-- Username Button -->
                         <a class="nav-link text-light" href="#" id="usernameToggle" role="button">
                             <ion-icon name="person-circle-outline"></ion-icon>
-                            <!-- <span id="username"><?php echo htmlspecialchars($username); ?></span> -->
+                            <span id="username"><?php echo htmlspecialchars($username); ?></span>
                         </a>
 
                         <!-- Feature Container -->
@@ -62,7 +62,7 @@
                                 <ion-icon name="person-circle-outline" class="me-2"></ion-icon> Profile
                                 </a>
                                 <!-- Logout -->
-                                <a class="d-flex align-items-center text-dark text-decoration-none" href="../logout.php">
+                                <a class="d-flex align-items-center text-dark text-decoration-none" href="../../logout.php">
                                     <ion-icon name="log-out-outline" class="me-2"></ion-icon> Logout
                                 </a>
                             </div>
