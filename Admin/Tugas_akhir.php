@@ -58,96 +58,84 @@ if ($viewdata === false) {
 
 <body>
     <!-- Header -->
-   <?php 
-      $username = $_SESSION['username']; // Get the username from session
-   include 'navbar.php'; 
-   ?>
+    <?php
+    $username = $_SESSION['username']; // Get the username from session
+    include 'navbar.php';
+    ?>
 
-<div class="d-flex">
-    <?php include 'Sidebar.php'; ?>
-    <div class="container mt-4">
-        <!-- Search Bar -->
-        <form method="GET" class="mb-3">
-            <div class="input-group ms-auto" style="max-width: 300px;">
-                <input type="text" class="form-control" name="search" placeholder="Search" value="<?php echo htmlspecialchars($search); ?>">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-            </div>
-        </form>
-        
+    <div class="d-flex">
+        <?php include 'Sidebar.php'; ?>
         <div class="container mt-4">
-            <h3>Documents List</h3>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Username</th>
-                        <th>Document ID</th>
-                        <th>NIM</th>
-                        <th>Title</th>
-                        <th>Uploaded</th>
-                        <th>Validated</th>
-                        <th>Action</th>
-                        <th>Download</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    // Fetch and display each row of data
-                    $no = 1;
-                    while ($tampil = sqlsrv_fetch_array($viewdata, SQLSRV_FETCH_ASSOC)) {
-                        echo "<tr>";
-                        echo "<td>{$no}</td>";
-                        echo "<td>{$tampil['username']}</td>";
-                        echo "<td>{$tampil['document_id']}</td>";
-                        echo "<td>{$tampil['user_id']}</td>";
-                        echo "<td>{$tampil['title']}</td>";
-                        echo "<td>" . date_format($tampil['uploaded_at'], 'Y-m-d') . "</td>";
-                        echo "<td>{$tampil['document_status']}</td>";
+            <!-- Search Bar -->
+            <form method="GET" class="mb-3">
+                <div class="input-group ms-auto" style="max-width: 300px;">
+                    <input type="text" class="form-control" name="search" placeholder="Search" value="<?php echo htmlspecialchars($search); ?>">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </div>
+            </form>
 
-                        // Validation button
-                        echo "<td>
+            <div class="container mt-4">
+                <h3>Documents List</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Username</th>
+                            <th>Document ID</th>
+                            <th>NIM</th>
+                            <th>Title</th>
+                            <th>Uploaded</th>
+                            <th>Validated</th>
+                            <th>Action</th>
+                            <th>Download</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        // Fetch and display each row of data
+                        $no = 1;
+                        while ($tampil = sqlsrv_fetch_array($viewdata, SQLSRV_FETCH_ASSOC)) {
+                            echo "<tr>";
+                            echo "<td>{$no}</td>";
+                            echo "<td>{$tampil['username']}</td>";
+                            echo "<td>{$tampil['document_id']}</td>";
+                            echo "<td>{$tampil['user_id']}</td>";
+                            echo "<td>{$tampil['title']}</td>";
+                            echo "<td>" . date_format($tampil['uploaded_at'], 'Y-m-d') . "</td>";
+                            echo "<td>{$tampil['document_status']}</td>";
+
+                            // Validation button
+                            echo "<td>
                                    <form method='POST' action='Tugas_akhir.php'>
                                        <input type='hidden' name='document_id' value='{$tampil['document_id']}'>
                                        <button type='submit' name='validate' class='btn btn-success'>Validate</button>
                                    </form>
+                                   <form method='POST' action='Tugas_akhir.php' class='d-inline'>
+                                       <input type='hidden' name='document_id' value='{$tampil['document_id']}'>
+                                       <button type='submit' name='reject' class='btn btn-danger'>Reject</button>
+                                   </form>
                                </td>";
 
-                        // File download button only
-                        $file_path = '../Student/uploads/' . basename($tampil['file_path']);
-                        if (file_exists($file_path)) {
-                             echo "<td><a href='$file_path' class='btn btn-primary' download>Download</a></td>";
-                        } else {
-                            echo "<td>File not found</td>";
+                            // File download button only
+                            $file_path = '../Student/uploads/' . basename($tampil['file_path']);
+                            if (file_exists($file_path)) {
+                                echo "<td><a href='$file_path' class='btn btn-primary' download>Download</a></td>";
+                            } else {
+                                echo "<td>File not found</td>";
+                            }
+
+                            echo "</tr>";
+                            $no++;
                         }
-
-                        echo "</tr>";
-                        $no++;
-                    }
-                    ?>
-                </tbody>
-            </table>
+                        ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- Footer -->
-<footer class="footer mt-auto py-4">
-    <div class="container text-center">
-        <p>&copy; 2024 <strong>SIBATTA</strong>. All rights reserved.</p>
-        <p>Contact us: <a href="mailto:support@sibatta.com">support@sibatta.com</a></p>
-        <div class="social-icons">
-            <a href="https://facebook.com" target="_blank" class="me-3">
-                <i class="bi bi-facebook"></i>
-            </a>
-            <a href="https://twitter.com" target="_blank" class="me-3">
-                <i class="bi bi-twitter"></i>
-            </a>
-            <a href="https://instagram.com" target="_blank">
-                <i class="bi bi-instagram"></i>
-            </a>
-        </div>
-    </div>
-</footer>
+    <!-- Footer -->
+    <?php include 'footer.php'; ?>
 </body>
 
 </html>
