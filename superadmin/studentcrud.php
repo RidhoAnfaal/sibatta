@@ -1,20 +1,22 @@
 <?php
 // Include the database connection configuration
-require_once '../koneksi.php';  // Make sure this path is correct based on your directory structure
+require_once '../koneksi.php';  // Adjust path based on your directory structure
 session_start();
-//Check if the user is logged in, if not redirect to login page
+
+// Check if the user is logged in, if not redirect to login page
 if (!isset($_SESSION['username'])) {
     header('Location: ../index.php');
     exit();
 }
+
 $username = $_SESSION['username'];
 
 // Create an instance of the Koneksi class and establish connection
 $koneksi = new Koneksi();
-$conn = $koneksi->connect(); // This will call the connect method from Koneksi class to get the connection
+$conn = $koneksi->connect(); // This will call the connect method from the Koneksi class
 
 // Add Student and User function
-function addStudentUser($username, $password, $email, $prodi, $fullName)
+function addStudentUser($username, $password, $email, $prodi, $fullName, $kelas)
 {
     global $conn;
 
@@ -38,10 +40,10 @@ function addStudentUser($username, $password, $email, $prodi, $fullName)
         sqlsrv_fetch($stmtUser);
         $userId = sqlsrv_get_field($stmtUser, 0);
 
-        // Insert into student table (without specifying student_id since it's an identity column)
-        $insertStudentQuery = "INSERT INTO [sibatta].[student] (user_id, prodi, fullName)
-                               VALUES (?, ?, ?)";
-        $studentParams = [$userId, $prodi, $fullName];
+        // Insert into student table
+        $insertStudentQuery = "INSERT INTO [sibatta].[student] (user_id, prodi, fullName, kelas)
+                               VALUES (?, ?, ?, ?)";
+        $studentParams = [$userId, $prodi, $fullName, $kelas];
         $stmtStudent = sqlsrv_query($conn, $insertStudentQuery, $studentParams);
 
         if ($stmtStudent === false) {
@@ -58,48 +60,31 @@ function addStudentUser($username, $password, $email, $prodi, $fullName)
 }
 
 // Update Student function
-// function updateStudent($student_id, $fullName, $email, $prodi)
-// {
-//     global $conn;
-//     $query = "UPDATE [sibatta].[student]
-//               SET fullName = ?, email = ?, prodi = ?
-//               WHERE student_id = ?";
-//     $params = [$fullName, $email, $prodi, $student_id];
-//     $stmt = sqlsrv_query($conn, $query, $params);
-
-//     if ($stmt === false) {
-//         echo "Error updating student: " . print_r(sqlsrv_errors(), true);
-//         die();
-//     }
-
-//     echo "Student updated successfully!";
-// }
-// Update Student function
-function updateStudent($student_id, $fullName, $email, $prodi)
+function updateStudent($student_id, $fullName, $email, $prodi, $kelas, $username, $password)
 {
     global $conn;
 
-    // First, update the email in the user table
+    // Update user table
     $updateUserQuery = "
         UPDATE [sibatta].[user] 
-        SET email = ? 
+        SET email = ?, username = ?, password = ?
         WHERE user_id = (SELECT user_id FROM [sibatta].[student] WHERE student_id = ?)
     ";
-    $userParams = [$email, $student_id];
+    $userParams = [$email, $username, $password, $student_id];
     $stmtUser = sqlsrv_query($conn, $updateUserQuery, $userParams);
 
     if ($stmtUser === false) {
-        echo "Error updating user email: " . print_r(sqlsrv_errors(), true);
+        echo "Error updating user data: " . print_r(sqlsrv_errors(), true);
         die();
     }
 
-    // Then, update fullName and prodi in the student table
+    // Update student table
     $updateStudentQuery = "
         UPDATE [sibatta].[student]
-        SET fullName = ?, prodi = ?
+        SET fullName = ?, prodi = ?, kelas = ?
         WHERE student_id = ?
     ";
-    $studentParams = [$fullName, $prodi, $student_id];
+    $studentParams = [$fullName, $prodi, $kelas, $student_id];
     $stmtStudent = sqlsrv_query($conn, $updateStudentQuery, $studentParams);
 
     if ($stmtStudent === false) {
@@ -108,63 +93,71 @@ function updateStudent($student_id, $fullName, $email, $prodi)
     }
 }
 
-
-
 // Delete Student function
 function deleteStudent($student_id)
 {
     global $conn;
-    $query = "DELETE FROM [sibatta].[student] WHERE student_id = ?";
-    $params = [$student_id];
-    $stmt = sqlsrv_query($conn, $query, $params);
 
-    if ($stmt === false) {
-        echo "Error deleting student: " . print_r(sqlsrv_errors(), true);
-        die();
+    // Start transaction
+    sqlsrv_begin_transaction($conn);
+
+    try {
+        // Get associated user_id for the student
+        $query = "SELECT user_id FROM [sibatta].[student] WHERE student_id = ?";
+        $params = [$student_id];
+        $stmt = sqlsrv_query($conn, $query, $params);
+
+        if ($stmt === false) {
+            throw new Exception("Error fetching user_id: " . print_r(sqlsrv_errors(), true));
+        }
+
+        sqlsrv_fetch($stmt);
+        $user_id = sqlsrv_get_field($stmt, 0);
+
+        if (!$user_id) {
+            throw new Exception("No associated user_id found for student_id: $student_id");
+        }
+
+        // Delete the student record
+        $deleteStudentQuery = "DELETE FROM [sibatta].[student] WHERE student_id = ?";
+        $stmtStudent = sqlsrv_query($conn, $deleteStudentQuery, [$student_id]);
+
+        if ($stmtStudent === false) {
+            throw new Exception("Error deleting student: " . print_r(sqlsrv_errors(), true));
+        }
+
+        // Delete the user record
+        $deleteUserQuery = "DELETE FROM [sibatta].[user] WHERE user_id = ?";
+        $stmtUser = sqlsrv_query($conn, $deleteUserQuery, [$user_id]);
+
+        if ($stmtUser === false) {
+            throw new Exception("Error deleting user: " . print_r(sqlsrv_errors(), true));
+        }
+
+        // Commit transaction
+        sqlsrv_commit($conn);
+
+        echo "Student and associated user deleted successfully!";
+    } catch (Exception $e) {
+        sqlsrv_rollback($conn);
+        echo "Failed to delete student and user: " . $e->getMessage();
     }
-
-    echo "Student deleted successfully!";
 }
 
 // Search Students function
-// function searchStudents($searchTerm)
-// {
-//     global $conn;
-//     $query = "SELECT s.student_id, s.fullName, s.email, s.prodi, u.username
-//               FROM [sibatta].[student] s
-//               JOIN [sibatta].[user] u ON s.user_id = u.user_id
-//               WHERE s.fullName LIKE ? OR s.email LIKE ?";
-//     $params = ["%$searchTerm%", "%$searchTerm%"];
-//     $stmt = sqlsrv_query($conn, $query, $params);
-
-//     if ($stmt === false) {
-//         echo "Error searching students: " . print_r(sqlsrv_errors(), true);
-//         die();
-//     }
-
-//     $students = [];
-//     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-//         $students[] = $row;
-//     }
-
-//     return $students;
-// }
-// Search students based on the provided search term
 function searchStudents($searchTerm)
 {
     global $conn;
     $students = [];
 
-    // Use a parameterized query to search students by their email, username, or full name
-    $query = "SELECT s.student_id, s.fullName, u.email, s.prodi, u.username
+    // Search query including 'kelas'
+    $query = "SELECT s.student_id, s.fullName, u.email, s.prodi, u.username, s.kelas
               FROM [sibatta].[student] s
               JOIN [sibatta].[user] u ON s.user_id = u.user_id
-              WHERE u.email LIKE ? OR s.fullName LIKE ? OR u.username LIKE ?";
-
-    $searchPattern = "%" . $searchTerm . "%"; // Add wildcards for partial matching
+              WHERE u.email LIKE ? OR s.fullName LIKE ? OR s.kelas LIKE ?";
+    $searchPattern = "%" . $searchTerm . "%";
     $params = [$searchPattern, $searchPattern, $searchPattern];
 
-    // Prepare and execute the query with parameters
     $stmt = sqlsrv_query($conn, $query, $params);
 
     if ($stmt === false) {
@@ -172,44 +165,53 @@ function searchStudents($searchTerm)
         die();
     }
 
-    // Fetch all students that match the search term
     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
         $students[] = $row;
     }
 
+    echo "<pre>";
+    print_r($students); // Display the results of the search query
+    echo "</pre>";
+
     return $students;
 }
 
-
-// Fetch all students if search term is empty
-// $students = [];
-// if (isset($_POST['search'])) {
-//     $searchTerm = $_POST['search'];
-//     $students = searchStudents($searchTerm);
-// } else {
-//     // Fetch all students
-//     $query = "SELECT s.student_id, s.fullName, s.email, s.prodi, u.username
-//               FROM [sibatta].[student] s
-//               JOIN [sibatta].[user] u ON s.user_id = u.user_id";
-//     $stmt = sqlsrv_query($conn, $query);
-
-//     if ($stmt === false) {
-//         echo "Error fetching students: " . print_r(sqlsrv_errors(), true);
-//         die();
-//     }
-
-//     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-//         $students[] = $row;
-//     }
-// }
-// Fetch all students if search term is empty
+// Main logic
 $students = [];
-if (isset($_POST['search'])) {
-    $searchTerm = $_POST['search'];
-    $students = searchStudents($searchTerm);
-} else {
-    // Fetch all students, with email from the user table
-    $query = "SELECT s.student_id, s.fullName, u.email, s.prodi, u.username
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (isset($_POST['action'])) {
+        if ($_POST['action'] == 'add') {
+            $username = $_POST['username'];
+            $password = $_POST['password'];
+            $email = $_POST['email'];
+            $prodi = $_POST['prodi'];
+            $fullName = $_POST['fullName'];
+            $kelas = $_POST['kelas'];
+
+            addStudentUser($username, $password, $email, $prodi, $fullName, $kelas);
+        } elseif ($_POST['action'] == 'update') {
+            $student_id = $_POST['student_id'];
+            $fullName = $_POST['fullName'];
+            $email = $_POST['email'];
+            $prodi = $_POST['prodi'];
+            $kelas = $_POST['kelas'];
+            $username = $_POST['username'];
+            $password = $_POST['password'];
+
+            updateStudent($student_id, $fullName, $email, $prodi, $kelas, $username, $password);
+        } elseif ($_POST['action'] == 'delete') {
+            $student_id = $_POST['student_id'];
+            deleteStudent($student_id);
+        }
+    } elseif (!empty($_POST['search'])) {
+        $searchTerm = $_POST['search'];
+        $students = searchStudents($searchTerm);
+    }
+}
+
+// Fetch all students if no search term provided
+if (empty($students)) {
+    $query = "SELECT s.student_id, s.fullName, u.email, s.prodi, u.username, s.kelas
               FROM [sibatta].[student] s
               JOIN [sibatta].[user] u ON s.user_id = u.user_id";
     $stmt = sqlsrv_query($conn, $query);
@@ -224,44 +226,11 @@ if (isset($_POST['search'])) {
     }
 }
 
-
-// Handle form submission for add, update, or delete
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (isset($_POST['action'])) {
-        if ($_POST['action'] == 'add') {
-            // Getting form data for adding student
-            $username = $_POST['username'];
-            $password = $_POST['password'];
-            $email = $_POST['email'];
-            $prodi = $_POST['prodi'];
-            $fullName = $_POST['fullName'];
-
-            // Call the function to add user and student
-            addStudentUser($username, $password, $email, $prodi, $fullName);
-        } elseif ($_POST['action'] == 'update') {
-            // Update student data
-            $student_id = $_POST['student_id'];
-            $fullName = $_POST['fullName'];
-            $email = $_POST['email'];
-            $prodi = $_POST['prodi'];
-
-            // Call update function
-            updateStudent($student_id, $fullName, $email, $prodi);
-        } elseif ($_POST['action'] == 'delete') {
-            // Delete student
-            $student_id = $_POST['student_id'];
-
-            // Call delete function
-            deleteStudent($student_id);
-        }
-    }
-}
-
-Close connection
+// Close the connection
 $koneksi->close();
 ?>
 
-<!-- Frontend Form to Add Student -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -271,7 +240,7 @@ $koneksi->close();
     <title>Student User CRUD</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/add_user.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
@@ -282,7 +251,7 @@ $koneksi->close();
             <h2 class="mb-4">Student Data:</h2>
 
             <!-- Add Student Form -->
-            <form method="POST" action="">
+            <form id="addStudentForm" method="POST">
                 <input type="hidden" name="action" value="add">
                 <div class="mb-3">
                     <input type="text" name="username" placeholder="Username" class="form-control" required>
@@ -294,7 +263,19 @@ $koneksi->close();
                     <input type="email" name="email" placeholder="Email" class="form-control" required>
                 </div>
                 <div class="mb-3">
-                    <input type="text" name="prodi" placeholder="Study Program" class="form-control" required>
+                    <select name="prodi" class="form-select" required>
+                        <option value="">Select Study Program</option>
+                        <option value="Informatics Engineering">Informatics Engineering</option>
+                        <option value="Business Information System">Business Information System</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <select name="kelas" class="form-select" required>
+                        <option value="">Select Class</option>
+                        <?php for ($i = 'A'; $i <= 'I'; $i++): ?>
+                            <option value="4<?php echo $i; ?>">4<?php echo $i; ?></option>
+                        <?php endfor; ?>
+                    </select>
                 </div>
                 <div class="mb-3">
                     <input type="text" name="fullName" placeholder="Full Name" class="form-control" required>
@@ -307,11 +288,14 @@ $koneksi->close();
             <h3 class="mb-4">Student List</h3>
 
             <!-- Search Form -->
-            <form method="POST" class="mb-3">
-                <input type="text" name="search" class="form-control" placeholder="Search students" value="<?php echo isset($searchTerm) ? $searchTerm : ''; ?>">
-                <button type="submit" class="btn btn-info mt-2">Search</button>
+            <form method="POST" action="studentcrud.php">
+                <div class="input-group mb-3">
+                    <input type="text" name="search" class="form-control" placeholder="Search students (fullName, email, kelas)" 
+                    value="<?php echo isset($_POST['search']) ? $_POST['search'] : ''; ?>">
+                    <button type="submit" class="btn btn-info">Search</button>
+                </div>
             </form>
-
+            
             <!-- Student Table -->
             <table class="table table-striped">
                 <thead>
@@ -320,25 +304,23 @@ $koneksi->close();
                         <th>Full Name</th>
                         <th>Email</th>
                         <th>Program</th>
+                        <th>Class</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="studentList">
                     <?php foreach ($students as $index => $student): ?>
                         <tr>
                             <td><?php echo $index + 1; ?></td>
                             <td><?php echo htmlspecialchars($student['fullName']); ?></td>
                             <td><?php echo htmlspecialchars($student['email']); ?></td>
                             <td><?php echo htmlspecialchars($student['prodi']); ?></td>
+                            <td><?php echo htmlspecialchars($student['kelas']); ?></td>
                             <td>
                                 <!-- Edit Button -->
                                 <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#updateStudentModal-<?php echo $student['student_id']; ?>">Edit</button>
                                 <!-- Delete Button -->
-                                <form method="POST" style="display:inline;">
-                                    <input type="hidden" name="action" value="delete">
-                                    <input type="hidden" name="student_id" value="<?php echo $student['student_id']; ?>">
-                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                </form>
+                                <button class="btn btn-danger btn-sm deleteStudent" data-id="<?php echo $student['student_id']; ?>">Delete</button>
                             </td>
                         </tr>
 
@@ -351,9 +333,15 @@ $koneksi->close();
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <form method="POST" action="">
+                                        <form class="updateStudentForm" method="POST">
                                             <input type="hidden" name="action" value="update">
                                             <input type="hidden" name="student_id" value="<?php echo $student['student_id']; ?>">
+                                            <div class="mb-3">
+                                                <input type="text" name="username" value="<?php echo htmlspecialchars($student['username']); ?>" class="form-control" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <input type="password" name="password" placeholder="New Password" class="form-control">
+                                            </div>
                                             <div class="mb-3">
                                                 <input type="text" name="fullName" value="<?php echo htmlspecialchars($student['fullName']); ?>" class="form-control" required>
                                             </div>
@@ -361,7 +349,17 @@ $koneksi->close();
                                                 <input type="email" name="email" value="<?php echo htmlspecialchars($student['email']); ?>" class="form-control" required>
                                             </div>
                                             <div class="mb-3">
-                                                <input type="text" name="prodi" value="<?php echo htmlspecialchars($student['prodi']); ?>" class="form-control" required>
+                                                <select name="prodi" class="form-select" required>
+                                                    <option value="Informatics Engineering" <?php echo $student['prodi'] == 'Informatics Engineering' ? 'selected' : ''; ?>>Informatics Engineering</option>
+                                                    <option value="Business Information System" <?php echo $student['prodi'] == 'Business Information System' ? 'selected' : ''; ?>>Business Information System</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <select name="kelas" class="form-select" required>
+                                                    <?php for ($i = 'A'; $i <= 'I'; $i++): ?>
+                                                        <option value="4<?php echo $i; ?>" <?php echo $student['kelas'] == '4' . $i ? 'selected' : ''; ?>>4<?php echo $i; ?></option>
+                                                    <?php endfor; ?>
+                                                </select>
                                             </div>
                                             <button type="submit" class="btn btn-primary">Update</button>
                                         </form>
@@ -378,6 +376,25 @@ $koneksi->close();
         <?php include 'footer.php'; ?>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            // Handle form submissions using AJAX for reload-free updates
+            $(document).on('submit', 'form', function (e) {
+                e.preventDefault();
+                const form = $(this);
+                $.post('studentcrud.php', form.serialize(), function () {
+                    location.reload();
+                });
+            });
+
+            // Handle delete button clicks
+            $(document).on('click', '.deleteStudent', function () {
+                const studentId = $(this).data('id');
+                $.post('studentcrud.php', { action: 'delete', student_id: studentId }, function () {
+                    location.reload();
+                });
+            });
+        </script>
+    </div>
 </body>
 
 </html>

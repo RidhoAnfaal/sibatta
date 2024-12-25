@@ -1,7 +1,7 @@
 <?php
 
 // Database connection variables
-$host     = "LAPTOP-DL9EJTU3\MSSQLSERVER01";  // Server name and instance
+$host     = "MSI";  // Server name and instance
 $database = "sibatta";                      // Your database name
 $username = "";                               // Database username if applicable
 $password = "";                               // Database password if applicable

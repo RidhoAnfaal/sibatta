@@ -62,7 +62,7 @@
                                 <ion-icon name="person-circle-outline" class="me-2"></ion-icon> Profile
                                 </a>
                                 <!-- Logout -->
-                                <a class="d-flex align-items-center text-dark text-decoration-none" href="../../logout.php">
+                                <a class="d-flex align-items-center text-dark text-decoration-none" href="../logout.php">
                                     <ion-icon name="log-out-outline" class="me-2"></ion-icon> Logout
                                 </a>
                             </div>
