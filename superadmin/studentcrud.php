@@ -145,19 +145,52 @@ function deleteStudent($student_id)
 }
 
 // Search Students function
+// function searchStudents($searchTerm)
+// {
+//     global $conn;
+//     $students = [];
+
+//     // Search query including 'kelas'
+//     $query = "SELECT s.student_id, s.fullName, u.email, s.prodi, u.username, s.kelas
+//               FROM [sibatta].[student] s
+//               JOIN [sibatta].[user] u ON s.user_id = u.user_id
+//               WHERE u.email LIKE ? OR s.fullName LIKE ? OR s.kelas LIKE ?";
+//     $searchPattern = "%" . $searchTerm . "%";
+//     $params = [$searchPattern, $searchPattern, $searchPattern];
+
+//     $stmt = sqlsrv_query($conn, $query, $params);
+
+//     if ($stmt === false) {
+//         echo "Error searching students: " . print_r(sqlsrv_errors(), true);
+//         die();
+//     }
+
+//     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+//         $students[] = $row;
+//     }
+
+//     echo "<pre>";
+//     print_r($students); // Display the results of the search query
+//     echo "</pre>";
+
+//     return $students;
+// }
+// Search students function
 function searchStudents($searchTerm)
 {
     global $conn;
     $students = [];
 
-    // Search query including 'kelas'
-    $query = "SELECT s.student_id, s.fullName, u.email, s.prodi, u.username, s.kelas
-              FROM [sibatta].[student] s
-              JOIN [sibatta].[user] u ON s.user_id = u.user_id
-              WHERE u.email LIKE ? OR s.fullName LIKE ? OR s.kelas LIKE ?";
-    $searchPattern = "%" . $searchTerm . "%";
+    // Use a parameterized query to search students by their email, username, or full name
+    $query = "SELECT a.student_id, a.fullName, u.email, u.kelas, u.username
+              FROM [sibatta].[student] a
+              JOIN [sibatta].[user] u ON a.user_id = u.user_id
+              WHERE u.email LIKE ? OR a.fullName LIKE ? OR u.username LIKE ?";
+
+    $searchPattern = "%" . $searchTerm . "%"; // Add wildcards for partial matching
     $params = [$searchPattern, $searchPattern, $searchPattern];
 
+    // Prepare and execute the query with parameters
     $stmt = sqlsrv_query($conn, $query, $params);
 
     if ($stmt === false) {
@@ -165,15 +198,41 @@ function searchStudents($searchTerm)
         die();
     }
 
+    // Fetch all students that match the search term
     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
         $students[] = $row;
     }
 
-    echo "<pre>";
-    print_r($students); // Display the results of the search query
-    echo "</pre>";
-
     return $students;
+}
+
+// Fetch students based on search term or fetch all if no search term provided
+$students = [];
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['search'])) {
+    $searchTerm = $_POST['search'];
+    $students = searchStudents($searchTerm);
+} else {
+    // Fetch all students
+    $query = "SELECT a.student_id, a.fullName, u.email, a.kelas, u.username
+              FROM [sibatta].[student] a
+              JOIN [sibatta].[user] u ON a.user_id = u.user_id";
+    $stmt = sqlsrv_query($conn, $query);
+
+    if ($stmt === false) {
+        echo "Error fetching students: " . print_r(sqlsrv_errors(), true);
+        die();
+    }
+
+    while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+        $students[] = $row;
+    }
+}
+
+// Output the results (JSON for simplicity in AJAX-based search)
+if (isset($_POST['action']) && $_POST['action'] == 'search') {
+    header('Content-Type: application/json');
+    echo json_encode($students);
+    exit();
 }
 
 // Main logic
@@ -203,10 +262,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $student_id = $_POST['student_id'];
             deleteStudent($student_id);
         }
-    } elseif (!empty($_POST['search'])) {
-        $searchTerm = $_POST['search'];
-        $students = searchStudents($searchTerm);
-    }
+    } 
+    // elseif (!empty($_POST['search'])) {
+    //     $searchTerm = $_POST['search'];
+    //     $students = searchStudents($searchTerm);
+    // }
 }
 
 // Fetch all students if no search term provided
@@ -288,10 +348,16 @@ $koneksi->close();
             <h3 class="mb-4">Student List</h3>
 
             <!-- Search Form -->
-            <form method="POST" action="studentcrud.php">
+            <!-- <form method="POST" action="studentcrud.php">
                 <div class="input-group mb-3">
                     <input type="text" name="search" class="form-control" placeholder="Search students (fullName, email, kelas)" 
                     value="<?php echo isset($_POST['search']) ? $_POST['search'] : ''; ?>">
+                    <button type="submit" class="btn btn-info">Search</button>
+                </div>
+            </form> -->
+            <form id="searchForm">
+                <div class="input-group mb-3">
+                    <input type="text" name="search" id="search" class="form-control" placeholder="Search students (username, email, kelas)">
                     <button type="submit" class="btn btn-info">Search</button>
                 </div>
             </form>
@@ -384,6 +450,36 @@ $koneksi->close();
                 $.post('studentcrud.php', form.serialize(), function () {
                     location.reload();
                 });
+            });
+
+            // Search via AJAX
+            $('#searchForm').on('submit', function (e) {
+                e.preventDefault();
+                const searchTerm = $('#search').val();
+                $.post('studentcrud.php', { action: 'search', search: searchTerm }, function (data) {
+                    const studentList = $('#studentList');
+                    studentList.empty();
+
+                    if (data.length === 0) {
+                        studentList.append('<tr><td colspan="6">No students found.</td></tr>');
+                    } else {
+                        data.forEach((student, index) => {
+                            studentList.append(`
+                                <tr>
+                                    <td>${index + 1}</td>
+                                    <td>${student.username}</td>
+                                    <td>${student.email}</td>
+                                    <td>${student.kelas}</td>
+                                    <td>${student.fullName}</td>
+                                    <td>
+                                        <button class="btn btn-warning btn-sm editStudent" data-id="${student.student_id}" data-bs-toggle="modal" data-bs-target="#updateStudentModal">Edit</button>
+                                        <button class="btn btn-danger btn-sm deleteStudent" data-id="${student.student_id}">Delete</button>
+                                    </td>
+                                </tr>
+                            `);
+                        });
+                    }
+                }, 'json');
             });
 
             // Handle delete button clicks

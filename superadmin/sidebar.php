@@ -171,12 +171,17 @@
             
             <li class="nav-item mb-3">
                 <a class="nav-link text-dark <?php echo $current_page == 'studentcrud.php' ? 'active' : ''; ?>" href="studentcrud.php">
-                <ion-icon name="add"class="me-2"></ion-icon> <span>Add Student</span>
+                <ion-icon name="person-add-outline"class="me-2"></ion-icon> <span>Add Student</span>
                 </a>
             </li>
             <li class="nav-item mb-3">
                 <a class="nav-link text-dark <?php echo $current_page == 'admincrud.php' ? 'active' : ''; ?>" href="admincrud.php">
-                <ion-icon name="person-add-outline" class="me-2"></ion-icon> <span>Add Admin</span>
+                <ion-icon name="person-add-outline" class="me-2"></ion-icon> <span>Add Admin Library</span>
+                </a>
+            </li>
+            <li class="nav-item mb-3">
+                <a class="nav-link text-dark <?php echo $current_page == 'akdcrud.php' ? 'active' : ''; ?>" href="akdcrud.php">
+                <ion-icon name="person-add-outline" class="me-2"></ion-icon> <span>Add Admin Academic</span>
                 </a>
             </li>
         </ul>
