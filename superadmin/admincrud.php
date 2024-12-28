@@ -58,31 +58,37 @@ function updateAdmin($admin_id, $username, $password, $fullName, $email, $admin_
 {
     global $conn;
 
-    $updateUserQuery = "
-        UPDATE [sibatta].[user]
-        SET username = ?, password = ?, email = ?
-        WHERE user_id = (SELECT user_id FROM [sibatta].[admin] WHERE admin_id = ?)";
-    $userParams = [$username, $password, $email, $admin_id];
-    $stmtUser = sqlsrv_query($conn, $updateUserQuery, $userParams);
+    sqlsrv_begin_transaction($conn);
 
-    if ($stmtUser === false) {
-        echo "Error updating user: " . print_r(sqlsrv_errors(), true);
-        die();
+    try {
+        $updateUserQuery = "
+            UPDATE [sibatta].[user]
+            SET username = ?, password = ?, email = ?
+            WHERE user_id = (SELECT user_id FROM [sibatta].[admin] WHERE admin_id = ?)";
+        $userParams = [$username, $password, $email, $admin_id];
+        $stmtUser = sqlsrv_query($conn, $updateUserQuery, $userParams);
+
+        if ($stmtUser === false) {
+            throw new Exception("Error updating user: " . print_r(sqlsrv_errors(), true));
+        }
+
+        $updateAdminQuery = "
+            UPDATE [sibatta].[admin]
+            SET fullName = ?, admin_role = ?
+            WHERE admin_id = ?";
+        $adminParams = [$fullName, $admin_role, $admin_id];
+        $stmtAdmin = sqlsrv_query($conn, $updateAdminQuery, $adminParams);
+
+        if ($stmtAdmin === false) {
+            throw new Exception("Error updating admin data: " . print_r(sqlsrv_errors(), true));
+        }
+
+        sqlsrv_commit($conn);
+        echo "success";
+    } catch (Exception $e) {
+        sqlsrv_rollback($conn);
+        echo "Failed to update admin: " . $e->getMessage();
     }
-
-    $updateAdminQuery = "
-        UPDATE [sibatta].[admin]
-        SET fullName = ?, admin_role = ?
-        WHERE admin_id = ?";
-    $adminParams = [$fullName, $admin_role, $admin_id];
-    $stmtAdmin = sqlsrv_query($conn, $updateAdminQuery, $adminParams);
-
-    if ($stmtAdmin === false) {
-        echo "Error updating admin data: " . print_r(sqlsrv_errors(), true);
-        die();
-    }
-
-    echo "success";
 }
 
 // Delete Admin function
@@ -90,11 +96,9 @@ function deleteAdmin($admin_id)
 {
     global $conn;
 
-    // Start transaction
     sqlsrv_begin_transaction($conn);
 
     try {
-        // Get associated user_id for the student
         $query = "SELECT user_id FROM [sibatta].[admin] WHERE admin_id = ?";
         $params = [$admin_id];
         $stmt = sqlsrv_query($conn, $query, $params);
@@ -110,7 +114,6 @@ function deleteAdmin($admin_id)
             throw new Exception("No associated user_id found for admin_id: $admin_id");
         }
 
-        // Delete the student record
         $deleteAdminQuery = "DELETE FROM [sibatta].[admin] WHERE admin_id = ?";
         $stmtAdmin = sqlsrv_query($conn, $deleteAdminQuery, [$admin_id]);
 
@@ -118,7 +121,6 @@ function deleteAdmin($admin_id)
             throw new Exception("Error deleting admin: " . print_r(sqlsrv_errors(), true));
         }
 
-        // Delete the user record
         $deleteUserQuery = "DELETE FROM [sibatta].[user] WHERE user_id = ?";
         $stmtUser = sqlsrv_query($conn, $deleteUserQuery, [$user_id]);
 
@@ -126,13 +128,12 @@ function deleteAdmin($admin_id)
             throw new Exception("Error deleting user: " . print_r(sqlsrv_errors(), true));
         }
 
-        // Commit transaction
         sqlsrv_commit($conn);
 
-        echo "Student and associated user deleted successfully!";
+        echo "success";
     } catch (Exception $e) {
         sqlsrv_rollback($conn);
-        echo "Failed to delete student and user: " . $e->getMessage();
+        echo "Failed to delete admin and user: " . $e->getMessage();
     }
 }
 
@@ -142,16 +143,14 @@ function searchAdmins($searchTerm)
     global $conn;
     $admins = [];
 
-    // Use a parameterized query to search admins by their email, username, or full name
     $query = "SELECT a.admin_id, a.fullName, u.email, a.admin_role, u.username
               FROM [sibatta].[admin] a
               JOIN [sibatta].[user] u ON a.user_id = u.user_id
-              WHERE u.email LIKE ? OR a.fullName LIKE ? OR u.username LIKE ?";
+              WHERE u.role = 'admin' AND (u.email LIKE ? OR a.fullName LIKE ? OR u.username LIKE ?)";
 
-    $searchPattern = "%" . $searchTerm . "%"; // Add wildcards for partial matching
+    $searchPattern = "%" . $searchTerm . "%";
     $params = [$searchPattern, $searchPattern, $searchPattern];
 
-    // Prepare and execute the query with parameters
     $stmt = sqlsrv_query($conn, $query, $params);
 
     if ($stmt === false) {
@@ -159,7 +158,6 @@ function searchAdmins($searchTerm)
         die();
     }
 
-    // Fetch all admins that match the search term
     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
         $admins[] = $row;
     }
@@ -167,16 +165,17 @@ function searchAdmins($searchTerm)
     return $admins;
 }
 
-// Fetch admins based on search term or fetch all if no search term provided
-$admins = [];
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['search'])) {
-    $searchTerm = $_POST['search'];
-    $admins = searchAdmins($searchTerm);
-} else {
-    // Fetch all admins
+// Fetch all admins
+function fetchAllAdmins()
+{
+    global $conn;
+    $admins = [];
+
     $query = "SELECT a.admin_id, a.fullName, u.email, a.admin_role, u.username
               FROM [sibatta].[admin] a
-              JOIN [sibatta].[user] u ON a.user_id = u.user_id";
+              JOIN [sibatta].[user] u ON a.user_id = u.user_id
+              WHERE u.role = 'admin'";
+
     $stmt = sqlsrv_query($conn, $query);
 
     if ($stmt === false) {
@@ -187,14 +186,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['search'])) {
     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
         $admins[] = $row;
     }
+
+    return $admins;
 }
 
-// Output the results (JSON for simplicity in AJAX-based search)
-if (isset($_POST['action']) && $_POST['action'] == 'search') {
-    header('Content-Type: application/json');
-    echo json_encode($admins);
-    exit();
-}
+$admins = fetchAllAdmins();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['action'])) {
@@ -216,9 +212,73 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } elseif ($_POST['action'] == 'delete') {
             $admin_id = $_POST['admin_id'];
             deleteAdmin($admin_id);
+        } elseif ($_POST['action'] == 'search') {
+            $searchTerm = $_POST['search'];
+            echo json_encode(searchAdmins($searchTerm));
+            exit();
+        } elseif ($_POST['action'] == 'fetchAdmin') {
+            $admin_id = $_POST['admin_id'];
+            $query = "SELECT a.admin_id, a.fullName, u.email, a.admin_role, u.username, u.password
+                      FROM [sibatta].[admin] a
+                      JOIN [sibatta].[user] u ON a.user_id = u.user_id
+                      WHERE a.admin_id = ?";
+            $params = [$admin_id];
+            $stmt = sqlsrv_query($conn, $query, $params);
+
+            if ($stmt === false) {
+                echo "Error fetching admin: " . print_r(sqlsrv_errors(), true);
+                die();
+            }
+
+            $admin = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC);
+            echo json_encode($admin);
+            exit();
         }
     }
+
+    // if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'update') {
+    //     $admin_id = intval($_POST['admin_id']);
+    //     $username = trim($_POST['username']);
+    //     $password = trim($_POST['password']);
+    //     $email = trim($_POST['email']);
+    //     $fullName = trim($_POST['fullName']);
+    //     $admin_role = trim($_POST['admin_role']);
+    
+    //     if (empty($admin_id) || empty($username) || empty($email) || empty($fullName) || empty($admin_role)) {
+    //         echo 'error: Missing required fields.';
+    //         exit;
+    //     }
+    
+    //     // Password update logic
+    //     $password_sql = '';
+    //     if (!empty($password)) {
+    //         $hashed_password = password_hash($password, PASSWORD_BCRYPT); // Use bcrypt for security
+    //         $password_sql = ", password = '$hashed_password'";
+    //     }
+    
+    //     // SQL Update Query
+    //     $query = "
+    //         UPDATE admin 
+    //         SET 
+    //             username = '$username', 
+    //             email = '$email', 
+    //             fullName = '$fullName', 
+    //             admin_role = '$admin_role'
+    //             $password_sql
+    //         WHERE admin_id = $admin_id
+    //     ";
+    
+    //     // Execute Query
+    //     // if (mysqli_query($conn, $query)) {
+    //     //     echo 'success';
+    //     // } else {
+    //     //     echo 'error: ' . mysqli_error($conn);
+    //     // }
+    //     // exit;
+    // }
+    
 }
+
 
 $koneksi->close();
 ?>
@@ -240,7 +300,7 @@ $koneksi->close();
     <div class="main-content">
         <?php include 'sidebar.php'; ?>
         <div class="container mt-5">
-            <h2 class="mb-4">Library Admin Data :</h2>
+            <h2 class="mb-4">Library Admin Data:</h2>
 
             <!-- Add Admin Form -->
             <form id="addAdminForm">
@@ -299,9 +359,7 @@ $koneksi->close();
                                 <td><?php echo htmlspecialchars($admin['admin_role']); ?></td>
                                 <td><?php echo htmlspecialchars($admin['fullName']); ?></td>
                                 <td>
-                                    <!-- Edit Button -->
-                                    <button class="btn btn-warning btn-sm editAdmin" data-id="<?php echo $admin['admin_id']; ?>" data-bs-toggle="modal" data-bs-target="#updateAdminModal">Edit</button>
-                                    <!-- Delete Button -->
+                                    <button class="btn btn-warning btn-sm editAdmin" data-id="<?php echo $admin['admin_id']; ?>" data-username="<?php echo htmlspecialchars($admin['username']); ?>" data-email="<?php echo htmlspecialchars($admin['email']); ?>" data-role="<?php echo htmlspecialchars($admin['admin_role']); ?>" data-fullname="<?php echo htmlspecialchars($admin['fullName']); ?>">Edit</button>
                                     <button class="btn btn-danger btn-sm deleteAdmin" data-id="<?php echo $admin['admin_id']; ?>">Delete</button>
                                 </td>
                             </tr>
@@ -315,12 +373,55 @@ $koneksi->close();
             </table>
         </div>
 
-        <!-- Footer -->
+        <!-- Edit Admin Modal -->
+        <div class="modal fade" id="updateAdminModal" tabindex="-1" aria-labelledby="updateAdminModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form id="updateAdminForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="updateAdminModalLabel">Edit Admin</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="admin_id" id="editAdminId">
+                            <div class="mb-3">
+                                <label for="editUsername" class="form-label">Username</label>
+                                <input type="text" name="username" id="editUsername" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editPassword" class="form-label">Password</label>
+                                <input type="password" name="password" id="editPassword" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label for="editEmail" class="form-label">Email</label>
+                                <input type="email" name="email" id="editEmail" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editFullName" class="form-label">Full Name</label>
+                                <input type="text" name="fullName" id="editFullName" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="editAdminRole" class="form-label">Admin Role</label>
+                                <select name="admin_role" id="editAdminRole" class="form-select" required>
+                                    <option value="library">Admin Library</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <?php include 'footer.php'; ?>
 
+        <!-- JS Scripts -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-            // Add Admin via AJAX
+            // Add Admin
             $('#addAdminForm').on('submit', function (e) {
                 e.preventDefault();
                 $.post('admincrud.php', $(this).serialize(), function (response) {
@@ -329,14 +430,13 @@ $koneksi->close();
                 });
             });
 
-            // Search Admins via AJAX
+            // Search Admins
             $('#searchForm').on('submit', function (e) {
                 e.preventDefault();
                 const searchTerm = $('#search').val();
                 $.post('admincrud.php', { action: 'search', search: searchTerm }, function (data) {
                     const adminList = $('#adminList');
                     adminList.empty();
-
                     if (data.length === 0) {
                         adminList.append('<tr><td colspan="6">No admins found.</td></tr>');
                     } else {
@@ -349,7 +449,7 @@ $koneksi->close();
                                     <td>${admin.admin_role}</td>
                                     <td>${admin.fullName}</td>
                                     <td>
-                                        <button class="btn btn-warning btn-sm editAdmin" data-id="${admin.admin_id}" data-bs-toggle="modal" data-bs-target="#updateAdminModal">Edit</button>
+                                        <button class="btn btn-warning btn-sm editAdmin" data-id="${admin.admin_id}" data-username="${admin.username}" data-email="${admin.email}" data-role="${admin.admin_role}" data-fullname="${admin.fullName}">Edit</button>
                                         <button class="btn btn-danger btn-sm deleteAdmin" data-id="${admin.admin_id}">Delete</button>
                                     </td>
                                 </tr>
@@ -359,11 +459,43 @@ $koneksi->close();
                 }, 'json');
             });
 
-            // Delete Admin via AJAX
+            // Fetch Admin Data for Editing
+            $(document).on('click', '.editAdmin', function () {
+                const adminId = $(this).data('id');
+                $.post('admincrud.php', { action: 'fetchAdmin', admin_id: adminId }, function (response) {
+                    try {
+                        const admin = JSON.parse(response);
+                        $('#editAdminId').val(admin.admin_id);
+                        $('#editUsername').val(admin.username);
+                        $('#editPassword').val('');
+                        $('#editEmail').val(admin.email);
+                        $('#editFullName').val(admin.fullName);
+                        $('#editAdminRole').val(admin.admin_role);
+                        $('#updateAdminModal').modal('show');
+                    } catch (e) {
+                        alert('Failed to fetch admin details: ' + response);
+                    }
+                });
+            });
+
+            // Update Admin
+            $('#updateAdminForm').on('submit', function (e) {
+                e.preventDefault();
+                $.post('admincrud.php', $(this).serialize() + '&action=update', function (response) {
+                    if (response.trim() === 'success') {
+                        alert('Admin updated successfully!');
+                        location.reload();
+                    } else {
+                        alert('Failed to update admin: ' + response);
+                    }
+                });
+            });
+
+            // Delete Admin
             $(document).on('click', '.deleteAdmin', function () {
                 const adminId = $(this).data('id');
                 if (confirm('Are you sure you want to delete this admin?')) {
-                    $.post('admincrud.php', { action: 'delete', admin_id: adminId }, function () {
+                    $.post('admincrud.php', { action: 'delete', admin_id: adminId }, function (response) {
                         alert('Admin deleted successfully!');
                         location.reload();
                     });
