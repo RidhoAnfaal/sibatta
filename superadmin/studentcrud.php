@@ -145,18 +145,44 @@ function deleteStudent($student_id)
 }
 
 // Search Students function
+// function searchStudents($searchTerm)
+// {
+//     global $conn;
+//     $students = [];
+
+//     // Search query including 'kelas'
+//     $query = "SELECT s.student_id, s.fullName, u.email, s.prodi, u.username, s.kelas
+//               FROM [sibatta].[student] s
+//               JOIN [sibatta].[user] u ON s.user_id = u.user_id
+//               WHERE u.email LIKE ? OR s.fullName LIKE ? OR s.kelas LIKE ?";
+//     $searchPattern = "%" . $searchTerm . "%";
+//     $params = [$searchPattern, $searchPattern, $searchPattern];
+
+//     $stmt = sqlsrv_query($conn, $query, $params);
+
+//     if ($stmt === false) {
+//         echo "Error searching students: " . print_r(sqlsrv_errors(), true);
+//         die();
+//     }
+
+//     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+//         $students[] = $row;
+//     }
+//     return $students;
+// }
+
 function searchStudents($searchTerm)
 {
     global $conn;
     $students = [];
 
-    // Search query including 'kelas'
+    // Search query including 'kelas' and 'prodi' as well
     $query = "SELECT s.student_id, s.fullName, u.email, s.prodi, u.username, s.kelas
               FROM [sibatta].[student] s
               JOIN [sibatta].[user] u ON s.user_id = u.user_id
-              WHERE u.email LIKE ? OR s.fullName LIKE ? OR s.kelas LIKE ?";
+              WHERE u.email LIKE ? OR s.fullName LIKE ? OR s.kelas LIKE ? OR s.prodi LIKE ?";
     $searchPattern = "%" . $searchTerm . "%";
-    $params = [$searchPattern, $searchPattern, $searchPattern];
+    $params = [$searchPattern, $searchPattern, $searchPattern, $searchPattern];
 
     $stmt = sqlsrv_query($conn, $query, $params);
 
@@ -168,19 +194,67 @@ function searchStudents($searchTerm)
     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
         $students[] = $row;
     }
-
-    echo "<pre>";
-    print_r($students); // Display the results of the search query
-    echo "</pre>";
-
     return $students;
 }
+
+
+// // Main logic
+// $students = [];
+// if ($_SERVER["REQUEST_METHOD"] == "POST") {
+//     if (isset($_POST['action'])) {
+//         if ($_POST['action'] == 'add') {
+//             $username = $_POST['username'];
+//             $password = $_POST['password'];
+//             $email = $_POST['email'];
+//             $prodi = $_POST['prodi'];
+//             $fullName = $_POST['fullName'];
+//             $kelas = $_POST['kelas'];
+
+//             addStudentUser($username, $password, $email, $prodi, $fullName, $kelas);
+//         } elseif ($_POST['action'] == 'update') {
+//             $student_id = $_POST['student_id'];
+//             $fullName = $_POST['fullName'];
+//             $email = $_POST['email'];
+//             $prodi = $_POST['prodi'];
+//             $kelas = $_POST['kelas'];
+//             $username = $_POST['username'];
+//             $password = $_POST['password'];
+
+//             updateStudent($student_id, $fullName, $email, $prodi, $kelas, $username, $password);
+//         } elseif ($_POST['action'] == 'delete') {
+//             $student_id = $_POST['student_id'];
+//             deleteStudent($student_id);
+//         }
+//     } 
+//     elseif (!empty($_POST['search'])) {
+//         $searchTerm = $_POST['search'];
+//         $students = searchStudents($searchTerm);
+//     }
+// }
+
+// // Fetch all students if no search term provided
+// if (empty($students)) {
+//     $query = "SELECT s.student_id, s.fullName, u.email, s.prodi, u.username, s.kelas
+//               FROM [sibatta].[student] s
+//               JOIN [sibatta].[user] u ON s.user_id = u.user_id";
+//     $stmt = sqlsrv_query($conn, $query);
+
+//     if ($stmt === false) {
+//         echo "Error fetching students: " . print_r(sqlsrv_errors(), true);
+//         die();
+//     }
+
+//     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+//         $students[] = $row;
+//     }
+// }
 
 // Main logic
 $students = [];
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['action'])) {
         if ($_POST['action'] == 'add') {
+            // Add student logic
             $username = $_POST['username'];
             $password = $_POST['password'];
             $email = $_POST['email'];
@@ -190,6 +264,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             addStudentUser($username, $password, $email, $prodi, $fullName, $kelas);
         } elseif ($_POST['action'] == 'update') {
+            // Update student logic
             $student_id = $_POST['student_id'];
             $fullName = $_POST['fullName'];
             $email = $_POST['email'];
@@ -200,11 +275,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             updateStudent($student_id, $fullName, $email, $prodi, $kelas, $username, $password);
         } elseif ($_POST['action'] == 'delete') {
+            // Delete student logic
             $student_id = $_POST['student_id'];
             deleteStudent($student_id);
         }
-    } 
+    }
     elseif (!empty($_POST['search'])) {
+        // Handle search functionality
         $searchTerm = $_POST['search'];
         $students = searchStudents($searchTerm);
     }
@@ -226,6 +303,7 @@ if (empty($students)) {
         $students[] = $row;
     }
 }
+
 
 // Close the connection
 $koneksi->close();
@@ -292,11 +370,11 @@ $koneksi->close();
             <form method="POST" action="studentcrud.php">
                 <div class="input-group mb-3">
                     <input type="text" name="search" class="form-control" placeholder="Search students (fullName, email, kelas)" 
-                    value="<?php echo isset($_POST['search']) ? $_POST['search'] : ''; ?>">
+                    value="<?php echo isset($_POST['search']) ? htmlspecialchars($_POST['search']) : ''; ?>">
                     <button type="submit" class="btn btn-info">Search</button>
                 </div>
             </form>
-            
+
             <!-- Student Table -->
             <table class="table table-striped">
                 <thead>
@@ -310,6 +388,7 @@ $koneksi->close();
                     </tr>
                 </thead>
                 <tbody id="studentList">
+                    
                     <?php foreach ($students as $index => $student): ?>
                         <tr>
                             <td><?php echo $index + 1; ?></td>
@@ -379,7 +458,7 @@ $koneksi->close();
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
             // Handle form submissions using AJAX for reload-free updates
-            $(document).on('submit', 'form', function (e) {
+            $(document).on('submit', '#addStudentForm, .updateStudentForm', function (e) {
                 e.preventDefault();
                 const form = $(this);
                 $.post('studentcrud.php', form.serialize(), function () {
@@ -399,3 +478,4 @@ $koneksi->close();
 </body>
 
 </html>
+
