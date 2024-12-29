@@ -350,7 +350,7 @@ $koneksi->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin User CRUD</title>
+    <title>Academic Admin User CRUD</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -361,7 +361,7 @@ $koneksi->close();
     <div class="main-content">
         <?php include 'sidebar.php'; ?>
         <div class="container mt-5">
-            <h2 class="mb-4">Admin Data</h2>
+            <h2 class="mb-4">Academic Admin Data :</h2>
 
             <!-- Add Admin Form -->
             <form id="addAdminForm">
@@ -388,7 +388,7 @@ $koneksi->close();
 
             <hr>
 
-            <h3 class="mb-4">Admin List</h3>
+            <h3 class="mb-4">Academic Admin List</h3>
 
             <!-- Search Form -->
             <form id="searchForm">
