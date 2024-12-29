@@ -202,10 +202,10 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title mx-auto" id="logoutModalLabel">Apakah Anda yakin ingin keluar dari akun Anda?</h5>
+                    <h5 class="modal-title mx-auto" id="logoutModalLabel">Are you sure you want to log out of your account?</h5>
                 </div>
                 <div class="modal-body">
-                    <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
                     <a href="../logout.php" class="btn btn-danger">Log Out</a>
                 </div>
             </div>
