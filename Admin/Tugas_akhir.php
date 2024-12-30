@@ -2,7 +2,7 @@
 require('koneksi.php');
 session_start(); // Start session to access session variables
 
-// Cek apakah tombol 'validate' diklik
+// Handle Validate button
 if (isset($_POST['validate'])) {
     $document_id = $_POST['document_id'];
     $document_status = 'Admin'; // Ganti dengan nama pengguna jika diperlukan
@@ -21,12 +21,31 @@ if (isset($_POST['validate'])) {
     }
 }
 
-// Cek apakah ada parameter pencarian
+// Handle Reject button
+if (isset($_POST['reject'])) {
+    $document_id = $_POST['document_id'];
+    $document_status = 'Rejected'; // Status baru untuk dokumen yang ditolak
+
+    // Update query
+    $query = "UPDATE [sibatta].[sibatta].[document] SET [document_status] = ? WHERE [document_id] = ?";
+    $params = [$document_status, $document_id];
+    $result = sqlsrv_query($conn, $query, $params);
+
+    if ($result) {
+        echo "<script>alert('Document rejected successfully!');</script>";
+        header("Location: Tugas_akhir.php");
+        exit;
+    } else {
+        echo "<script>alert('Failed to reject document.');</script>";
+    }
+}
+
+// Check for search parameter
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $query = "SELECT [document_id], [user_id], [title], [uploaded_at], [document_status], [username], [file_path] 
           FROM [sibatta].[sibatta].[document]";
 
-// Tambahkan filter pencarian jika ada
+// Add search filter if present
 if (!empty($search)) {
     $query .= " WHERE [username] LIKE ? OR [title] LIKE ? OR CAST([document_id] AS NVARCHAR) LIKE ?";
     $params = ["%$search%", "%$search%", "%$search%"];
@@ -104,9 +123,9 @@ if ($viewdata === false) {
                             echo "<td>" . date_format($tampil['uploaded_at'], 'Y-m-d') . "</td>";
                             echo "<td>{$tampil['document_status']}</td>";
 
-                            // Validation button
+                            // Validation and rejection buttons
                             echo "<td>
-                                   <form method='POST' action='Tugas_akhir.php'>
+                                   <form method='POST' action='Tugas_akhir.php' class='d-inline'>
                                        <input type='hidden' name='document_id' value='{$tampil['document_id']}'>
                                        <button type='submit' name='validate' class='btn btn-success'>Validate</button>
                                    </form>
@@ -116,7 +135,7 @@ if ($viewdata === false) {
                                    </form>
                                </td>";
 
-                            // File download button only
+                            // File download button
                             $file_path = '../Student/uploads/' . basename($tampil['file_path']);
                             if (file_exists($file_path)) {
                                 echo "<td><a href='$file_path' class='btn btn-primary' download>Download</a></td>";
