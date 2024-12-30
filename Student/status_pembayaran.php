@@ -118,8 +118,7 @@ sqlsrv_free_stmt($stmt);
 
                             <?php if ($paymentData['due_amount'] > 0) { ?>
                                 <a href="pay_now.php" class="btn btn-primary">Bayar Sekarang</a>
-                            <?php } else { ?>
-                                <a href="receipt.php" class="btn btn-success">Lihat Bukti Pembayaran</a>
+                            
                             <?php } ?>
                         </div>
                     </div>
