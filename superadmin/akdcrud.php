@@ -11,7 +11,6 @@ $username = $_SESSION['username'];
 $koneksi = new Koneksi();
 $conn = $koneksi->connect();
 
-// Add Academic Admin
 function addAcademicAdmin($username, $password, $email, $fullName)
 {
     global $conn;
@@ -49,69 +48,6 @@ function addAcademicAdmin($username, $password, $email, $fullName)
     }
 }
 
-// Fetch Admins with Search Option
-// function fetchAdmins($searchTerm = '')
-// {
-//     global $conn;
-
-//     // Adjust the query to ensure all records are fetched by default
-//     $query = "SELECT 
-//                 a.admin_id, 
-//                 u.username, 
-//                 u.email, 
-//                 a.fullName, 
-//                 a.admin_role
-//               FROM [sibatta].[admin] a 
-//               JOIN [sibatta].[user] u ON a.user_id = u.user_id
-//               WHERE a.admin_role = 'admin_academic'";
-
-//     // Only apply the search term if it's provided
-//     if (!empty($searchTerm)) {
-//         $query .= " AND (u.username LIKE ? OR u.email LIKE ? OR a.admin_role LIKE ?)";
-//     }
-
-//     $params = !empty($searchTerm) ? ['%' . $searchTerm . '%', '%' . $searchTerm . '%', '%' . $searchTerm . '%'] : [];
-//     $stmt = sqlsrv_query($conn, $query, $params);
-
-//     if ($stmt === false) {
-//         echo json_encode([]);
-//         die();
-//     }
-
-//     $admins = [];
-//     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-//         $admins[] = $row;
-//     }
-
-//     echo json_encode($admins);
-// }
-
-
-// Edit Admin
-// function editAdmin($admin_id, $username, $email, $fullName)
-// {
-//     global $conn;
-
-//     $updateUserQuery = "UPDATE [sibatta].[user] SET username = ?, email = ? WHERE user_id = (SELECT user_id FROM [sibatta].[admin] WHERE admin_id = ?)";
-//     $updateUserParams = [$username, $email, $admin_id];
-//     $stmtUser = sqlsrv_query($conn, $updateUserQuery, $updateUserParams);
-
-//     if ($stmtUser === false) {
-//         echo "Error updating user: " . print_r(sqlsrv_errors(), true);
-//         return;
-//     }
-
-//     $updateAdminQuery = "UPDATE [sibatta].[admin] SET fullName = ? WHERE admin_id = ?";
-//     $updateAdminParams = [$fullName, $admin_id];
-//     $stmtAdmin = sqlsrv_query($conn, $updateAdminQuery, $updateAdminParams);
-
-//     if ($stmtAdmin === false) {
-//         echo "Error updating admin: " . print_r(sqlsrv_errors(), true);
-//         return;
-//     }
-
-//     echo "Admin updated successfully!";
-// }
 function updateAdmin($admin_id, $username, $password, $fullName, $email, $admin_role)
 {
     global $conn;
@@ -149,31 +85,6 @@ function updateAdmin($admin_id, $username, $password, $fullName, $email, $admin_
     }
 }
 
-// Delete Admin
-// function deleteAdmin($admin_id)
-// {
-//     global $conn;
-
-//     $deleteQuery = "DELETE FROM [sibatta].[admin] WHERE admin_id = ?";
-//     $params = [$admin_id];
-//     $stmt = sqlsrv_query($conn, $deleteQuery, $params);
-
-//     if ($stmt === false) {
-//         echo "Error deleting admin: " . print_r(sqlsrv_errors(), true);
-//         return;
-//     }
-
-//     // Optionally, delete the user record as well
-//     $deleteUserQuery = "DELETE FROM [sibatta].[user] WHERE user_id = (SELECT user_id FROM [sibatta].[admin] WHERE admin_id = ?)";
-//     $stmtUser = sqlsrv_query($conn, $deleteUserQuery, $params);
-
-//     if ($stmtUser === false) {
-//         echo "Error deleting user: " . print_r(sqlsrv_errors(), true);
-//         return;
-//     }
-
-//     echo "Admin deleted successfully!";
-// }
 function deleteAdmin($admin_id)
 {
     global $conn;
@@ -218,6 +129,7 @@ function deleteAdmin($admin_id)
         echo "Failed to delete admin and user: " . $e->getMessage();
     }
 }
+
 function searchAdmins($searchTerm)
 {
     global $conn;
@@ -269,30 +181,6 @@ function fetchAllAdmins()
     return $admins;
 }
 
-// Handle POST requests
-// if ($_SERVER["REQUEST_METHOD"] == "POST") {
-//     if (isset($_POST['action'])) {
-//         if ($_POST['action'] == 'add') {
-//             $username = $_POST['username'];
-//             $password = $_POST['password'];
-//             $email = $_POST['email'];
-//             $fullName = $_POST['fullName'];
-//             addAcademicAdmin($username, $password, $email, $fullName);
-//         } elseif ($_POST['action'] == 'fetch') {
-//             $searchTerm = $_POST['search'] ?? '';
-//             fetchAdmins($searchTerm);
-//         } elseif ($_POST['action'] == 'edit') {
-//             $admin_id = $_POST['admin_id'];
-//             $username = $_POST['username'];
-//             $email = $_POST['email'];
-//             $fullName = $_POST['fullName'];
-//             editAdmin($admin_id, $username, $email, $fullName);
-//         } elseif ($_POST['action'] == 'delete') {
-//             $admin_id = $_POST['admin_id'];
-//             deleteAdmin($admin_id);
-//         }
-//     }
-// }
 $admins = fetchAllAdmins();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -339,7 +227,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 }
-
 
 $koneksi->close();
 ?>

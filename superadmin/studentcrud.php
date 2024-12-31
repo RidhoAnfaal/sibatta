@@ -1,9 +1,7 @@
 <?php
-// Include the database connection configuration
-require_once '../koneksi.php';  // Adjust path based on your directory structure
+require_once '../koneksi.php';  
 session_start();
 
-// Check if the user is logged in, if not redirect to login page
 if (!isset($_SESSION['username'])) {
     header('Location: ../index.php');
     exit();
@@ -11,20 +9,16 @@ if (!isset($_SESSION['username'])) {
 
 $username = $_SESSION['username'];
 
-// Create an instance of the Koneksi class and establish connection
 $koneksi = new Koneksi();
-$conn = $koneksi->connect(); // This will call the connect method from the Koneksi class
+$conn = $koneksi->connect(); 
 
-// Add Student and User function
 function addStudentUser($username, $password, $email, $prodi, $fullName, $kelas)
 {
     global $conn;
 
-    // Start transaction
     sqlsrv_begin_transaction($conn);
 
     try {
-        // Insert into user table
         $role = 'student';
         $insertUserQuery = "INSERT INTO [sibatta].[user] (username, password, email, role)
                             OUTPUT INSERTED.user_id
@@ -36,11 +30,9 @@ function addStudentUser($username, $password, $email, $prodi, $fullName, $kelas)
             throw new Exception("Error inserting into user: " . print_r(sqlsrv_errors(), true));
         }
 
-        // Get the generated user_id
         sqlsrv_fetch($stmtUser);
         $userId = sqlsrv_get_field($stmtUser, 0);
 
-        // Insert into student table
         $insertStudentQuery = "INSERT INTO [sibatta].[student] (user_id, prodi, fullName, kelas)
                                VALUES (?, ?, ?, ?)";
         $studentParams = [$userId, $prodi, $fullName, $kelas];
@@ -50,7 +42,6 @@ function addStudentUser($username, $password, $email, $prodi, $fullName, $kelas)
             throw new Exception("Error inserting into student: " . print_r(sqlsrv_errors(), true));
         }
 
-        // Commit transaction
         sqlsrv_commit($conn);
         echo "Student and user added successfully!";
     } catch (Exception $e) {
@@ -59,12 +50,10 @@ function addStudentUser($username, $password, $email, $prodi, $fullName, $kelas)
     }
 }
 
-// Update Student function
 function updateStudent($student_id, $fullName, $email, $prodi, $kelas, $username, $password)
 {
     global $conn;
 
-    // Update user table
     $updateUserQuery = "
         UPDATE [sibatta].[user] 
         SET email = ?, username = ?, password = ?
@@ -78,7 +67,6 @@ function updateStudent($student_id, $fullName, $email, $prodi, $kelas, $username
         die();
     }
 
-    // Update student table
     $updateStudentQuery = "
         UPDATE [sibatta].[student]
         SET fullName = ?, prodi = ?, kelas = ?
@@ -93,7 +81,6 @@ function updateStudent($student_id, $fullName, $email, $prodi, $kelas, $username
     }
 }
 
-// Delete Student function
 function deleteStudent($student_id)
 {
     global $conn;
@@ -102,7 +89,6 @@ function deleteStudent($student_id)
     sqlsrv_begin_transaction($conn);
 
     try {
-        // Get associated user_id for the student
         $query = "SELECT user_id FROM [sibatta].[student] WHERE student_id = ?";
         $params = [$student_id];
         $stmt = sqlsrv_query($conn, $query, $params);
@@ -118,7 +104,6 @@ function deleteStudent($student_id)
             throw new Exception("No associated user_id found for student_id: $student_id");
         }
 
-        // Delete the student record
         $deleteStudentQuery = "DELETE FROM [sibatta].[student] WHERE student_id = ?";
         $stmtStudent = sqlsrv_query($conn, $deleteStudentQuery, [$student_id]);
 
@@ -126,7 +111,6 @@ function deleteStudent($student_id)
             throw new Exception("Error deleting student: " . print_r(sqlsrv_errors(), true));
         }
 
-        // Delete the user record
         $deleteUserQuery = "DELETE FROM [sibatta].[user] WHERE user_id = ?";
         $stmtUser = sqlsrv_query($conn, $deleteUserQuery, [$user_id]);
 
@@ -134,7 +118,6 @@ function deleteStudent($student_id)
             throw new Exception("Error deleting user: " . print_r(sqlsrv_errors(), true));
         }
 
-        // Commit transaction
         sqlsrv_commit($conn);
 
         echo "Student and associated user deleted successfully!";
@@ -144,39 +127,11 @@ function deleteStudent($student_id)
     }
 }
 
-// Search Students function
-// function searchStudents($searchTerm)
-// {
-//     global $conn;
-//     $students = [];
-
-//     // Search query including 'kelas'
-//     $query = "SELECT s.student_id, s.fullName, u.email, s.prodi, u.username, s.kelas
-//               FROM [sibatta].[student] s
-//               JOIN [sibatta].[user] u ON s.user_id = u.user_id
-//               WHERE u.email LIKE ? OR s.fullName LIKE ? OR s.kelas LIKE ?";
-//     $searchPattern = "%" . $searchTerm . "%";
-//     $params = [$searchPattern, $searchPattern, $searchPattern];
-
-//     $stmt = sqlsrv_query($conn, $query, $params);
-
-//     if ($stmt === false) {
-//         echo "Error searching students: " . print_r(sqlsrv_errors(), true);
-//         die();
-//     }
-
-//     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-//         $students[] = $row;
-//     }
-//     return $students;
-// }
-
 function searchStudents($searchTerm)
 {
     global $conn;
     $students = [];
 
-    // Search query including 'kelas' and 'prodi' as well
     $query = "SELECT s.student_id, s.fullName, u.email, s.prodi, u.username, s.kelas
               FROM [sibatta].[student] s
               JOIN [sibatta].[user] u ON s.user_id = u.user_id
@@ -197,74 +152,18 @@ function searchStudents($searchTerm)
     return $students;
 }
 
-
-// // Main logic
-// $students = [];
-// if ($_SERVER["REQUEST_METHOD"] == "POST") {
-//     if (isset($_POST['action'])) {
-//         if ($_POST['action'] == 'add') {
-//             $username = $_POST['username'];
-//             $password = $_POST['password'];
-//             $email = $_POST['email'];
-//             $prodi = $_POST['prodi'];
-//             $fullName = $_POST['fullName'];
-//             $kelas = $_POST['kelas'];
-
-//             addStudentUser($username, $password, $email, $prodi, $fullName, $kelas);
-//         } elseif ($_POST['action'] == 'update') {
-//             $student_id = $_POST['student_id'];
-//             $fullName = $_POST['fullName'];
-//             $email = $_POST['email'];
-//             $prodi = $_POST['prodi'];
-//             $kelas = $_POST['kelas'];
-//             $username = $_POST['username'];
-//             $password = $_POST['password'];
-
-//             updateStudent($student_id, $fullName, $email, $prodi, $kelas, $username, $password);
-//         } elseif ($_POST['action'] == 'delete') {
-//             $student_id = $_POST['student_id'];
-//             deleteStudent($student_id);
-//         }
-//     } 
-//     elseif (!empty($_POST['search'])) {
-//         $searchTerm = $_POST['search'];
-//         $students = searchStudents($searchTerm);
-//     }
-// }
-
-// // Fetch all students if no search term provided
-// if (empty($students)) {
-//     $query = "SELECT s.student_id, s.fullName, u.email, s.prodi, u.username, s.kelas
-//               FROM [sibatta].[student] s
-//               JOIN [sibatta].[user] u ON s.user_id = u.user_id";
-//     $stmt = sqlsrv_query($conn, $query);
-
-//     if ($stmt === false) {
-//         echo "Error fetching students: " . print_r(sqlsrv_errors(), true);
-//         die();
-//     }
-
-//     while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
-//         $students[] = $row;
-//     }
-// }
-
-// Main logic
 $students = [];
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['action'])) {
         if ($_POST['action'] == 'add') {
-            // Add student logic
             $username = $_POST['username'];
             $password = $_POST['password'];
             $email = $_POST['email'];
             $prodi = $_POST['prodi'];
             $fullName = $_POST['fullName'];
             $kelas = $_POST['kelas'];
-
             addStudentUser($username, $password, $email, $prodi, $fullName, $kelas);
         } elseif ($_POST['action'] == 'update') {
-            // Update student logic
             $student_id = $_POST['student_id'];
             $fullName = $_POST['fullName'];
             $email = $_POST['email'];
@@ -272,22 +171,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $kelas = $_POST['kelas'];
             $username = $_POST['username'];
             $password = $_POST['password'];
-
             updateStudent($student_id, $fullName, $email, $prodi, $kelas, $username, $password);
         } elseif ($_POST['action'] == 'delete') {
-            // Delete student logic
             $student_id = $_POST['student_id'];
             deleteStudent($student_id);
         }
     }
     elseif (!empty($_POST['search'])) {
-        // Handle search functionality
         $searchTerm = $_POST['search'];
         $students = searchStudents($searchTerm);
     }
 }
 
-// Fetch all students if no search term provided
 if (empty($students)) {
     $query = "SELECT s.student_id, s.fullName, u.email, s.prodi, u.username, s.kelas
               FROM [sibatta].[student] s
@@ -304,8 +199,6 @@ if (empty($students)) {
     }
 }
 
-
-// Close the connection
 $koneksi->close();
 ?>
 

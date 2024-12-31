@@ -7,7 +7,7 @@ class Koneksi
 
     public function __construct()
     {
-        $this->serverName = "LAPTOP-DL9EJTU3\MSSQLSERVER01";
+        $this->serverName = "MSI";
         $this->connectionOptions = [
             "Database" => "sibatta",
             "UID" => "", 

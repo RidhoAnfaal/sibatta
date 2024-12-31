@@ -1,20 +1,17 @@
 <?php
-// Include the database connection configuration
+
 require_once '../koneksi.php'; 
 session_start();
 
-// Check if the user is logged in, if not redirect to login page
 if (!isset($_SESSION['username'])) {
     header('Location: ../index.php');
     exit();
 }
 $username = $_SESSION['username'];
 
-// Create an instance of the Koneksi class and establish connection
 $koneksi = new Koneksi();
 $conn = $koneksi->connect();
 
-// Add Admin and User function
 function addAdminUser($username, $password, $email, $admin_role, $fullName)
 {
     global $conn;
@@ -53,7 +50,6 @@ function addAdminUser($username, $password, $email, $admin_role, $fullName)
     }
 }
 
-// Update Admin function
 function updateAdmin($admin_id, $username, $password, $fullName, $email, $admin_role)
 {
     global $conn;
@@ -91,7 +87,6 @@ function updateAdmin($admin_id, $username, $password, $fullName, $email, $admin_
     }
 }
 
-// Delete Admin function
 function deleteAdmin($admin_id)
 {
     global $conn;
@@ -137,7 +132,6 @@ function deleteAdmin($admin_id)
     }
 }
 
-// Search Admins function
 function searchAdmins($searchTerm)
 {
     global $conn;
@@ -165,7 +159,6 @@ function searchAdmins($searchTerm)
     return $admins;
 }
 
-// Fetch all admins
 function fetchAllAdmins()
 {
     global $conn;
@@ -235,48 +228,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
     }
-
-    // if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'update') {
-    //     $admin_id = intval($_POST['admin_id']);
-    //     $username = trim($_POST['username']);
-    //     $password = trim($_POST['password']);
-    //     $email = trim($_POST['email']);
-    //     $fullName = trim($_POST['fullName']);
-    //     $admin_role = trim($_POST['admin_role']);
-    
-    //     if (empty($admin_id) || empty($username) || empty($email) || empty($fullName) || empty($admin_role)) {
-    //         echo 'error: Missing required fields.';
-    //         exit;
-    //     }
-    
-    //     // Password update logic
-    //     $password_sql = '';
-    //     if (!empty($password)) {
-    //         $hashed_password = password_hash($password, PASSWORD_BCRYPT); // Use bcrypt for security
-    //         $password_sql = ", password = '$hashed_password'";
-    //     }
-    
-    //     // SQL Update Query
-    //     $query = "
-    //         UPDATE admin 
-    //         SET 
-    //             username = '$username', 
-    //             email = '$email', 
-    //             fullName = '$fullName', 
-    //             admin_role = '$admin_role'
-    //             $password_sql
-    //         WHERE admin_id = $admin_id
-    //     ";
-    
-    //     // Execute Query
-    //     // if (mysqli_query($conn, $query)) {
-    //     //     echo 'success';
-    //     // } else {
-    //     //     echo 'error: ' . mysqli_error($conn);
-    //     // }
-    //     // exit;
-    // }
-    
 }
 
 
